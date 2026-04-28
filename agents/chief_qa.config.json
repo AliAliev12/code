@@ -1,0 +1,13 @@
+{
+  "publishable": {
+    "max_p1": 5
+  },
+  "downgrade_to_p2": [
+    "tech.inline_styles.count",
+    "keyword_density.count_gt_5"
+  ],
+  "severity_overrides": {
+    "seo.schema.organization": "P2"
+  }
+}
+
