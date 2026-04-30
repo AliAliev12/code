@@ -35,9 +35,10 @@ def load_env(path: Path) -> Dict[str, str]:
 
 
 def _candidate_keywords_paths() -> List[Path]:
+    output_dir = Path(os.getenv("SITE_OUTPUT_DIR", "")).resolve() if os.getenv("SITE_OUTPUT_DIR", "").strip() else ROOT / "output"
     here = Path(__file__).resolve().parent
     return [
-        ROOT / "agents" / "a1-keywords" / "agents" / "a1-keywords" / "output" / "keywords.json",
+        output_dir / "keywords.json",
         here / "output" / "keywords.json",
         ROOT / "output" / "keywords.json",
     ]
@@ -219,6 +220,22 @@ def write_json(path: Path, obj: Any) -> None:
     path.write_text(json.dumps(obj, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
+def resolve_site_dir(site_dir_arg: str) -> Path:
+    raw = site_dir_arg or os.getenv("SITE_DIR", "")
+    p = Path(raw) if raw else ROOT / "sites" / "cazilla-clone-be-fr"
+    if not p.is_absolute():
+        p = ROOT / p
+    return p.resolve()
+
+
+def resolve_output_dir(output_dir_arg: str) -> Path:
+    raw = output_dir_arg or os.getenv("SITE_OUTPUT_DIR", "")
+    p = Path(raw) if raw else ROOT / "output"
+    if not p.is_absolute():
+        p = ROOT / p
+    return p.resolve()
+
+
 def remove_head(html: str) -> str:
     return re.sub(r"(?is)<head\b[^>]*>.*?</head>", " ", html)
 
@@ -357,7 +374,7 @@ Retourne UNIQUEMENT un JSON valide avec exactement ces clés:
 """.strip()
 
 
-def run_generate(env: Dict[str, str]) -> None:
+def run_generate(env: Dict[str, str], *, output_dir: Path) -> None:
     print("=== A2 Content Agent ===")
     kws = load_keywords()
     main_kw, about_kws, footer_kws = pick_keywords(kws)
@@ -380,7 +397,7 @@ def run_generate(env: Dict[str, str]) -> None:
             if missing:
                 raise RuntimeError("Missing fields in response: " + ", ".join(missing))
 
-            out_path = ROOT / "output" / "content.json"
+            out_path = output_dir / "content.json"
             write_json(out_path, content)
             print("Saved:", out_path)
             return
@@ -391,13 +408,13 @@ def run_generate(env: Dict[str, str]) -> None:
     raise SystemExit(f"Failed after retries: {last_err}")
 
 
-def run_fix_density(env: Dict[str, str]) -> None:
+def run_fix_density(env: Dict[str, str], *, site_dir: Path, output_dir: Path) -> None:
     print("=== A2 Content Agent (fix-density) ===")
     api_key = anthropic_api_key(env)
     if not api_key:
         raise SystemExit("Missing ANTHROPIC_API_KEY in .env or environment.")
 
-    qa_path = ROOT / "output" / "qa_report.json"
+    qa_path = output_dir / "qa_report.json"
     if not qa_path.exists():
         raise SystemExit(f"qa_report.json not found: {qa_path}")
     qa = read_json(qa_path)
@@ -410,10 +427,10 @@ def run_fix_density(env: Dict[str, str]) -> None:
         print("No offenders in qa_report.keyword_density — nothing to do.")
         return
 
-    html_path = Path(str((qa.get("meta") or {}).get("html_path") or (ROOT / "sites" / "cazilla-clone-be-fr" / "index.html")))
+    html_path = Path(str((qa.get("meta") or {}).get("html_path") or (site_dir / "index.html"))).resolve()
     full_html = html_path.read_text(encoding="utf-8", errors="replace")
 
-    content_path = ROOT / "output" / "content.json"
+    content_path = output_dir / "content.json"
     if not content_path.exists():
         fallback = Path(__file__).resolve().parent / "output" / "content.json"
         if fallback.exists():
@@ -444,7 +461,11 @@ def run_fix_density(env: Dict[str, str]) -> None:
 
     a3 = ROOT / "agents" / "a3-ai-check" / "agents" / "a3-ai-check" / "run.py"
     print("\n=== Launching A3 --recheck ===")
-    r = subprocess.run([sys.executable, str(a3), "--recheck"], cwd=str(ROOT), env=os.environ.copy())
+    r = subprocess.run(
+        [sys.executable, str(a3), "--recheck", "--site-dir", str(site_dir), "--output-dir", str(output_dir)],
+        cwd=str(ROOT),
+        env=os.environ.copy(),
+    )
     if r.returncode != 0:
         raise SystemExit(f"A3 recheck failed (exit {r.returncode})")
 
@@ -457,13 +478,23 @@ def main(argv: List[str]) -> int:
 
     p = argparse.ArgumentParser()
     p.add_argument("--fix-density", action="store_true")
+    p.add_argument("--site-dir", default="")
+    p.add_argument("--output-dir", default="")
     args = p.parse_args(argv)
+    site_dir = resolve_site_dir(args.site_dir)
+    output_dir = resolve_output_dir(args.output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    os.environ["SITE_DIR"] = str(site_dir)
+    os.environ["SITE_OUTPUT_DIR"] = str(output_dir)
+    os.environ.setdefault("QA_HTML_PATH", str(site_dir / "index.html"))
+    os.environ.setdefault("QA_KEYWORDS_PATH", str(output_dir / "keywords.json"))
+    os.environ.setdefault("QA_REPORT_PATH", str(output_dir / "qa_report.json"))
 
     if args.fix_density:
-        run_fix_density(env)
+        run_fix_density(env, site_dir=site_dir, output_dir=output_dir)
         return 0
 
-    run_generate(env)
+    run_generate(env, output_dir=output_dir)
     return 0
 
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
 from dataclasses import dataclass
@@ -65,6 +66,7 @@ class Issue:
 def main() -> int:
     ap = argparse.ArgumentParser(description="Static site smoke QA (links/anchors/meta/assets).")
     ap.add_argument("--site-dir", default=str(ROOT / "sites" / "cazilla-clone-be-fr"))
+    ap.add_argument("--output-dir", default="")
     args = ap.parse_args()
 
     site_dir = Path(args.site_dir).resolve()
@@ -163,7 +165,8 @@ def main() -> int:
         "site_dir": str(site_dir),
     }
 
-    out_path = ROOT / "output" / "qa_smoke.json"
+    output_dir = Path(args.output_dir).resolve() if args.output_dir else Path(os.getenv("SITE_OUTPUT_DIR", "")).resolve() if os.getenv("SITE_OUTPUT_DIR", "").strip() else ROOT / "output"
+    out_path = output_dir / "qa_smoke.json"
     write_json(out_path, report)
     print(f"Smoke QA: {status} (P0={report['counts']['P0']}, P1={report['counts']['P1']}, P2={report['counts']['P2']})")
     print(f"Report saved to: {out_path}")

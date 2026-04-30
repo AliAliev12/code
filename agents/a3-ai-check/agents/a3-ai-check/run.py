@@ -39,6 +39,22 @@ def write_json(path: Path, obj: Any) -> None:
     path.write_text(json.dumps(obj, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
+def resolve_site_dir(site_dir_arg: str) -> Path:
+    raw = site_dir_arg or os.getenv("SITE_DIR", "")
+    p = Path(raw) if raw else ROOT / "sites" / "cazilla-clone-be-fr"
+    if not p.is_absolute():
+        p = ROOT / p
+    return p.resolve()
+
+
+def resolve_output_dir(output_dir_arg: str) -> Path:
+    raw = output_dir_arg or os.getenv("SITE_OUTPUT_DIR", "")
+    p = Path(raw) if raw else ROOT / "output"
+    if not p.is_absolute():
+        p = ROOT / p
+    return p.resolve()
+
+
 def remove_head(html: str) -> str:
     return re.sub(r"(?is)<head\b[^>]*>.*?</head>", " ", html)
 
@@ -220,12 +236,12 @@ Subset JSON:
 """.strip()
 
 
-def run_full_humanize(env: Dict[str, str]) -> int:
+def run_full_humanize(env: Dict[str, str], *, site_dir: Path, output_dir: Path) -> int:
     api_key = env.get("ANTHROPIC_API_KEY") or os.getenv("ANTHROPIC_API_KEY")
     if not api_key:
         raise SystemExit("Missing ANTHROPIC_API_KEY in .env or env var.")
 
-    in_path = ROOT / "output" / "content.json"
+    in_path = output_dir / "content.json"
     if not in_path.exists():
         fallback = ROOT / "agents" / "a2-content" / "agents" / "a2-content" / "output" / "content.json"
         if fallback.exists():
@@ -234,7 +250,7 @@ def run_full_humanize(env: Dict[str, str]) -> int:
         else:
             raise SystemExit(f"Input content.json not found at {in_path} (and fallback missing).")
 
-    out_path = ROOT / "output" / "content_humanized.json"
+    out_path = output_dir / "content_humanized.json"
     content = read_json(in_path)
     if not isinstance(content, dict):
         raise SystemExit("output/content.json must be a JSON object.")
@@ -276,7 +292,7 @@ Textes d'entrée (JSON):
             merged.update({k: obj[k] for k in fields})
             write_json(out_path, {k: merged.get(k, "") for k in ["hero_title", *fields]})
 
-            html_path = ROOT / "sites" / "cazilla-clone-be-fr" / "index.html"
+            html_path = site_dir / "index.html"
             if html_path.exists():
                 html = html_path.read_text(encoding="utf-8", errors="replace")
                 html_path.write_text(apply_content_to_index_html(html, merged), encoding="utf-8")
@@ -296,15 +312,15 @@ Textes d'entrée (JSON):
     raise SystemExit(str(last_err))
 
 
-def run_recheck(env: Dict[str, str]) -> int:
+def run_recheck(env: Dict[str, str], *, site_dir: Path, output_dir: Path) -> int:
     print("=== A3 Humanizer (recheck) ===")
     api_key = env.get("ANTHROPIC_API_KEY") or os.getenv("ANTHROPIC_API_KEY")
     if not api_key:
         raise SystemExit("Missing ANTHROPIC_API_KEY in .env or env var.")
 
-    content_path = ROOT / "output" / "content.json"
-    prev_path = ROOT / "output" / "content_humanized.json"
-    qa_path = ROOT / "output" / "qa_report.json"
+    content_path = output_dir / "content.json"
+    prev_path = output_dir / "content_humanized.json"
+    qa_path = output_dir / "qa_report.json"
 
     content = read_json(content_path)
     if not isinstance(content, dict):
@@ -353,10 +369,10 @@ def run_recheck(env: Dict[str, str]) -> int:
 
     merged = dict(content)
     merged.update({k: obj[k] for k in changed_fields})
-    out_path = ROOT / "output" / "content_humanized.json"
+    out_path = output_dir / "content_humanized.json"
     write_json(out_path, {k: merged.get(k, "") for k in ["hero_title", *fields]})
 
-    html_path = ROOT / "sites" / "cazilla-clone-be-fr" / "index.html"
+    html_path = site_dir / "index.html"
     html_before = html_path.read_text(encoding="utf-8", errors="replace") if html_path.exists() else ""
     counts_before = {k: count_kw_in_body(html_before, k) for k in offender_kws}
 
@@ -385,11 +401,18 @@ def main(argv: List[str]) -> int:
 
     p = argparse.ArgumentParser()
     p.add_argument("--recheck", action="store_true")
+    p.add_argument("--site-dir", default="")
+    p.add_argument("--output-dir", default="")
     args = p.parse_args(argv)
+    site_dir = resolve_site_dir(args.site_dir)
+    output_dir = resolve_output_dir(args.output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    os.environ["SITE_DIR"] = str(site_dir)
+    os.environ["SITE_OUTPUT_DIR"] = str(output_dir)
 
     if args.recheck:
-        return run_recheck(env)
-    return run_full_humanize(env)
+        return run_recheck(env, site_dir=site_dir, output_dir=output_dir)
+    return run_full_humanize(env, site_dir=site_dir, output_dir=output_dir)
 
 
 if __name__ == "__main__":

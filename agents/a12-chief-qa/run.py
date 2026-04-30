@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 import json
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -49,14 +51,14 @@ class Finding:
     hint: str = ""
 
 
-def extract_findings() -> List[Finding]:
+def extract_findings(out_dir: Path) -> List[Finding]:
     cfg = load_config()
     downgrade_to_p2 = set([str(x) for x in (cfg.get("downgrade_to_p2") or [])])
     severity_overrides = cfg.get("severity_overrides") if isinstance(cfg.get("severity_overrides"), dict) else {}
 
     findings: List[Finding] = []
 
-    smoke = load_json(OUT / "qa_smoke.json")
+    smoke = load_json(out_dir / "qa_smoke.json")
     for i in smoke.get("issues", []) or []:
         if not isinstance(i, dict):
             continue
@@ -71,7 +73,7 @@ def extract_findings() -> List[Finding]:
             )
         )
 
-    seo = load_json(OUT / "qa_report.json")
+    seo = load_json(out_dir / "qa_report.json")
     for c in seo.get("results", []) or []:
         if not isinstance(c, dict):
             continue
@@ -103,10 +105,15 @@ def extract_findings() -> List[Finding]:
 
 
 def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--output-dir", default="")
+    args = ap.parse_args()
+    out_dir = Path(args.output_dir).resolve() if args.output_dir else Path(os.getenv("SITE_OUTPUT_DIR", "")).resolve() if os.getenv("SITE_OUTPUT_DIR", "").strip() else OUT
+
     cfg = load_config()
     max_p1 = int((cfg.get("publishable") or {}).get("max_p1") or 5)
 
-    findings = extract_findings()
+    findings = extract_findings(out_dir)
     sev_rank = {"P0": 0, "P1": 1, "P2": 2}
     findings.sort(key=lambda f: (sev_rank.get(f.severity, 9), f.source, f.id))
 
@@ -130,7 +137,7 @@ def main() -> int:
         "notes": "Gates: P0 blocks publish. P1 is non-blocking; publishable threshold is configurable. Some WARNs may be downgraded to P2 via config.",
     }
 
-    out_path = OUT / "qa_chief.json"
+    out_path = out_dir / "qa_chief.json"
     write_json(out_path, report)
     print(f"Chief QA: {decision} (P0={len(p0)}, P1={len(p1)}, P2={len(p2)})")
     print(f"Report saved to: {out_path}")
