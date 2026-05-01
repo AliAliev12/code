@@ -278,7 +278,13 @@ def main() -> int:
     else:
         results.append(fail("seo.canonical", "canonical тег отсутствует"))
 
-    results.append(ok("seo.hreflang.fr-be", "hreflang fr-BE присутствует") if has_hreflang(html, "fr-BE") else fail("seo.hreflang.fr-be", "hreflang fr-BE отсутствует"))
+    hreflang_primary = str(env.get("QA_HREFLANG_PRIMARY", "fr-BE")).strip() or "fr-BE"
+    hreflang_primary_id = re.sub(r"[^a-z0-9]+", "-", hreflang_primary.lower()).strip("-")
+    results.append(
+        ok(f"seo.hreflang.{hreflang_primary_id}", f"hreflang {hreflang_primary} присутствует")
+        if has_hreflang(html, hreflang_primary)
+        else fail(f"seo.hreflang.{hreflang_primary_id}", f"hreflang {hreflang_primary} отсутствует")
+    )
     results.append(ok("seo.hreflang.x-default", "hreflang x-default присутствует") if has_hreflang(html, "x-default") else fail("seo.hreflang.x-default", "hreflang x-default отсутствует"))
 
     h1_count = count_tags(html, "h1")

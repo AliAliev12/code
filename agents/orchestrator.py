@@ -74,6 +74,8 @@ def build_env_context(site_dir: Path, output_dir: Path) -> Dict[str, str]:
     env["QA_HTML_PATH"] = str(site_dir / "index.html")
     env["QA_KEYWORDS_PATH"] = str(output_dir / "keywords.json")
     env["QA_REPORT_PATH"] = str(output_dir / "qa_report.json")
+    if not env.get("QA_HREFLANG_PRIMARY", "").strip():
+        env["QA_HREFLANG_PRIMARY"] = "fr-BE" if site_dir.resolve() == DEFAULT_SITE_DIR.resolve() else "en-IE"
     return env
 
 

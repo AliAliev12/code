@@ -1,0 +1,248 @@
+{
+  "site_dir": "/home/yegor/Git/AliAliev12/code/sites/cazilla-offerwall-en-ie",
+  "output_dir": "/home/yegor/Git/AliAliev12/code/sites/cazilla-offerwall-en-ie/_output",
+  "history": [
+    {
+      "iteration": 1,
+      "content_stage": {
+        "a1": {
+          "run": false,
+          "rc": null
+        },
+        "a2": {
+          "run": false,
+          "rc": null
+        },
+        "a3": {
+          "run": false,
+          "rc": null
+        }
+      },
+      "chief": {
+        "decision": "PASS",
+        "publishable": true,
+        "counts": {
+          "P0": 0,
+          "P1": 3,
+          "P2": 1,
+          "total": 4
+        },
+        "findings": [
+          {
+            "id": "content.keywords.top10_present",
+            "severity": "P1",
+            "source": "seo",
+            "message": "keywords.json пустой/отсутствует — нечего проверять по ключам",
+            "file": "",
+            "hint": "See output/qa_report.json details."
+          },
+          {
+            "id": "keyword_density.skipped",
+            "severity": "P1",
+            "source": "seo",
+            "message": "keyword_density пропущен: нет keywords.json",
+            "file": "",
+            "hint": "See output/qa_report.json details."
+          },
+          {
+            "id": "seo.robots.noindex_nofollow",
+            "severity": "P1",
+            "source": "seo",
+            "message": "robots meta содержит noindex/nofollow",
+            "file": "",
+            "hint": "See output/qa_report.json details."
+          },
+          {
+            "id": "tech.inline_styles.count",
+            "severity": "P2",
+            "source": "seo",
+            "message": "Слишком много inline style атрибутов (> 20)",
+            "file": "",
+            "hint": "See output/qa_report.json details."
+          }
+        ],
+        "weights": {
+          "seo": 0.5,
+          "content": 0.3,
+          "design": 0.2
+        },
+        "config": {
+          "path": "/home/yegor/Git/AliAliev12/code/agents/chief_qa.config.json",
+          "publishable_max_p1": 5
+        },
+        "notes": "Gates: P0 blocks publish. P1 is non-blocking; publishable threshold is configurable. Some WARNs may be downgraded to P2 via config."
+      },
+      "seo": {
+        "meta": {
+          "html_path": "/home/yegor/Git/AliAliev12/code/sites/cazilla-offerwall-en-ie/index.html",
+          "keywords_path": "/home/yegor/Git/AliAliev12/code/sites/cazilla-offerwall-en-ie/_output/keywords.json",
+          "report_path": "/home/yegor/Git/AliAliev12/code/sites/cazilla-offerwall-en-ie/_output/qa_report.json"
+        },
+        "summary": {
+          "PASS": 16,
+          "WARN": 4,
+          "FAIL": 0
+        },
+        "results": [
+          {
+            "id": "seo.title.length",
+            "status": "PASS",
+            "message": "title присутствует и длина 30-60 символов",
+            "details": {
+              "length": 58,
+              "title": "Cazilla Top Online Casino Ireland 2026 — Bonuses & Reviews"
+            }
+          },
+          {
+            "id": "seo.meta_description.length",
+            "status": "PASS",
+            "message": "meta description присутствует и длина 110-180 символов",
+            "details": {
+              "length": 123
+            }
+          },
+          {
+            "id": "seo.canonical",
+            "status": "PASS",
+            "message": "canonical тег присутствует",
+            "details": {}
+          },
+          {
+            "id": "seo.hreflang.en-ie",
+            "status": "PASS",
+            "message": "hreflang en-IE присутствует",
+            "details": {}
+          },
+          {
+            "id": "seo.hreflang.x-default",
+            "status": "PASS",
+            "message": "hreflang x-default присутствует",
+            "details": {}
+          },
+          {
+            "id": "seo.h1.single",
+            "status": "PASS",
+            "message": "h1 присутствует и только один",
+            "details": {
+              "count": 1
+            }
+          },
+          {
+            "id": "seo.h2.min3",
+            "status": "PASS",
+            "message": "h2 теги присутствуют (минимум 3)",
+            "details": {
+              "count": 11
+            }
+          },
+          {
+            "id": "seo.schema.organization",
+            "status": "PASS",
+            "message": "schema.org Organization присутствует",
+            "details": {}
+          },
+          {
+            "id": "seo.schema.website",
+            "status": "PASS",
+            "message": "schema.org WebSite присутствует",
+            "details": {}
+          },
+          {
+            "id": "seo.robots.noindex_nofollow",
+            "status": "WARN",
+            "message": "robots meta содержит noindex/nofollow",
+            "details": {
+              "content": "noindex, nofollow"
+            }
+          },
+          {
+            "id": "seo.og.title",
+            "status": "PASS",
+            "message": "og:title присутствует",
+            "details": {}
+          },
+          {
+            "id": "seo.og.description",
+            "status": "PASS",
+            "message": "og:description присутствует",
+            "details": {}
+          },
+          {
+            "id": "content.keywords.top10_present",
+            "status": "WARN",
+            "message": "keywords.json пустой/отсутствует — нечего проверять по ключам",
+            "details": {}
+          },
+          {
+            "id": "keyword_density.skipped",
+            "status": "WARN",
+            "message": "keyword_density пропущен: нет keywords.json",
+            "details": {}
+          },
+          {
+            "id": "content.links.cta",
+            "status": "PASS",
+            "message": "CTA-ссылки ведут на cazilla.casino",
+            "details": {
+              "count": 31
+            }
+          },
+          {
+            "id": "content.links.internal",
+            "status": "PASS",
+            "message": "Нет битых внутренних ссылок",
+            "details": {
+              "internal_count": 19
+            }
+          },
+          {
+            "id": "tech.meta.viewport",
+            "status": "PASS",
+            "message": "viewport meta тег присутствует",
+            "details": {}
+          },
+          {
+            "id": "tech.meta.charset",
+            "status": "PASS",
+            "message": "charset utf-8 присутствует",
+            "details": {}
+          },
+          {
+            "id": "tech.html.lang",
+            "status": "PASS",
+            "message": "lang атрибут на html теге присутствует",
+            "details": {}
+          },
+          {
+            "id": "tech.inline_styles.count",
+            "status": "WARN",
+            "message": "Слишком много inline style атрибутов (> 20)",
+            "details": {
+              "count": 23,
+              "threshold": 20
+            }
+          }
+        ],
+        "keyword_density": {
+          "status": "PASS",
+          "offenders": [],
+          "missing": [],
+          "warn_over_5_occurrences": [],
+          "total_words": 0,
+          "note": "keywords.json missing/invalid — keyword_density skipped"
+        }
+      },
+      "smoke": {
+        "status": "PASS",
+        "issues": [],
+        "counts": {
+          "P0": 0,
+          "P1": 0,
+          "P2": 0,
+          "total": 0
+        },
+        "site_dir": "/home/yegor/Git/AliAliev12/code/sites/cazilla-offerwall-en-ie"
+      }
+    }
+  ]
+}

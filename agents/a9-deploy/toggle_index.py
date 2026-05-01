@@ -7,9 +7,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-SITE_ORIGIN = "https://cazilareview.xyz"
-
-OPEN_ROBOTS = "\n".join(["User-agent: *", "Allow: /", f"Sitemap: {SITE_ORIGIN}/sitemap.xml", ""])
+SITE_ORIGIN_DEFAULT = "https://cazilla.live"
 
 def resolve_site_dir(site_dir_arg: str | None) -> Path:
     default = ROOT / "sites" / "cazilla-clone-be-fr"
@@ -18,6 +16,19 @@ def resolve_site_dir(site_dir_arg: str | None) -> Path:
     if not p.is_absolute():
         p = ROOT / p
     return p.resolve()
+
+
+def site_origin_from_env() -> str:
+    origin = (
+        os.getenv("SITE_ORIGIN", "").strip()
+        or os.getenv("SITE_URL", "").strip()
+        or SITE_ORIGIN_DEFAULT
+    )
+    return origin.rstrip("/")
+
+
+def section_dirs(site_dir: Path) -> list[Path]:
+    return sorted([p for p in site_dir.iterdir() if p.is_dir() and p.name != "_output" and (p / "index.html").exists()])
 
 
 def read_text(p: Path) -> str:
@@ -37,17 +48,15 @@ def iter_html_pages(site_dir: Path) -> list[Path]:
 
 
 def verify_expected_pages(site_dir: Path) -> None:
-    expected = [
-        site_dir / "index.html",
-        site_dir / "bonus-casino-belgique" / "index.html",
-        site_dir / "casino-en-ligne-belgique-legal" / "index.html",
-        site_dir / "meilleurs-jeux-casino-belgique" / "index.html",
-    ]
+    expected = [site_dir / "index.html"]
+    expected.extend([p / "index.html" for p in section_dirs(site_dir)])
     missing = [str(p) for p in expected if not p.exists()]
     if missing:
         msg = ["Build verification failed. Missing required page files:"]
         msg.extend([f"- {p}" for p in missing])
         raise SystemExit("\n".join(msg))
+    if len(expected) < 4:
+        raise SystemExit(f"Build verification failed. Expected at least 4 pages (root + 3 sections), found {len(expected)}.")
 
 
 def toggle_index_html(site_dir: Path, mode: str) -> None:
@@ -88,12 +97,9 @@ def rewrite_internal_links(site_dir: Path, link_mode: str) -> None:
         is_root = html_path.parent == site_dir
         base = "./" if is_root else "../"
 
-        replacements = {
-            'href="/bonus-casino-belgique/"': f'href="{base}bonus-casino-belgique/"',
-            'href="/casino-en-ligne-belgique-legal/"': f'href="{base}casino-en-ligne-belgique-legal/"',
-            'href="/meilleurs-jeux-casino-belgique/"': f'href="{base}meilleurs-jeux-casino-belgique/"',
-            'href="/"': f'href="{base}"',
-        }
+        replacements = {'href="/"': f'href="{base}"'}
+        for d in section_dirs(site_dir):
+            replacements[f'href="/{d.name}/"'] = f'href="{base}{d.name}/"'
 
         html = read_text(html_path)
         html2 = html
@@ -106,16 +112,16 @@ def rewrite_internal_links(site_dir: Path, link_mode: str) -> None:
 def toggle_robots(site_dir: Path, mode: str) -> None:
     # Per requirements: always ship production-friendly robots.txt (Allow:/ + Sitemap)
     # Predeploy noindex is controlled via meta robots in HTML pages.
-    write_text(site_dir / "robots.txt", OPEN_ROBOTS)
+    site_origin = site_origin_from_env()
+    open_robots = "\n".join(["User-agent: *", "Allow: /", f"Sitemap: {site_origin}/sitemap.xml", ""])
+    write_text(site_dir / "robots.txt", open_robots)
 
 
 def write_sitemap(site_dir: Path) -> None:
-    urls = [
-        f"{SITE_ORIGIN}/",
-        f"{SITE_ORIGIN}/bonus-casino-belgique/",
-        f"{SITE_ORIGIN}/casino-en-ligne-belgique-legal/",
-        f"{SITE_ORIGIN}/meilleurs-jeux-casino-belgique/",
-    ]
+    site_origin = site_origin_from_env()
+    hreflang_primary = os.getenv("QA_HREFLANG_PRIMARY", "").strip() or ("fr-BE" if "cazilla-clone-be-fr" in str(site_dir) else "en-IE")
+    urls = [f"{site_origin}/"]
+    urls.extend([f"{site_origin}/{d.name}/" for d in section_dirs(site_dir)])
 
     today = "2026-04-23"
     parts = [
@@ -129,7 +135,7 @@ def write_sitemap(site_dir: Path) -> None:
             [
                 "  <url>",
                 f"    <loc>{u}</loc>",
-                f'    <xhtml:link rel="alternate" hreflang="fr-BE" href="{u}"/>',
+                f'    <xhtml:link rel="alternate" hreflang="{hreflang_primary}" href="{u}"/>',
                 f'    <xhtml:link rel="alternate" hreflang="x-default" href="{u}"/>',
                 f"    <lastmod>{today}</lastmod>",
                 "    <changefreq>weekly</changefreq>",
