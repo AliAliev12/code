@@ -30,6 +30,45 @@ def load_env(path: Path) -> Dict[str, str]:
     return env
 
 
+def default_site_dir(env: Dict[str, str]) -> str:
+    site_dir = (env.get("SITE_DIR") or os.getenv("SITE_DIR") or "").strip()
+    if not site_dir:
+        raise SystemExit("Missing SITE_DIR in .env/environment.")
+    return site_dir
+
+
+def default_html_path(env: Dict[str, str]) -> Path:
+    html_path = ROOT / default_site_dir(env) / "index.html"
+    if not html_path.exists():
+        raise SystemExit(f"HTML path not found: {html_path}")
+    return html_path
+
+
+def require_locale_lang(env: Dict[str, str]) -> Tuple[str, str]:
+    locale = (env.get("TARGET_LOCALE") or os.getenv("TARGET_LOCALE") or "").strip()
+    lang = (env.get("TARGET_LANG") or os.getenv("TARGET_LANG") or "").strip()
+    if not locale:
+        raise SystemExit("Missing TARGET_LOCALE in .env/environment.")
+    if not lang:
+        raise SystemExit("Missing TARGET_LANG in .env/environment.")
+    return locale, lang
+
+
+def resolve_models(env: Dict[str, str]) -> List[str]:
+    primary = (env.get("ANTHROPIC_MODEL") or os.getenv("ANTHROPIC_MODEL") or "").strip()
+    fallback = (env.get("ANTHROPIC_FALLBACK_MODEL") or os.getenv("ANTHROPIC_FALLBACK_MODEL") or "").strip()
+
+    models: List[str] = []
+    if primary:
+        models.append(primary)
+    if fallback and fallback not in models:
+        models.append(fallback)
+
+    if not models:
+        models = ["claude-sonnet-4-6"]
+    return models
+
+
 def read_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8", errors="replace"))
 
@@ -37,22 +76,6 @@ def read_json(path: Path) -> Any:
 def write_json(path: Path, obj: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(obj, ensure_ascii=False, indent=2), encoding="utf-8")
-
-
-def resolve_site_dir(site_dir_arg: str) -> Path:
-    raw = site_dir_arg or os.getenv("SITE_DIR", "")
-    p = Path(raw) if raw else ROOT / "sites" / "cazilla-clone-be-fr"
-    if not p.is_absolute():
-        p = ROOT / p
-    return p.resolve()
-
-
-def resolve_output_dir(output_dir_arg: str) -> Path:
-    raw = output_dir_arg or os.getenv("SITE_OUTPUT_DIR", "")
-    p = Path(raw) if raw else ROOT / "output"
-    if not p.is_absolute():
-        p = ROOT / p
-    return p.resolve()
 
 
 def remove_head(html: str) -> str:
@@ -107,42 +130,42 @@ def apply_content_to_index_html(html: str, content: Dict[str, Any]) -> str:
         html = replace_first_submatch(
             html,
             r'(?is)(<section\b[^>]*aria-label=["\']Hero["\'][^>]*>.*?<h1>)(.*?)(</h1>)',
-            r"\1" + hero_title + r"\3",
+            r"\g<1>" + hero_title + r"\g<3>",
         )
 
     if hero_sub:
         html = replace_first_submatch(
             html,
             r'(?is)(<section\b[^>]*aria-label=["\']Hero["\'][^>]*>.*?<p class="subtitle">\s*)([\s\S]*?)(\s*</p>)',
-            r"\1\n" + hero_sub + r"\n\3",
+            r"\g<1>\n" + hero_sub + r"\n\g<3>",
         )
 
     if bonus:
         html = replace_first_submatch(
             html,
             r'(?is)(<section\b[^>]*\bid=["\']bonuses["\'][^>]*>[\s\S]*?<p class="subtitle"[^>]*>)([\s\S]*?)(</p>)',
-            r"\1\n" + bonus + r"\n\3",
+            r"\g<1>\n" + bonus + r"\n\g<3>",
         )
 
     if games:
         html = replace_first_submatch(
             html,
             r'(?is)(<section\b[^>]*\bid=["\']games["\'][^>]*>[\s\S]*?<p class="subtitle"[^>]*>)([\s\S]*?)(</p>)',
-            r"\1\n" + games + r"\n\3",
+            r"\g<1>\n" + games + r"\n\g<3>",
         )
 
     if about:
         html = replace_first_submatch(
             html,
             r'(?is)(<section\b[^>]*\bid=["\']about["\'][^>]*>[\s\S]*?<p class="subtitle"[^>]*>)([\s\S]*?)(</p>)',
-            r"\1\n" + about + r"\n\3",
+            r"\g<1>\n" + about + r"\n\g<3>",
         )
 
     if footer:
         html = replace_first_submatch(
             html,
             r'(?is)(<footer\b[^>]*>[\s\S]*?<p\b[^>]*>)([\s\S]*?)(</p>[\s\S]*?</footer>)',
-            r"\1\n" + footer + r"\n\3",
+            r"\g<1>\n" + footer + r"\n\g<3>",
         )
 
     return html
@@ -215,20 +238,25 @@ def offender_keywords_from_qa(qa: Dict[str, Any]) -> List[str]:
     return deduped
 
 
-def build_humanize_subset_prompt(fields: List[str], subset: Dict[str, Any], offender_kws: List[str]) -> str:
+def build_humanize_subset_prompt(fields: List[str], subset: Dict[str, Any], offender_kws: List[str], env: Dict[str, str]) -> str:
     offenders = ", ".join([f'"{k}"' for k in offender_kws]) if offender_kws else "(none)"
+    locale, lang = require_locale_lang(env)
+    must_phrase = os.getenv("A3_MUST_INCLUDE_PHRASE", "").strip()
+    must_phrase_rule = ""
+    if must_phrase:
+        must_phrase_rule = f'- Include this phrase exactly once across the subset: "{must_phrase}".\n'
+
     return f"""
-Tu es un rédacteur SEO francophone (Belgique) et un éditeur anti-détection IA.
+You are an SEO copywriter and anti-AI-detection editor for locale {locale} (language: {lang}).
 
-Réécris UNIQUEMENT les champs fournis (subset) pour qu'ils sonnent naturels (fr-BE), sans répétitions mécaniques.
-Contraintes:
-- garder le sens global et le vocabulaire casino/belgique
-- phrases de longueur variée, ton humain
-- chaque mot-clé listé ci-dessous doit apparaître AU MOINS 1 fois dans l'ensemble des champs réécrits (tout le subset concaténé), sans bourrage
-- intégrer aussi exactement une fois la phrase: "meilleur casino belge en ligne" (si elle n'est pas déjà présente dans le subset, ajoute-la naturellement dans un seul champ)
-- retourner UNIQUEMENT un JSON valide, sans markdown, avec exactement les mêmes clés que le subset
+Rewrite ONLY the provided fields so they sound natural and human, without mechanical repetition.
+Constraints:
+- keep original meaning and casino vocabulary relevant to locale {locale}
+- vary sentence length and rhythm
+- each offender keyword listed below must appear AT LEAST once across the rewritten subset, naturally
+{must_phrase_rule}- return ONLY valid JSON with exactly the same keys as the subset
 
-Mots-clés offenders (présence minimale requise dans le subset):
+Offender keywords (minimum presence required in subset):
 [{offenders}]
 
 Subset JSON:
@@ -236,12 +264,14 @@ Subset JSON:
 """.strip()
 
 
-def run_full_humanize(env: Dict[str, str], *, site_dir: Path, output_dir: Path) -> int:
+def run_full_humanize(env: Dict[str, str]) -> int:
+    locale, lang = require_locale_lang(env)
+    must_phrase = (env.get("A3_MUST_INCLUDE_PHRASE") or "").strip()
     api_key = env.get("ANTHROPIC_API_KEY") or os.getenv("ANTHROPIC_API_KEY")
     if not api_key:
         raise SystemExit("Missing ANTHROPIC_API_KEY in .env or env var.")
 
-    in_path = output_dir / "content.json"
+    in_path = ROOT / "output" / "content.json"
     if not in_path.exists():
         fallback = ROOT / "agents" / "a2-content" / "agents" / "a2-content" / "output" / "content.json"
         if fallback.exists():
@@ -250,7 +280,7 @@ def run_full_humanize(env: Dict[str, str], *, site_dir: Path, output_dir: Path) 
         else:
             raise SystemExit(f"Input content.json not found at {in_path} (and fallback missing).")
 
-    out_path = output_dir / "content_humanized.json"
+    out_path = ROOT / "output" / "content_humanized.json"
     content = read_json(in_path)
     if not isinstance(content, dict):
         raise SystemExit("output/content.json must be a JSON object.")
@@ -260,25 +290,27 @@ def run_full_humanize(env: Dict[str, str], *, site_dir: Path, output_dir: Path) 
     if missing:
         raise SystemExit(f"Missing fields in content.json: {missing}")
 
+    must_phrase_rule = ""
+    if must_phrase:
+        must_phrase_rule = f'- Include this phrase exactly once across rewritten fields: "{must_phrase}".\n'
     prompt = f"""
-Tu es un rédacteur SEO francophone (Belgique) et un éditeur anti-détection IA.
+You are an SEO copywriter and anti-AI-detection editor for locale {locale} (language: {lang}).
 
-Réécris les textes ci-dessous pour qu'ils sonnent VRAIMENT comme écrits par un humain:
-- style naturel, phrases de longueur variée, vocabulaire concret
-- garder le sens, rester en français (fr-BE)
-- pas de répétitions mécaniques, pas de "marketing" trop robotique
-- conserver les mots-clés importants déjà présents, mais intégrer aussi exactement une fois la phrase: "meilleur casino belge en ligne"
-  (important pour notre QA keywords)
-- NE PAS ajouter de nouvelles sections ni de listes longues, juste des paragraphes fluides
+Rewrite these texts so they sound genuinely human:
+- natural style, varied sentence lengths, concrete vocabulary
+- keep meaning and language aligned with locale {locale}
+- avoid mechanical repetition and robotic marketing phrasing
+- preserve relevant keywords already present
+{must_phrase_rule}- do not add new sections; keep fluent paragraph style
 
-Retourne UNIQUEMENT un JSON valide, sans markdown, avec exactement ces clés:
+Return ONLY valid JSON (no markdown) with exactly these keys:
 {fields}
 
-Textes d'entrée (JSON):
+Input texts (JSON):
 {json.dumps({k: content[k] for k in fields}, ensure_ascii=False, indent=2)}
 """.strip()
 
-    models = ["claude-sonnet-4-6", "claude-sonnet-4-20250514"]
+    models = resolve_models(env)
     last_err: Optional[Exception] = None
     for model in models:
         try:
@@ -292,10 +324,9 @@ Textes d'entrée (JSON):
             merged.update({k: obj[k] for k in fields})
             write_json(out_path, {k: merged.get(k, "") for k in ["hero_title", *fields]})
 
-            html_path = site_dir / "index.html"
-            if html_path.exists():
-                html = html_path.read_text(encoding="utf-8", errors="replace")
-                html_path.write_text(apply_content_to_index_html(html, merged), encoding="utf-8")
+            html_path = default_html_path(env)
+            html = html_path.read_text(encoding="utf-8", errors="replace")
+            html_path.write_text(apply_content_to_index_html(html, merged), encoding="utf-8")
 
             print(f"Saved: {out_path}")
             print("\n=== Comparison (original vs humanized, truncated) ===")
@@ -312,15 +343,15 @@ Textes d'entrée (JSON):
     raise SystemExit(str(last_err))
 
 
-def run_recheck(env: Dict[str, str], *, site_dir: Path, output_dir: Path) -> int:
+def run_recheck(env: Dict[str, str]) -> int:
     print("=== A3 Humanizer (recheck) ===")
     api_key = env.get("ANTHROPIC_API_KEY") or os.getenv("ANTHROPIC_API_KEY")
     if not api_key:
         raise SystemExit("Missing ANTHROPIC_API_KEY in .env or env var.")
 
-    content_path = output_dir / "content.json"
-    prev_path = output_dir / "content_humanized.json"
-    qa_path = output_dir / "qa_report.json"
+    content_path = ROOT / "output" / "content.json"
+    prev_path = ROOT / "output" / "content_humanized.json"
+    qa_path = ROOT / "output" / "qa_report.json"
 
     content = read_json(content_path)
     if not isinstance(content, dict):
@@ -346,9 +377,9 @@ def run_recheck(env: Dict[str, str], *, site_dir: Path, output_dir: Path) -> int
         changed_fields = fields[:]  # if no baseline, re-humanize everything except hero_title
 
     subset = {k: content[k] for k in changed_fields}
-    prompt = build_humanize_subset_prompt(changed_fields, subset, offender_kws)
+    prompt = build_humanize_subset_prompt(changed_fields, subset, offender_kws, env)
 
-    models = ["claude-sonnet-4-6", "claude-sonnet-4-20250514"]
+    models = resolve_models(env)
     last_err: Optional[Exception] = None
     obj: Dict[str, Any] = {}
     for model in models:
@@ -369,17 +400,16 @@ def run_recheck(env: Dict[str, str], *, site_dir: Path, output_dir: Path) -> int
 
     merged = dict(content)
     merged.update({k: obj[k] for k in changed_fields})
-    out_path = output_dir / "content_humanized.json"
+    out_path = ROOT / "output" / "content_humanized.json"
     write_json(out_path, {k: merged.get(k, "") for k in ["hero_title", *fields]})
 
-    html_path = site_dir / "index.html"
-    html_before = html_path.read_text(encoding="utf-8", errors="replace") if html_path.exists() else ""
+    html_path = default_html_path(env)
+    html_before = html_path.read_text(encoding="utf-8", errors="replace")
     counts_before = {k: count_kw_in_body(html_before, k) for k in offender_kws}
 
-    if html_path.exists():
-        html_path.write_text(apply_content_to_index_html(html_before, merged), encoding="utf-8")
+    html_path.write_text(apply_content_to_index_html(html_before, merged), encoding="utf-8")
 
-    html_after = html_path.read_text(encoding="utf-8", errors="replace") if html_path.exists() else ""
+    html_after = html_path.read_text(encoding="utf-8", errors="replace")
     counts_after = {k: count_kw_in_body(html_after, k) for k in offender_kws}
 
     for kw in offender_kws:
@@ -401,18 +431,11 @@ def main(argv: List[str]) -> int:
 
     p = argparse.ArgumentParser()
     p.add_argument("--recheck", action="store_true")
-    p.add_argument("--site-dir", default="")
-    p.add_argument("--output-dir", default="")
     args = p.parse_args(argv)
-    site_dir = resolve_site_dir(args.site_dir)
-    output_dir = resolve_output_dir(args.output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
-    os.environ["SITE_DIR"] = str(site_dir)
-    os.environ["SITE_OUTPUT_DIR"] = str(output_dir)
 
     if args.recheck:
-        return run_recheck(env, site_dir=site_dir, output_dir=output_dir)
-    return run_full_humanize(env, site_dir=site_dir, output_dir=output_dir)
+        return run_recheck(env)
+    return run_full_humanize(env)
 
 
 if __name__ == "__main__":

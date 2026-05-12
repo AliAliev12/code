@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://cazilla-review2-en-ie.invalid/sitemap.xml

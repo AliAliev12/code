@@ -65,11 +65,14 @@ class Issue:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description="Static site smoke QA (links/anchors/meta/assets).")
-    ap.add_argument("--site-dir", default=str(ROOT / "sites" / "cazilla-clone-be-fr"))
-    ap.add_argument("--output-dir", default="")
+    ap.add_argument("--site-dir", default="", help="Path to site directory.")
     args = ap.parse_args()
 
-    site_dir = Path(args.site_dir).resolve()
+    site_dir_raw = (args.site_dir or os.getenv("SITE_DIR") or "").strip()
+    if not site_dir_raw:
+        raise SystemExit("Missing site dir: pass --site-dir or set SITE_DIR in environment/.env.")
+
+    site_dir = Path(site_dir_raw).resolve()
     if not site_dir.exists():
         raise SystemExit(f"site dir not found: {site_dir}")
 
@@ -165,8 +168,7 @@ def main() -> int:
         "site_dir": str(site_dir),
     }
 
-    output_dir = Path(args.output_dir).resolve() if args.output_dir else Path(os.getenv("SITE_OUTPUT_DIR", "")).resolve() if os.getenv("SITE_OUTPUT_DIR", "").strip() else ROOT / "output"
-    out_path = output_dir / "qa_smoke.json"
+    out_path = ROOT / "output" / "qa_smoke.json"
     write_json(out_path, report)
     print(f"Smoke QA: {status} (P0={report['counts']['P0']}, P1={report['counts']['P1']}, P2={report['counts']['P2']})")
     print(f"Report saved to: {out_path}")

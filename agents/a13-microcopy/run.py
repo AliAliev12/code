@@ -76,25 +76,26 @@ def call_anthropic(*, api_key: str, prompt: str, model: str, max_tokens: int) ->
     return obj
 
 
-def build_prompt(*, input_text: str, must_include: str, lang: str, tone: str, max_words: int) -> str:
+def build_prompt(*, input_text: str, must_include: str, lang: str, tone: str, max_words: int, locale: str) -> str:
+    lang_name = "English" if str(lang).lower().startswith("en") else "French"
     return f"""
-Tu es un éditeur francophone ({lang}) spécialisé en microcopy pour un site d’avis indépendant (tone: {tone}).
+You are a {lang_name} copy editor ({locale}) specialized in microcopy for an independent review website (tone: {tone}).
 
-Objectif: réécrire le paragraphe d’entrée pour qu’il soit naturel, éditorial, crédible, et non “SEO forcé”.
+Goal: rewrite the opening paragraph so it sounds natural, editorial, and credible (not forced SEO).
 
-Contraintes strictes:
-- Conserver le sens.
-- Ne pas ajouter de promesses (ex: “instantané garanti”), ni d’allégations légales, ni d’autorités.
-- Ne pas écrire à la première personne (pas de “nous”, “je”, “nos tests”, “nous avons testé/mesuré”). Rester neutre/éditorial.
-- Ne pas inventer de chiffres ou de délais chiffrés (pas de “X minutes / 24 heures / 48h”, etc.). Rester général.
-- Éviter les formulations vagues (“conditions internes”); préférer du concret (méthode, délais annoncés, vérifications).
-- Inclure EXACTEMENT UNE fois la phrase suivante (exact-match, même casse/espaces):
+Strict constraints:
+- Keep the original meaning.
+- Do not add promises, legal claims, or authority claims.
+- Do not write in first person (no "we", "I", "our tests"). Keep neutral editorial tone.
+- Do not invent numbers or turnaround times.
+- Prefer concrete wording over vague statements.
+- Include EXACTLY ONCE the following phrase (exact match):
   {json.dumps(must_include, ensure_ascii=False)}
-- Longueur cible: ≤ {max_words} mots.
-- Sortir UNIQUEMENT un JSON valide, sans markdown, de la forme:
+- Target length: <= {max_words} words.
+- Output ONLY valid JSON (no markdown), in this shape:
   {{ "text": "..." }}
 
-Texte d’entrée:
+Input text:
 {json.dumps(input_text, ensure_ascii=False)}
 """.strip()
 
@@ -103,7 +104,8 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="A13 microcopy: rewrite a short paragraph via Anthropic.")
     ap.add_argument("--text", required=True, help="Input paragraph text.")
     ap.add_argument("--must-include", required=True, help="Exact phrase that must appear exactly once.")
-    ap.add_argument("--lang", default="fr-BE")
+    ap.add_argument("--lang", default="en")
+    ap.add_argument("--locale", default="")
     ap.add_argument("--tone", default="editorial, independent review")
     ap.add_argument("--max-words", type=int, default=70)
     ap.add_argument("--model", default="")
@@ -117,12 +119,16 @@ def main() -> int:
 
     model = (args.model or env.get("ANTHROPIC_MODEL") or DEFAULT_MODEL).strip()
 
+    locale = (args.locale or env.get("TARGET_LOCALE") or "en-IE").strip()
+    lang = (args.lang or env.get("TARGET_LANG") or "en").strip()
+
     prompt = build_prompt(
         input_text=args.text,
         must_include=args.must_include,
-        lang=args.lang,
+        lang=lang,
         tone=args.tone,
         max_words=args.max_words,
+        locale=locale,
     )
 
     last_err: Optional[Exception] = None

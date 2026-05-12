@@ -14,12 +14,12 @@ Add to your `.env` at repo root:
 Generate content JSON:
 
 ```bash
-python3 agents/a2-content/agents/a2-content/run.py
+python3 agents/a2-content/run.py
 ```
 
 Fix keyword density offenders using `output/qa_report.json`:
 
 ```bash
-python3 agents/a2-content/agents/a2-content/run.py --fix-density
+python3 agents/a2-content/run.py --fix-density
 ```
 

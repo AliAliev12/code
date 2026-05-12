@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import re
@@ -32,6 +33,13 @@ def load_env(path: Path) -> Dict[str, str]:
         k, v = line.split("=", 1)
         env[k.strip()] = v.strip()
     return env
+
+
+def default_site_dir(env: Dict[str, str]) -> Path:
+    site_dir = (env.get("SITE_DIR") or os.getenv("SITE_DIR") or "").strip()
+    if not site_dir:
+        raise SystemExit("Missing SITE_DIR in .env/environment.")
+    return (ROOT / site_dir).resolve()
 
 
 def strip_tags(html: str) -> str:
@@ -230,18 +238,51 @@ def warn(check_id: str, message: str, **details: Any) -> CheckResult:
     return CheckResult(id=check_id, status="WARN", message=message, details=details)
 
 
+def resolve_path(value: Optional[str], *, base: Path = ROOT) -> Optional[Path]:
+    if not value:
+        return None
+    p = Path(value)
+    if not p.is_absolute():
+        p = (base / p).resolve()
+    return p
+
+
 def main() -> int:
+    ap = argparse.ArgumentParser(description="SEO QA checks for generated static site.")
+    ap.add_argument("--site-dir", help="Site directory that contains index.html and optional _output/keywords.json")
+    ap.add_argument("--html-path", help="Override target HTML path (default: <site-dir>/index.html)")
+    ap.add_argument("--keywords-path", help="Override keywords.json path")
+    ap.add_argument("--report-path", help="Override qa_report.json output path")
+    args = ap.parse_args()
+
     env = {**load_env(ENV_PATH), **os.environ}
     if env.get("A6_DISABLE_KEYWORD_DENSITY_AUTOFIX", "").strip() in ("1", "true", "TRUE", "yes", "YES"):
         env["A6_KEYWORD_DENSITY_AUTOFIX_DONE"] = "1"
-    site_html_path = ROOT / "sites" / "cazilla-clone-be-fr" / "index.html"
-    keywords_path = ROOT / "output" / "keywords.json"
+
+    default_site_dir_path = default_site_dir(env)
+    cli_site_dir = resolve_path(args.site_dir)
+    site_dir = cli_site_dir or default_site_dir_path
+    site_html_path = site_dir / "index.html"
+    keywords_path = site_dir / "_output" / "keywords.json"
     report_path = ROOT / "output" / "qa_report.json"
 
-    # Allow overriding via env (but keep defaults)
-    site_html_path = Path(env.get("QA_HTML_PATH", str(site_html_path)))
-    keywords_path = Path(env.get("QA_KEYWORDS_PATH", str(keywords_path)))
-    report_path = Path(env.get("QA_REPORT_PATH", str(report_path)))
+    # Priority: CLI args > env overrides > defaults.
+    cli_html_path = resolve_path(args.html_path)
+    cli_keywords_path = resolve_path(args.keywords_path)
+    cli_report_path = resolve_path(args.report_path)
+    env_html_path = resolve_path(env.get("QA_HTML_PATH"))
+    env_keywords_path = resolve_path(env.get("QA_KEYWORDS_PATH"))
+    env_report_path = resolve_path(env.get("QA_REPORT_PATH"))
+
+    site_html_path = cli_html_path or env_html_path or site_html_path
+    keywords_path = cli_keywords_path or env_keywords_path or keywords_path
+    report_path = cli_report_path or env_report_path or report_path
+
+    if not site_html_path.exists():
+        raise SystemExit(
+            f"HTML path not found: {site_html_path}. "
+            "Set SITE_DIR in .env/environment, pass --site-dir, or pass --html-path."
+        )
 
     html = read_text(site_html_path)
     body_fragment = extract_body_html(remove_head(html))
@@ -278,7 +319,9 @@ def main() -> int:
     else:
         results.append(fail("seo.canonical", "canonical тег отсутствует"))
 
-    hreflang_primary = str(env.get("QA_HREFLANG_PRIMARY", "fr-BE")).strip() or "fr-BE"
+    hreflang_primary = str(env.get("QA_HREFLANG_PRIMARY") or env.get("TARGET_LOCALE") or os.getenv("QA_HREFLANG_PRIMARY") or os.getenv("TARGET_LOCALE") or "").strip()
+    if not hreflang_primary:
+        raise SystemExit("Missing hreflang setting: set QA_HREFLANG_PRIMARY or TARGET_LOCALE in .env/environment.")
     hreflang_primary_id = re.sub(r"[^a-z0-9]+", "-", hreflang_primary.lower()).strip("-")
     results.append(
         ok(f"seo.hreflang.{hreflang_primary_id}", f"hreflang {hreflang_primary} присутствует")
@@ -395,10 +438,13 @@ def main() -> int:
             results.append(ok("keyword_density.ok", "Плотность ключей в норме", total_words=kd_report.get("total_words", 0)))
 
     # Primary CTA links should point to cazilla.casino (site policy)
-    main_casino_url = env.get("MAIN_CASINO_URL", "https://cazilla.casino").rstrip("/")
-    cta_links = extract_links_with_text(html, r"(Accéder au site officiel|Voir l’offre|Jouer)")
+    main_casino_url = (env.get("MAIN_CASINO_URL") or os.getenv("MAIN_CASINO_URL") or "").strip().rstrip("/")
+    if not main_casino_url:
+        raise SystemExit("Missing MAIN_CASINO_URL in .env/environment.")
+    cta_regex = str(env.get("QA_CTA_REGEX", r"(Official site|Open Cazilla|Play at Cazilla|Accéder au site officiel|Voir l’offre|Jouer)")).strip()
+    cta_links = extract_links_with_text(html, cta_regex)
     if not cta_links:
-        results.append(fail("content.links.cta", "Не найдены CTA-ссылки (Accéder/Voir l’offre/Jouer)"))
+        results.append(fail("content.links.cta", f"Не найдены CTA-ссылки по regex: {cta_regex}"))
     else:
         bad = [(t, h) for (t, h) in cta_links if not (h or "").startswith(main_casino_url)]
         if bad:
@@ -467,7 +513,7 @@ def main() -> int:
     kd_status = (kd_report or {}).get("status")
     autofix_done = os.environ.get("A6_KEYWORD_DENSITY_AUTOFIX_DONE") == "1"
     if kd_status == "FAIL" and (not autofix_done):
-        a2 = ROOT / "agents" / "a2-content" / "agents" / "a2-content" / "run.py"
+        a2 = ROOT / "agents" / "a2-content" / "run.py"
         if a2.exists():
             print("\n=== AUTOFIX: keyword_density FAIL → launching A2 --fix-density ===")
             env_run = os.environ.copy()

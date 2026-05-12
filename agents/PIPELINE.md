@@ -1,13 +1,13 @@
 ## Agent-Based SEO Site Factory (pipeline spec)
 
-This repo contains a static site (`sites/cazilla-clone-be-fr/`) and a set of agents to generate, QA, and iteratively fix the output.
+This repo contains static sites under `sites/` and a set of agents to generate, QA, and iteratively fix the output.
 
 ### Core idea
 `generate → QA → fix → QA → decision → publish`
 
 ### Artifacts (source of truth)
-- **Keywords**: `agents/a1-keywords/agents/a1-keywords/output/keywords.csv` and `.../keywords.json`
-- **Site output**: `sites/cazilla-clone-be-fr/**/index.html` + `assets/*` + `robots.txt` + `sitemap.xml`
+- **Keywords**: if `SITE_DIR` is set in `.env` (for example `sites/cazilla-review-en-ie`), A1 writes `<SITE_DIR>/_output/keywords.json` (and `.csv`); otherwise `agents/a1-keywords/agents/a1-keywords/output/keywords.*`. A2 reads `<SITE_DIR>/_output/keywords.json` first when `SITE_DIR` is set.
+- **Site output**: `<SITE_DIR>/**/index.html` + `assets/*` + `robots.txt` + `sitemap.xml`
 - **QA outputs** (written to `output/`):
   - `qa_smoke.json` — link/anchor/meta/asset smoke checks (P0/P1/P2)
   - `qa_report.json` — SEO + keyword density checks (existing agent `a6-design-qa`)
@@ -28,7 +28,7 @@ Applied before each QA run:
 ### How to run the full loop
 
 ```bash
-python3 agents/orchestrator.py --site-dir sites/cazilla-clone-be-fr --max-iterations 3
+python3 agents/orchestrator.py --site-dir sites/cazilla-review-en-ie --max-iterations 3
 ```
 
 This will:
