@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import html
 import argparse
 import json
 import os
@@ -16,9 +17,54 @@ import requests
 
 ROOT = Path(__file__).resolve().parents[2]
 ENV_PATH = ROOT / ".env"
+SITE_FACTORY_SPEC = ROOT / "agents" / "prompts" / "cazilla-site-factory-ru.md"
+
+_AGENTS_DIR = ROOT / "agents"
+if str(_AGENTS_DIR) not in sys.path:
+    sys.path.insert(0, str(_AGENTS_DIR))
+
+from _lib.keywords_bundle import (  # noqa: E402
+    KeywordsBundle,
+    PageKeywordTarget,
+    parse_keywords_file,
+    pick_target,
+    resolve_site_html,
+)
 
 DEFAULT_MODEL = "claude-sonnet-4-20250514"
 FALLBACK_MODEL = "claude-sonnet-4-6"
+
+CONTENT_FORMAT_V1 = 1
+CONTENT_FORMAT_V2 = 2
+
+HOME_CONTENT_KEYS = [
+    "hero_title",
+    "hero_subtitle",
+    "about_section",
+    "bonus_section",
+    "games_section",
+    "footer_seo_text",
+]
+
+# Offerwall home: Cazilla #1 + four fictional brands; images assigned in code (see apply_content_to_offerwall_html).
+FICTIONAL_OPERATORS_KEY = "fictional_operators"
+OFFERWALL_TOP5_IMAGES = [
+    "assets/pictures/casino-feature-visual.png",
+    "assets/pictures/slots-showcase.png",
+    "assets/pictures/live-tables.jpg",
+    "assets/pictures/blackjack-green-table.jpg",
+    "assets/pictures/baccarat-live-table.webp",
+]
+OFFERWALL_GALLERY_IMAGES = [
+    "assets/pictures/crazy-time-bonus.jpg",
+    "assets/pictures/money-train-4-thumbnail.png",
+    "assets/pictures/baccarat-bonus-terms.webp",
+    "assets/pictures/rocket-crash-game.png",
+    "assets/pictures/big-bass-bonanza-review.avif",
+    "assets/pictures/fruit-classic-slot.png",
+    "assets/pictures/bonus-promo-artwork.webp",
+    "assets/pictures/og-logo.svg",
+]
 
 
 def load_env(path: Path) -> Dict[str, str]:
@@ -70,30 +116,26 @@ def _candidate_keywords_paths() -> List[Path]:
     return candidates
 
 
+def resolve_keywords_json_path(env: Dict[str, str]) -> Path:
+    for p in _candidate_keywords_paths():
+        if p.exists():
+            return p
+    raise FileNotFoundError("keywords.json not found. Looked in:\n- " + "\n- ".join(str(p) for p in _candidate_keywords_paths()))
+
+
+def load_bundle_and_target(env: Dict[str, str], page_id: Optional[str]) -> Tuple[KeywordsBundle, PageKeywordTarget, List[Dict[str, Any]]]:
+    path = resolve_keywords_json_path(env)
+    bundle = parse_keywords_file(path)
+    pid = (page_id or env.get("PAGE_ID") or os.getenv("PAGE_ID") or "").strip() or None
+    target = pick_target(bundle, pid)
+    return bundle, target, target.rows
+
+
 def load_keywords() -> List[Dict[str, Any]]:
-    path = next((p for p in _candidate_keywords_paths() if p.exists()), None)
-    if not path:
-        raise FileNotFoundError("keywords.json not found. Looked in:\n- " + "\n- ".join(str(p) for p in _candidate_keywords_paths()))
-
-    data = json.loads(path.read_text(encoding="utf-8", errors="replace"))
-    if not isinstance(data, list):
-        raise ValueError("keywords.json must be a JSON array")
-
-    out: List[Dict[str, Any]] = []
-    for x in data:
-        if not isinstance(x, dict) or "keyword" not in x:
-            continue
-        out.append(
-            {
-                "keyword": str(x.get("keyword", "")).strip(),
-                "search_volume": int(x.get("search_volume") or 0),
-                "keyword_difficulty": float(x.get("keyword_difficulty") or 0),
-                "cpc": float(x.get("cpc") or 0),
-            }
-        )
-    out = [k for k in out if k["keyword"]]
-    out.sort(key=lambda k: (k["search_volume"], k["keyword_difficulty"]), reverse=True)
-    return out
+    """Legacy helper: keyword rows for default target (backward compat)."""
+    env = {**load_env(ENV_PATH), **os.environ}
+    _, _, rows = load_bundle_and_target(env, page_id=None)
+    return rows
 
 
 def pick_keywords(kws: List[Dict[str, Any]]) -> Tuple[str, List[str], List[str]]:
@@ -121,6 +163,36 @@ def anthropic_api_key(env: Dict[str, str]) -> str:
 
 def model_name(env: Dict[str, str]) -> str:
     return env.get("ANTHROPIC_MODEL") or os.getenv("ANTHROPIC_MODEL") or DEFAULT_MODEL
+
+
+def site_factory_spec_enabled(env: Dict[str, str], *, cli_flag: bool) -> bool:
+    if cli_flag:
+        return True
+    v = (env.get("A2_WITH_SITE_FACTORY_SPEC") or os.getenv("A2_WITH_SITE_FACTORY_SPEC") or "").strip().lower()
+    return v in ("1", "true", "yes", "on")
+
+
+def site_factory_spec_block(*, enabled: bool) -> str:
+    if not enabled:
+        return ""
+    if not SITE_FACTORY_SPEC.exists():
+        return (
+            "\n\n(NOTE: Site factory spec file not found at "
+            + str(SITE_FACTORY_SPEC)
+            + "; continue without it.)\n"
+        )
+    body = SITE_FACTORY_SPEC.read_text(encoding="utf-8", errors="replace").strip()
+    if not body:
+        return ""
+    return (
+        "\n\n=== SITE FACTORY SPEC (full project rules; Russian) ===\n"
+        + body
+        + "\n=== END SITE FACTORY SPEC ===\n"
+        "\nThe spec above applies to full multi-page HTML sites. For THIS API call you must still "
+        "return ONLY the JSON object in the exact schema below (no markdown, no prose outside JSON). "
+        "Within each string field: follow natural keyword use, locale tone, and constraints from the spec "
+        "where they fit these fields; do not invent legal claims.\n"
+    )
 
 
 def extract_json_object(text: str) -> Optional[Dict[str, Any]]:
@@ -185,15 +257,79 @@ def call_anthropic(
     return obj
 
 
-def build_prompt(main_kw: str, about_kws: List[str], footer_kws: List[str], kws: List[Dict[str, Any]], *, locale: str, lang: str) -> str:
+def build_prompt(
+    main_kw: str,
+    about_kws: List[str],
+    footer_kws: List[str],
+    kws: List[Dict[str, Any]],
+    *,
+    locale: str,
+    lang: str,
+    reserve_phrases: List[str],
+    include_site_factory_spec: bool = False,
+    home_offerwall_aggregator: bool = False,
+) -> str:
     top = kws[:20]
     kw_lines = "\n".join(
         [f'- "{k["keyword"]}" (vol {k["search_volume"]}, KD {k["keyword_difficulty"]}, CPC {k["cpc"]})' for k in top]
     )
-
+    spec = site_factory_spec_block(enabled=include_site_factory_spec)
+    reserve_block = ""
+    if reserve_phrases:
+        reserve_block = (
+            "\nReserve / supplemental phrases (site-wide list; use only where they fit the section intent).\n"
+            "Do NOT place any reserve phrase in: hero_title, hero_subtitle, or any string that reads like a document title.\n"
+            "Prefer weaving reserves into about_section / bonus_section / games_section / footer_seo_text only.\n"
+            "Reserve list (exact wording when used):\n"
+            + json.dumps(reserve_phrases[:40], ensure_ascii=False)
+            + "\n"
+        )
+    role = (
+        f"You are an SEO copywriter for locale {locale} (language: {lang}). Write original, natural copy for a Cazilla review-style casino site."
+    )
+    if home_offerwall_aggregator:
+        role = (
+            f"You are an SEO copywriter for locale {locale} (language: {lang}). "
+            "This HOME page is an independent editorial aggregator that compares online casino options for Irish readers. "
+            "Cazilla is always the featured #1 partner (do not demote it). "
+            "You must invent exactly FOUR clearly fictional casino brand names for ranks #2–#5 (not real trademarks, not impersonations); "
+            "short neutral summaries only—no fake licences, no 'official regulator' claims for those placeholders."
+        )
+    agg_block = ""
+    json_tail = """Exact output format (JSON):
+{{
+  "hero_title": "...",
+  "hero_subtitle": "...",
+  "about_section": "...",
+  "bonus_section": "...",
+  "games_section": "...",
+  "footer_seo_text": "..."
+}}"""
+    if home_offerwall_aggregator:
+        agg_block = (
+            "\nAdditionally output fictional_operators: an array of EXACTLY four objects for ranks #2–#5 (in rank order), each with:\n"
+            '- "brand_name": short invented brand (clearly fictional, two–four words).\n'
+            '- "tagline": one line, <= 90 chars.\n'
+            '- "summary_sentence": one sentence, <= 220 chars; neutral editorial tone; no legal claims.\n'
+        )
+        json_tail = """Exact output format (JSON):
+{{
+  "hero_title": "...",
+  "hero_subtitle": "...",
+  "about_section": "...",
+  "bonus_section": "...",
+  "games_section": "...",
+  "footer_seo_text": "...",
+  "fictional_operators": [
+    {{"brand_name": "...", "tagline": "...", "summary_sentence": "..."}},
+    {{"brand_name": "...", "tagline": "...", "summary_sentence": "..."}},
+    {{"brand_name": "...", "tagline": "...", "summary_sentence": "..."}},
+    {{"brand_name": "...", "tagline": "...", "summary_sentence": "..."}}
+  ]
+}}"""
     return f"""
-You are an SEO copywriter for locale {locale} (language: {lang}). Write original, natural copy for a Cazilla review-style casino site.
-
+{role}
+{spec}
 Strict constraints:
 - Return ONLY a valid JSON object (no markdown, no extra text).
 - No misleading promises, no unverifiable legal/regulator claims.
@@ -206,7 +342,8 @@ Strict constraints:
   - bonus_section: 100-150 words.
   - games_section: 100-150 words.
   - footer_seo_text: 100-150 words, include as many remaining keywords as natural.
-
+{reserve_block}
+{agg_block}
 Main keyword (H1): "{main_kw}"
 
 Keywords for about_section (5-7):
@@ -218,15 +355,7 @@ Keywords for footer_seo_text (remaining):
 Keyword context (top 20 with metrics):
 {kw_lines}
 
-Exact output format (JSON):
-{{
-  "hero_title": "...",
-  "hero_subtitle": "...",
-  "about_section": "...",
-  "bonus_section": "...",
-  "games_section": "...",
-  "footer_seo_text": "..."
-}}
+{json_tail}
 """.strip()
 
 
@@ -277,6 +406,191 @@ def count_kw_in_body(html: str, kw: str) -> int:
 
 def replace_first_submatch(html: str, pattern: str, repl: str, flags: int = re.I | re.S) -> str:
     return re.sub(pattern, repl, html, count=1, flags=flags)
+
+
+def is_offerwall_html(html: str) -> bool:
+    """CasinoRank IE static offerwall shell (sites/cazilla-offerwall*-en-ie)."""
+    return bool(re.search(r'(?is)class="ow-hero"', html)) and bool(re.search(r'(?is)class="ow-prose"', html))
+
+
+def site_dir_is_offerwall_aggregator(site_dir: Path) -> bool:
+    s = str(site_dir).lower()
+    if "offerwall" not in s:
+        return False
+    return (site_dir / "assets" / "pictures").is_dir()
+
+
+def asset_href_for_html_page(page_rel: str, asset_site_rel: str) -> str:
+    pr = str(page_rel or "").replace("\\", "/").lstrip("/")
+    pdir = os.path.dirname(pr) or "."
+    ar = str(asset_site_rel).replace("\\", "/").lstrip("/")
+    return os.path.relpath(ar, pdir).replace("\\", "/")
+
+
+def normalize_fictional_operators(raw: Any) -> List[Dict[str, str]]:
+    out: List[Dict[str, str]] = []
+    if isinstance(raw, list):
+        for it in raw:
+            if not isinstance(it, dict):
+                continue
+            name = str(it.get("brand_name") or "").strip()
+            tag = str(it.get("tagline") or "").strip()
+            summ = str(it.get("summary_sentence") or "").strip()
+            if not name or not summ:
+                continue
+            out.append({"brand_name": name, "tagline": tag, "summary_sentence": summ})
+    idx = 1
+    while len(out) < 4:
+        out.append(
+            {
+                "brand_name": f"Sample operator {idx}",
+                "tagline": "Editorial placeholder",
+                "summary_sentence": "Fictional row for layout comparison only; not a licensed brand offer.",
+            }
+        )
+        idx += 1
+    return out[:4]
+
+
+def build_offerwall_aggregator_sections_html(
+    *,
+    page_rel: str,
+    env: Dict[str, str],
+    fictional: List[Dict[str, str]],
+) -> str:
+    cta = _main_casino_cta_fragment(env) or ""
+    cards_html: List[str] = []
+    # #1 Cazilla
+    img0 = html.escape(asset_href_for_html_page(page_rel, OFFERWALL_TOP5_IMAGES[0]))
+    cards_html.append(
+        '<article class="ow-topCard ow-topCard--featured">'
+        '<div class="ow-topCardRank" aria-hidden="true">#1</div>'
+        f'<div class="ow-topCardMedia"><img src="{img0}" alt="" width="480" height="300" loading="eager" decoding="async" /></div>'
+        "<h3>Cazilla</h3>"
+        '<p class="ow-topCardTag">Featured partner · Ireland-facing lobby</p>'
+        "<p>Primary pick on this page: transparent promos, live tables, and cashier flows we can screenshot for readers.</p>"
+        f'<p class="ow-topCardCta">{cta}</p>'
+        "</article>"
+    )
+    for i in range(4):
+        img = html.escape(asset_href_for_html_page(page_rel, OFFERWALL_TOP5_IMAGES[i + 1]))
+        row = fictional[i]
+        name = html.escape(row["brand_name"])
+        tag = html.escape(row["tagline"]) if row.get("tagline") else ""
+        summ = html.escape(row["summary_sentence"])
+        tagline_html = f'<p class="ow-topCardTag">{tag}</p>' if tag else ""
+        cards_html.append(
+            f'<article class="ow-topCard">'
+            f'<div class="ow-topCardRank" aria-hidden="true">#{i + 2}</div>'
+            f'<div class="ow-topCardMedia"><img src="{img}" alt="" width="480" height="300" loading="lazy" decoding="async" /></div>'
+            f"<h3>{name}</h3>"
+            f"{tagline_html}"
+            f"<p>{summ}</p>"
+            "</article>"
+        )
+
+    gallery_items: List[str] = []
+    for rel in OFFERWALL_GALLERY_IMAGES:
+        href = html.escape(asset_href_for_html_page(page_rel, rel))
+        base = rel.rsplit("/", 1)[-1]
+        cap = html.escape(base.replace("-", " ").rsplit(".", 1)[0].title())
+        gallery_items.append(
+            f'<figure class="ow-galleryCell"><img src="{href}" alt="" width="360" height="220" loading="lazy" decoding="async" /><figcaption>{cap}</figcaption></figure>'
+        )
+
+    return (
+        '<p class="ow-aggDisclaimer">Editorial shortlist for Ireland. <strong>#1 Cazilla</strong> is the featured outbound partner. '
+        "Ranks #2–#5 are fictional placeholder brands used only to compare layout and copy patterns—they are not real licensed offers on this domain.</p>\n"
+        '<div class="ow-topGrid">\n' + "\n".join(cards_html) + "\n</div>\n"
+        '<h2 class="ow-galleryTitle">Lobby &amp; games reference art</h2>\n'
+        '<div class="ow-galleryGrid">\n' + "\n".join(gallery_items) + "\n</div>\n"
+    )
+
+
+def _main_casino_cta_fragment(env: Dict[str, str]) -> str:
+    url = (env.get("MAIN_CASINO_URL") or os.getenv("MAIN_CASINO_URL") or "").strip().rstrip("/")
+    if not url:
+        return ""
+    esc = html.escape(url, quote=True)
+    return f'<a href="{esc}" rel="noopener noreferrer" target="_blank">Open Cazilla</a>'
+
+
+def apply_content_to_offerwall_html(html_doc: str, content: Dict[str, Any], env: Dict[str, str]) -> str:
+    """
+    Map A2 HOME_CONTENT_KEYS into offerwall layout: ow-hero, ow-prose, footer-legal.
+    Preserves shell outside <article class="ow-prose">. Optional #ow-aggregator-top5 from fictional_operators.
+    """
+    hero_title = str(content.get("hero_title", "")).strip()
+    hero_sub = str(content.get("hero_subtitle", "")).strip()
+    bonus = str(content.get("bonus_section", "")).strip()
+    games = str(content.get("games_section", "")).strip()
+    about = str(content.get("about_section", "")).strip()
+    footer = str(content.get("footer_seo_text", "")).strip()
+    page_rel = str(content.get("site_rel_path") or "index.html").strip().lstrip("/")
+
+    if FICTIONAL_OPERATORS_KEY in content:
+        fict = normalize_fictional_operators(content.get(FICTIONAL_OPERATORS_KEY))
+        inner = build_offerwall_aggregator_sections_html(page_rel=page_rel, env=env, fictional=fict)
+        m_agg = re.search(r'(?is)<section\b[^>]*\bid=["\']ow-aggregator-top5["\'][^>]*>[\s\S]*?</section>', html_doc)
+        block = (
+            f'<section id="ow-aggregator-top5" class="ow-aggregatorTop5" aria-label="Top five picks">\n{inner}</section>'
+        )
+        if m_agg:
+            html_doc = html_doc[: m_agg.start()] + block + html_doc[m_agg.end() :]
+        else:
+            html_doc = replace_first_submatch(
+                html_doc,
+                r'(?is)(<article\s+class="ow-prose"\s*>)',
+                block + "\n" + r"\1",
+            )
+
+    if hero_title:
+        html_doc = replace_first_submatch(
+            html_doc,
+            r'(?is)(<section\b[^>]*class="ow-hero"[^>]*>\s*<h1>)(.*?)(</h1>)',
+            r"\g<1>" + html.escape(hero_title) + r"\g<3>",
+        )
+
+    if hero_sub:
+        inner = html.escape(hero_sub)
+        cta = _main_casino_cta_fragment(env)
+        if cta and "Open Cazilla" not in hero_sub:
+            inner = inner + " " + cta
+        html_doc = replace_first_submatch(
+            html_doc,
+            r'(?is)(<section\b[^>]*class="ow-hero"[^>]*>[\s\S]*?<p class="ow-lead">\s*)([\s\S]*?)(\s*</p>)',
+            r"\g<1>" + inner + r"\g<3>",
+        )
+
+    if about or bonus or games:
+        parts: List[str] = []
+        if about:
+            parts.append(f"<h2>Overview</h2>\n<p>{about}</p>")
+        if bonus:
+            parts.append(f"<h2>Bonuses &amp; payments</h2>\n<p>{bonus}</p>")
+        if games:
+            parts.append(f"<h2>Games &amp; lobby</h2>\n<p>{games}</p>")
+        parts.append(
+            '<h2>Operator link</h2>\n'
+            "<p>When you are ready to verify offers live, continue on the official site: "
+            + (_main_casino_cta_fragment(env) or "")
+            + "</p>"
+        )
+        article_body = "\n".join(parts) + "\n"
+        html_doc = replace_first_submatch(
+            html_doc,
+            r'(?is)(<article\s+class="ow-prose"\s*>)([\s\S]*?)(</article>)',
+            r"\g<1>\n" + article_body + r"\g<3>",
+        )
+
+    if footer:
+        html_doc = replace_first_submatch(
+            html_doc,
+            r'(?is)(<section\s+id="footer-legal"\s*>\s*<p>\s*)([\s\S]*?)(\s*</p>\s*</section>)',
+            r"\g<1>" + footer + r"\g<3>",
+        )
+
+    return html_doc
 
 
 def apply_content_to_index_html(html: str, content: Dict[str, Any]) -> str:
@@ -335,7 +649,15 @@ def apply_content_to_index_html(html: str, content: Dict[str, Any]) -> str:
     return html
 
 
-def build_density_fix_prompt(*, full_html: str, offenders: List[Dict[str, Any]], current_content: Dict[str, Any], locale: str, lang: str) -> str:
+def build_density_fix_prompt(
+    *,
+    full_html: str,
+    offenders: List[Dict[str, Any]],
+    current_content: Dict[str, Any],
+    locale: str,
+    lang: str,
+    include_site_factory_spec: bool = False,
+) -> str:
     off_lines = []
     for o in offenders:
         if not isinstance(o, dict):
@@ -345,10 +667,11 @@ def build_density_fix_prompt(*, full_html: str, offenders: List[Dict[str, Any]],
             continue
         off_lines.append(f'- "{kw}"')
     off_block = "\n".join(off_lines) if off_lines else "- (none)"
+    spec = site_factory_spec_block(enabled=include_site_factory_spec)
 
     return f"""
 You are an SEO copywriter for locale {locale} (language: {lang}).
-
+{spec}
 Goal:
 - Reduce repetition for keywords listed below in section texts.
 - For EACH listed keyword: appear at MOST 3 times in all visible body text (excluding <head> and JSON-LD).
@@ -377,33 +700,158 @@ Return ONLY valid JSON with exactly these keys:
 """.strip()
 
 
-def run_generate(env: Dict[str, str]) -> None:
+def run_generate(env: Dict[str, str], *, include_site_factory_spec: bool, page_id: Optional[str]) -> None:
     print("=== A2 Content Agent ===")
-    kws = load_keywords()
-    main_kw, about_kws, footer_kws = pick_keywords(kws)
-    print("Main keyword:", main_kw)
-    print("About keywords:", len(about_kws))
-    print("Footer keywords:", len(footer_kws))
+    if include_site_factory_spec:
+        print("Site factory spec:", SITE_FACTORY_SPEC)
+
+    bundle, target, kws = load_bundle_and_target(env, page_id)
+    site_dir_s = default_site_dir(env)
+    site_dir = ROOT / site_dir_s
+    out_path = ROOT / "output" / "content.json"
+    filter_pid = (page_id or env.get("PAGE_ID") or os.getenv("PAGE_ID") or "").strip() or None
 
     api_key = anthropic_api_key(env)
     if not api_key:
         raise SystemExit("Missing ANTHROPIC_API_KEY in .env or environment.")
-
     locale, lang = require_locale_lang(env)
-    prompt = build_prompt(main_kw, about_kws, footer_kws, kws, locale=locale, lang=lang)
+    reserve_phrases = [r["keyword"] for r in bundle.reserve_rows]
+
+    if bundle.version < 2:
+        main_kw, about_kws, footer_kws = pick_keywords(kws)
+        print("Keywords file:", bundle.source_path)
+        print("Target page_id:", target.page_id, "path:", target.rel_path)
+        print("Main keyword:", main_kw)
+        print("About keywords:", len(about_kws))
+        print("Footer keywords:", len(footer_kws))
+        print("Reserve phrases:", len(bundle.reserve_rows))
+        prompt = build_prompt(
+            main_kw,
+            about_kws,
+            footer_kws,
+            kws,
+            locale=locale,
+            lang=lang,
+            reserve_phrases=reserve_phrases,
+            include_site_factory_spec=include_site_factory_spec,
+        )
+        max_tokens = 4096 if include_site_factory_spec else 1800
+        last_err: Optional[Exception] = None
+        for attempt in range(1, 4):
+            try:
+                content = call_anthropic(api_key=api_key, prompt=prompt, max_tokens=max_tokens, env=env)
+                missing = [k for k in HOME_CONTENT_KEYS if k not in content or not str(content.get(k, "")).strip()]
+                if missing:
+                    raise RuntimeError("Missing fields in response: " + ", ".join(missing))
+                html_path = resolve_site_html(site_dir, target.rel_path)
+                out_payload: Dict[str, Any] = {
+                    "content_format_version": CONTENT_FORMAT_V1,
+                    "keywords_bundle_version": bundle.version,
+                    "target_page_id": target.page_id,
+                    "target_html_path": str(html_path.relative_to(ROOT)),
+                }
+                for k in HOME_CONTENT_KEYS:
+                    out_payload[k] = content[k]
+                write_json(out_path, out_payload)
+                print("Saved:", out_path)
+                return
+            except Exception as e:
+                last_err = e
+                time.sleep(1.5 * attempt)
+                print(f"Attempt {attempt} failed: {e}")
+        raise SystemExit(f"Failed after retries: {last_err}")
+
+    # v2 bundle: per-target generation, content.json pages map
+    pages_out: Dict[str, Any] = {}
+    if out_path.exists():
+        try:
+            ex = read_json(out_path)
+            if isinstance(ex, dict) and int(ex.get("content_format_version") or 0) == CONTENT_FORMAT_V2:
+                po = ex.get("pages")
+                if isinstance(po, dict):
+                    pages_out = {k: dict(v) for k, v in po.items() if isinstance(v, dict)}
+        except Exception:
+            pass
+
+    targets_run = list(bundle.targets)
+    if filter_pid:
+        targets_run = [t for t in bundle.targets if t.page_id == filter_pid]
+        if not targets_run:
+            raise SystemExit(f"PAGE_ID / --page-id={filter_pid!r} not found in keywords bundle targets.")
+
+    print("Keywords file:", bundle.source_path, "(bundle v2)")
+    print("Targets to generate:", ", ".join(f"{t.page_id}({t.rel_path})" for t in targets_run))
+    print("Reserve phrases:", len(bundle.reserve_rows))
 
     last_err: Optional[Exception] = None
     for attempt in range(1, 4):
         try:
-            content = call_anthropic(api_key=api_key, prompt=prompt, max_tokens=1800, env=env)
-            required = ["hero_title", "hero_subtitle", "about_section", "bonus_section", "games_section", "footer_seo_text"]
-            missing = [k for k in required if k not in content or not str(content.get(k, "")).strip()]
-            if missing:
-                raise RuntimeError("Missing fields in response: " + ", ".join(missing))
+            for t in targets_run:
+                print("--- Generating page_id:", t.page_id, "---")
+                rows = t.rows
+                main_kw, about_kws, footer_kws = pick_keywords(rows)
+                print("  Main keyword:", main_kw)
+                hp_probe = resolve_site_html(site_dir, t.rel_path)
+                agg_home = (
+                    t.page_id == "home"
+                    and site_dir_is_offerwall_aggregator(site_dir)
+                    and hp_probe.exists()
+                    and is_offerwall_html(hp_probe.read_text(encoding="utf-8", errors="replace"))
+                )
+                prompt = build_prompt(
+                    main_kw,
+                    about_kws,
+                    footer_kws,
+                    rows,
+                    locale=locale,
+                    lang=lang,
+                    reserve_phrases=reserve_phrases,
+                    include_site_factory_spec=include_site_factory_spec,
+                    home_offerwall_aggregator=agg_home,
+                )
+                if include_site_factory_spec and agg_home:
+                    max_tokens = 6000
+                elif include_site_factory_spec:
+                    max_tokens = 4096
+                elif agg_home:
+                    max_tokens = 2400
+                else:
+                    max_tokens = 1800
+                content = call_anthropic(api_key=api_key, prompt=prompt, max_tokens=max_tokens, env=env)
+                missing = [k for k in HOME_CONTENT_KEYS if k not in content or not str(content.get(k, "")).strip()]
+                if missing:
+                    raise RuntimeError(f"page {t.page_id}: missing fields: " + ", ".join(missing))
+                hp = resolve_site_html(site_dir, t.rel_path)
+                page_obj: Dict[str, Any] = {k: content[k] for k in HOME_CONTENT_KEYS}
+                page_obj["target_html_path"] = str(hp.relative_to(ROOT))
+                page_obj["page_kind"] = "landing"
+                page_obj["site_rel_path"] = str(t.rel_path or "").strip().lstrip("/")
+                if agg_home:
+                    page_obj[FICTIONAL_OPERATORS_KEY] = normalize_fictional_operators(
+                        content.get(FICTIONAL_OPERATORS_KEY)
+                    )
+                pages_out[t.page_id] = page_obj
 
-            out_path = ROOT / "output" / "content.json"
-            write_json(out_path, content)
+            out_payload = {
+                "content_format_version": CONTENT_FORMAT_V2,
+                "keywords_bundle_version": bundle.version,
+                "pages": pages_out,
+            }
+            write_json(out_path, out_payload)
             print("Saved:", out_path)
+
+            for t in targets_run:
+                pdata = pages_out.get(t.page_id)
+                if not isinstance(pdata, dict):
+                    continue
+                hp = resolve_site_html(site_dir, t.rel_path)
+                html_in = hp.read_text(encoding="utf-8", errors="replace")
+                if is_offerwall_html(html_in):
+                    html_out = apply_content_to_offerwall_html(html_in, pdata, env)
+                else:
+                    html_out = apply_content_to_index_html(html_in, pdata)
+                hp.write_text(html_out, encoding="utf-8")
+                print("Updated:", hp)
             return
         except Exception as e:
             last_err = e
@@ -412,8 +860,10 @@ def run_generate(env: Dict[str, str]) -> None:
     raise SystemExit(f"Failed after retries: {last_err}")
 
 
-def run_fix_density(env: Dict[str, str]) -> None:
+def run_fix_density(env: Dict[str, str], *, include_site_factory_spec: bool) -> None:
     print("=== A2 Content Agent (fix-density) ===")
+    if include_site_factory_spec:
+        print("Site factory spec:", SITE_FACTORY_SPEC)
     api_key = anthropic_api_key(env)
     if not api_key:
         raise SystemExit("Missing ANTHROPIC_API_KEY in .env or environment.")
@@ -431,15 +881,6 @@ def run_fix_density(env: Dict[str, str]) -> None:
         print("No offenders in qa_report.keyword_density — nothing to do.")
         return
 
-    qa_html_path = str((qa.get("meta") or {}).get("html_path") or "").strip()
-    html_path = Path(qa_html_path) if qa_html_path else default_html_path(env)
-    if not html_path.exists():
-        raise SystemExit(
-            f"HTML path not found: {html_path}. "
-            "Set SITE_DIR in .env/environment or provide qa_report.meta.html_path."
-        )
-    full_html = html_path.read_text(encoding="utf-8", errors="replace")
-
     content_path = ROOT / "output" / "content.json"
     if not content_path.exists():
         fallback = Path(__file__).resolve().parent / "output" / "content.json"
@@ -452,21 +893,74 @@ def run_fix_density(env: Dict[str, str]) -> None:
     if not isinstance(current, dict):
         raise SystemExit("content.json must be an object")
 
-    locale, lang = require_locale_lang(env)
-    prompt = build_density_fix_prompt(full_html=full_html, offenders=offenders, current_content=current, locale=locale, lang=lang)
-    fixed = call_anthropic(api_key=api_key, prompt=prompt, max_tokens=2200, env=env)
+    ver = int(current.get("content_format_version") or CONTENT_FORMAT_V1)
+    home_block: Dict[str, Any]
+    if ver >= CONTENT_FORMAT_V2:
+        pages = current.get("pages")
+        if not isinstance(pages, dict):
+            raise SystemExit("v2 content.json must have a pages object.")
+        hb = pages.get("home")
+        if not isinstance(hb, dict):
+            raise SystemExit("fix-density for v2 requires pages.home (landing) in content.json.")
+        home_block = hb
+        current_content = {k: str(home_block.get(k, "")) for k in HOME_CONTENT_KEYS}
+    else:
+        home_block = current
+        current_content = {k: str(current.get(k, "")) for k in HOME_CONTENT_KEYS}
 
-    required = ["hero_title", "hero_subtitle", "about_section", "bonus_section", "games_section", "footer_seo_text"]
+    qa_html_path = str((qa.get("meta") or {}).get("html_path") or "").strip()
+    html_path: Optional[Path] = Path(qa_html_path) if qa_html_path else None
+    if html_path is None or not html_path.exists():
+        th = str(home_block.get("target_html_path") or current.get("target_html_path") or "").strip()
+        if th:
+            html_path = (ROOT / th).resolve()
+    if html_path is None or not html_path.exists():
+        html_path = default_html_path(env)
+    if not html_path.exists():
+        raise SystemExit(
+            f"HTML path not found: {html_path}. "
+            "Set SITE_DIR in .env/environment or provide qa_report.meta.html_path."
+        )
+    full_html = html_path.read_text(encoding="utf-8", errors="replace")
+
+    locale, lang = require_locale_lang(env)
+    prompt = build_density_fix_prompt(
+        full_html=full_html,
+        offenders=offenders,
+        current_content=current_content,
+        locale=locale,
+        lang=lang,
+        include_site_factory_spec=include_site_factory_spec,
+    )
+    max_tokens = 4500 if include_site_factory_spec else 2200
+    fixed = call_anthropic(api_key=api_key, prompt=prompt, max_tokens=max_tokens, env=env)
+
+    required = HOME_CONTENT_KEYS
     missing = [k for k in required if k not in fixed or not str(fixed.get(k, "")).strip()]
     if missing:
         raise SystemExit("Missing fields in fix-density response: " + ", ".join(missing))
 
     merged = dict(current)
-    merged.update({k: fixed[k] for k in required})
+    if ver >= CONTENT_FORMAT_V2:
+        pages = dict(current.get("pages") or {})
+        home = dict(pages.get("home") or {})
+        for k in required:
+            home[k] = fixed[k]
+        pages["home"] = home
+        merged["pages"] = pages
+    else:
+        merged.update({k: fixed[k] for k in required})
+    for mk in ("content_format_version", "keywords_bundle_version", "target_page_id", "target_html_path"):
+        if mk in current:
+            merged[mk] = current[mk]
     write_json(content_path, merged)
     print("Updated:", content_path)
 
-    new_html = apply_content_to_index_html(full_html, merged)
+    if ver >= CONTENT_FORMAT_V2:
+        apply_src = dict((merged.get("pages") or {}).get("home") or {})
+    else:
+        apply_src = merged
+    new_html = apply_content_to_index_html(full_html, apply_src)
     html_path.write_text(new_html, encoding="utf-8")
     print("Updated:", html_path)
 
@@ -485,13 +979,26 @@ def main(argv: List[str]) -> int:
 
     p = argparse.ArgumentParser()
     p.add_argument("--fix-density", action="store_true")
+    p.add_argument(
+        "--with-site-factory-spec",
+        action="store_true",
+        help=f"Append {SITE_FACTORY_SPEC.relative_to(ROOT)} to the model prompt (or set A2_WITH_SITE_FACTORY_SPEC=1).",
+    )
+    p.add_argument(
+        "--page-id",
+        default="",
+        help="keywords.json v2 page id (or set PAGE_ID). Defaults to first content page.",
+    )
     args = p.parse_args(argv)
 
+    use_factory = site_factory_spec_enabled(env, cli_flag=bool(args.with_site_factory_spec))
+    page_id_arg = (args.page_id or "").strip() or None
+
     if args.fix_density:
-        run_fix_density(env)
+        run_fix_density(env, include_site_factory_spec=use_factory)
         return 0
 
-    run_generate(env)
+    run_generate(env, include_site_factory_spec=use_factory, page_id=page_id_arg)
     return 0
 
 

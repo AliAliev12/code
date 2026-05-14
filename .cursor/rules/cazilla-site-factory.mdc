@@ -1,0 +1,11 @@
+---
+description: Полное ТЗ Cazilla (ключи, возраст/cookies, мета, объёмы, sitemap/robots)
+globs: sites/**/*
+alwaysApply: false
+---
+
+При создании или правке статических сайтов в `sites/` следуй спецификации:
+
+`agents/prompts/cazilla-site-factory-ru.md` (**title** / **description** — с заглавной буквы, без `<strong>` в мета; **ключи** в видимом контенте — `<strong>` в `<main>` и т.д.; футер и **`technical_pages`** — по разделу «Футер и технические страницы»; остальные SEO/комплаенс-правила из документа).
+
+Там — структурированные правила и дословный исходный промпт. Для вызова Anthropic A2 с тем же текстом в запросе: `python3 agents/a2-content/run.py --with-site-factory-spec` (или `A2_WITH_SITE_FACTORY_SPEC=1` в `.env`).

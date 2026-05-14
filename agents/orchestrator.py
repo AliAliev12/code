@@ -15,6 +15,12 @@ from typing import Any, Dict, List, Optional, Tuple
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT_DIR = ROOT / "output"
 
+_AGENTS_DIR = ROOT / "agents"
+if str(_AGENTS_DIR) not in sys.path:
+    sys.path.insert(0, str(_AGENTS_DIR))
+
+from _lib.repo_env import apply_repo_dotenv  # noqa: E402
+
 
 def read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8", errors="replace")
@@ -92,28 +98,39 @@ def load_json_if_exists(path: Path) -> Dict[str, Any]:
 
 
 def qa_has_p0_fail(qa_report: Dict[str, Any]) -> bool:
-    # a6-design-qa format: { "status": "PASS|FAIL", "checks": [...] }
+    # a6-design-qa format: { "status": "PASS|FAIL", "results": [...], optional "pages": [...] }
     status = str(qa_report.get("status", "")).upper()
     if status == "FAIL":
         return True
-    checks = qa_report.get("checks")
+    checks = qa_report.get("checks") or qa_report.get("results")
     if isinstance(checks, list):
         return any(str(c.get("status", "")).upper() == "FAIL" for c in checks if isinstance(c, dict))
+    for p in qa_report.get("pages") or []:
+        if not isinstance(p, dict):
+            continue
+        for c in p.get("results") or []:
+            if isinstance(c, dict) and str(c.get("status", "")).upper() == "FAIL":
+                return True
     return False
 
 
-def default_site_dir() -> str:
-    site_dir = (os.getenv("SITE_DIR") or "").strip()
-    return site_dir or "sites/default-site"
-
-
 def main() -> int:
+    apply_repo_dotenv(ROOT)
+
     ap = argparse.ArgumentParser(description="SEO site factory orchestrator (QA → fix → QA).")
-    ap.add_argument("--site-dir", default=default_site_dir(), help="Site directory (static output).")
+    ap.add_argument(
+        "--site-dir",
+        default="",
+        help="Site directory relative to repo root (default: SITE_DIR from repo .env).",
+    )
     ap.add_argument("--max-iterations", type=int, default=3)
     args = ap.parse_args()
 
-    site_dir = (ROOT / args.site_dir).resolve()
+    rel = (args.site_dir or os.getenv("SITE_DIR") or "").strip()
+    if not rel:
+        raise SystemExit("Missing site directory: pass --site-dir PATH or set SITE_DIR in repo root .env")
+
+    site_dir = (ROOT / rel).resolve()
     if not site_dir.exists():
         raise SystemExit(f"Site dir not found: {site_dir}")
 

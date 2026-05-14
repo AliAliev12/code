@@ -2,6 +2,9 @@
 from __future__ import annotations
 
 import argparse
+import copy
+import html as html_module
+import importlib.util
 import json
 import os
 import re
@@ -15,6 +18,16 @@ import requests
 
 ROOT = Path(__file__).resolve().parents[4]
 ENV_PATH = ROOT / ".env"
+
+_AGENTS_DIR = ROOT / "agents"
+if str(_AGENTS_DIR) not in sys.path:
+    sys.path.insert(0, str(_AGENTS_DIR))
+
+from _lib.keywords_bundle import parse_keywords_file, pick_target, resolve_site_html  # noqa: E402
+
+CONTENT_FORMAT_V2 = 2
+
+HUMANIZE_FIELDS = ["hero_subtitle", "about_section", "bonus_section", "games_section", "footer_seo_text"]
 
 
 def load_env(path: Path) -> Dict[str, str]:
@@ -42,6 +55,114 @@ def default_html_path(env: Dict[str, str]) -> Path:
     if not html_path.exists():
         raise SystemExit(f"HTML path not found: {html_path}")
     return html_path
+
+
+def resolve_a3_html_path(env: Dict[str, str]) -> Path:
+    explicit = (env.get("QA_HTML_PATH") or os.getenv("QA_HTML_PATH") or "").strip()
+    if explicit:
+        p = Path(explicit)
+        if not p.is_absolute():
+            p = (ROOT / p).resolve()
+        if p.exists():
+            return p
+    content_path = ROOT / "output" / "content.json"
+    if content_path.exists():
+        try:
+            c = json.loads(content_path.read_text(encoding="utf-8", errors="replace"))
+        except Exception:
+            c = {}
+        if isinstance(c, dict):
+            th = str(c.get("target_html_path") or "").strip()
+            if th:
+                hp = (ROOT / th).resolve()
+                if hp.exists():
+                    return hp
+            if int(c.get("content_format_version") or 1) >= CONTENT_FORMAT_V2:
+                pages = c.get("pages")
+                if isinstance(pages, dict):
+                    home = pages.get("home")
+                    if isinstance(home, dict):
+                        th2 = str(home.get("target_html_path") or "").strip()
+                        if th2:
+                            hp = (ROOT / th2).resolve()
+                            if hp.exists():
+                                return hp
+            pid = str(c.get("target_page_id") or "").strip()
+            if pid:
+                try:
+                    kpath = ROOT / default_site_dir(env) / "_output" / "keywords.json"
+                    if kpath.exists():
+                        b = parse_keywords_file(kpath)
+                        t = pick_target(b, pid)
+                        hp = resolve_site_html(ROOT / default_site_dir(env), t.rel_path)
+                        if hp.exists():
+                            return hp
+                except SystemExit:
+                    raise
+                except Exception:
+                    pass
+    return default_html_path(env)
+
+
+def content_format_version(content: Dict[str, Any]) -> int:
+    return int(content.get("content_format_version") or 1)
+
+
+def landing_page_block(content: Dict[str, Any], page_id: str) -> Dict[str, Any]:
+    if content_format_version(content) >= CONTENT_FORMAT_V2:
+        pages = content.get("pages")
+        if not isinstance(pages, dict):
+            raise SystemExit("v2 content.json requires a pages object.")
+        blk = pages.get(page_id)
+        if not isinstance(blk, dict):
+            raise SystemExit(f"v2 content.json missing pages.{page_id}.")
+        return blk
+    return content
+
+
+def landing_home_block(content: Dict[str, Any]) -> Dict[str, Any]:
+    if content_format_version(content) >= CONTENT_FORMAT_V2:
+        return landing_page_block(content, "home")
+    return content
+
+
+def assert_landing_fields(content: Dict[str, Any], field_names: List[str], *, page_id: Optional[str] = None) -> None:
+    pid = (page_id or "home").strip() or "home"
+    blk = landing_page_block(content, pid) if content_format_version(content) >= CONTENT_FORMAT_V2 else content
+    missing = [f for f in field_names if f not in blk or not str(blk.get(f, "")).strip()]
+    if missing:
+        loc = f"pages.{pid}" if content_format_version(content) >= CONTENT_FORMAT_V2 else "content.json"
+        raise SystemExit(f"Missing fields in {loc}: {missing}")
+
+
+def merge_landing_field_updates(
+    content: Dict[str, Any], updates: Dict[str, str], *, page_id: Optional[str] = None
+) -> Dict[str, Any]:
+    merged = copy.deepcopy(content)
+    pid = (page_id or "home").strip() or "home"
+    if content_format_version(merged) >= CONTENT_FORMAT_V2:
+        pages = dict(merged.get("pages") or {})
+        blk = dict(pages.get(pid) or {})
+        for k, v in updates.items():
+            blk[k] = v
+        pages[pid] = blk
+        merged["pages"] = pages
+    else:
+        merged.update(updates)
+    return merged
+
+
+def humanized_snapshot(merged: Dict[str, Any]) -> Any:
+    if content_format_version(merged) >= CONTENT_FORMAT_V2:
+        pages_out: Dict[str, Any] = {}
+        for pid, pdata in (merged.get("pages") or {}).items():
+            if not isinstance(pdata, dict):
+                continue
+            if pdata.get("page_kind") == "landing":
+                pages_out[pid] = {k: str(pdata.get(k, "")) for k in ["hero_title", *HUMANIZE_FIELDS]}
+        return {"content_format_version": 2, "pages": pages_out}
+    home = landing_home_block(merged)
+    return {k: str(home.get(k, "")) for k in ["hero_title", *HUMANIZE_FIELDS]}
 
 
 def require_locale_lang(env: Dict[str, str]) -> Tuple[str, str]:
@@ -171,6 +292,148 @@ def apply_content_to_index_html(html: str, content: Dict[str, Any]) -> str:
     return html
 
 
+_a2_mod: Any = None
+
+
+def _load_a2_module() -> Any:
+    global _a2_mod
+    if _a2_mod is None:
+        p = ROOT / "agents" / "a2-content" / "run.py"
+        spec = importlib.util.spec_from_file_location("a2_content_run", p)
+        if spec is None or spec.loader is None:
+            raise RuntimeError(f"Cannot load A2 module from {p}")
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        _a2_mod = mod
+    return _a2_mod
+
+
+def _main_casino_cta_html(env: Dict[str, str]) -> str:
+    url = (env.get("MAIN_CASINO_URL") or os.getenv("MAIN_CASINO_URL") or "").strip().rstrip("/")
+    if not url:
+        return ""
+    esc = html_module.escape(url, quote=True)
+    return f' <a href="{esc}" rel="noopener noreferrer" target="_blank">Open Cazilla</a>'
+
+
+def _is_agg_home(html: str) -> bool:
+    return bool(re.search(r'(?i)class="agg-heroLead"', html))
+
+
+def _is_agg_inner(html: str) -> bool:
+    return bool(re.search(r'(?i)class="agg-pageHero"', html))
+
+
+def _apply_agg_article_three_ps(html: str, about: str, bonus: str, games: str) -> str:
+    texts = [about, bonus, games]
+    m = re.search(r'(?is)(<article\s+class="agg-article">\s*)([\s\S]*?)(\s*</article>)', html)
+    if not m:
+        return html
+    pre, inner, post = m.group(1), m.group(2), m.group(3)
+    pat = re.compile(r"(?is)(<h2[^>]*>.*?</h2>\s*<p[^>]*>)([\s\S]*?)(</p>)")
+    pos = 0
+    out_chunks: List[str] = []
+    im = 0
+    for mm in pat.finditer(inner):
+        out_chunks.append(inner[pos : mm.start()])
+        if im < len(texts):
+            g1, g3 = mm.group(1), mm.group(3)
+            if str(texts[im] or "").strip():
+                out_chunks.append(g1 + html_module.escape(str(texts[im]).strip()) + g3)
+            else:
+                out_chunks.append(mm.group(0))
+            im += 1
+        else:
+            out_chunks.append(mm.group(0))
+        pos = mm.end()
+    out_chunks.append(inner[pos:])
+    new_inner = "".join(out_chunks)
+    return html[: m.start()] + pre + new_inner + post + html[m.end() :]
+
+
+def apply_landing_content_to_html(html: str, content_block: Dict[str, Any], env: Dict[str, str]) -> str:
+    """Apply landing HOME_CONTENT_KEYS-style block to HTML (legacy template or aggregator)."""
+    hero_title = str(content_block.get("hero_title", "")).strip()
+    hero_sub = str(content_block.get("hero_subtitle", "")).strip()
+    bonus = str(content_block.get("bonus_section", "")).strip()
+    games = str(content_block.get("games_section", "")).strip()
+    about = str(content_block.get("about_section", "")).strip()
+    footer = str(content_block.get("footer_seo_text", "")).strip()
+
+    if _is_agg_inner(html):
+        if hero_title:
+            html = replace_first_submatch(
+                html,
+                r'(?is)(<header class="agg-pageHero"[^>]*>\s*<h1>)(.*?)(</h1>)',
+                r"\g<1>" + html_module.escape(hero_title) + r"\g<3>",
+            )
+        if hero_sub:
+            cta = _main_casino_cta_html(env)
+            inner = html_module.escape(hero_sub)
+            if cta and "Open Cazilla" not in hero_sub:
+                inner = inner + cta
+            html = replace_first_submatch(
+                html,
+                r'(?is)(<p class="agg-pageLead">\s*)([\s\S]*?)(\s*</p>)',
+                r"\g<1>" + inner + r"\g<3>",
+            )
+        html = _apply_agg_article_three_ps(html, about, bonus, games)
+        if footer:
+            html = replace_first_submatch(
+                html,
+                r'(?is)(<section[^>]*\bid=["\']footer-legal["\'][^>]*>[\s\S]*?<p class="agg-footerSeo"[^>]*>\s*)([\s\S]*?)(\s*</p>)',
+                r"\g<1>\n" + html_module.escape(footer) + r"\n\g<3>",
+            )
+        return html
+
+    if _is_agg_home(html):
+        if hero_title:
+            html = replace_first_submatch(
+                html,
+                r'(?is)(<section\b[^>]*aria-label=["\']Hero["\'][^>]*>.*?<h1>)(.*?)(</h1>)',
+                r"\g<1>" + html_module.escape(hero_title) + r"\g<3>",
+            )
+        if hero_sub:
+            html = replace_first_submatch(
+                html,
+                r'(?is)(<p class="agg-heroLead">\s*)([\s\S]*?)(\s*</p>)',
+                r"\g<1>" + html_module.escape(hero_sub) + r"\g<3>",
+            )
+        if about:
+            html = replace_first_submatch(
+                html,
+                r'(?is)(<section\b[^>]*\bid=["\']listings["\'][^>]*>[\s\S]*?<p class="agg-listIntro"[^>]*>\s*)([\s\S]*?)(\s*</p>)',
+                r"\g<1>\n" + html_module.escape(about) + r"\n\g<3>",
+            )
+        if bonus:
+            html = replace_first_submatch(
+                html,
+                r'(?is)(<section\b[^>]*\bid=["\']bonuses["\'][^>]*>[\s\S]*?<p class="agg-prose"[^>]*>\s*)([\s\S]*?)(\s*</p>)',
+                r"\g<1>\n" + html_module.escape(bonus) + r"\n\g<3>",
+            )
+        if games:
+            html = replace_first_submatch(
+                html,
+                r'(?is)(<p\b[^>]*\bid=["\']seo-keywords["\'][^>]*>\s*)([\s\S]*?)(\s*</p>)',
+                r"\g<1>\n" + html_module.escape(games) + r"\n\g<3>",
+            )
+        if footer:
+            html = replace_first_submatch(
+                html,
+                r'(?is)(<section[^>]*\bid=["\']footer-legal["\'][^>]*>[\s\S]*?<p class="agg-footerSeo"[^>]*>\s*)([\s\S]*?)(\s*</p>)',
+                r"\g<1>\n" + html_module.escape(footer) + r"\n\g<3>",
+            )
+        return html
+
+    if re.search(r'(?is)class="ow-hero"', html) and re.search(r'(?is)class="ow-prose"', html):
+        a2 = _load_a2_module()
+        fn = getattr(a2, "apply_content_to_offerwall_html", None)
+        if callable(fn):
+            return fn(html, content_block, env)
+
+    return apply_content_to_index_html(html, content_block)
+
+
 def call_anthropic(api_key: str, prompt: str, model: str, max_tokens: int = 1600) -> Dict[str, Any]:
     url = "https://api.anthropic.com/v1/messages"
     headers = {
@@ -238,6 +501,31 @@ def offender_keywords_from_qa(qa: Dict[str, Any]) -> List[str]:
     return deduped
 
 
+def offender_keywords_for_page(qa: Dict[str, Any], page_id: str) -> List[str]:
+    for p in qa.get("pages") or []:
+        if not isinstance(p, dict):
+            continue
+        if str(p.get("page_id", "")).strip() != page_id:
+            continue
+        kd = p.get("keyword_density") or {}
+        if not isinstance(kd, dict):
+            return []
+        out: List[str] = []
+        for o in kd.get("offenders", []) or []:
+            if isinstance(o, dict) and o.get("keyword"):
+                out.append(str(o["keyword"]).strip())
+        seen = set()
+        deduped: List[str] = []
+        for k in out:
+            kl = k.lower()
+            if not k or kl in seen:
+                continue
+            seen.add(kl)
+            deduped.append(k)
+        return deduped
+    return []
+
+
 def build_humanize_subset_prompt(fields: List[str], subset: Dict[str, Any], offender_kws: List[str], env: Dict[str, str]) -> str:
     offenders = ", ".join([f'"{k}"' for k in offender_kws]) if offender_kws else "(none)"
     locale, lang = require_locale_lang(env)
@@ -265,6 +553,7 @@ Subset JSON:
 
 
 def run_full_humanize(env: Dict[str, str]) -> int:
+    print("=== A3 Content Humanizer ===")
     locale, lang = require_locale_lang(env)
     must_phrase = (env.get("A3_MUST_INCLUDE_PHRASE") or "").strip()
     api_key = env.get("ANTHROPIC_API_KEY") or os.getenv("ANTHROPIC_API_KEY")
@@ -285,15 +574,15 @@ def run_full_humanize(env: Dict[str, str]) -> int:
     if not isinstance(content, dict):
         raise SystemExit("output/content.json must be a JSON object.")
 
-    fields = ["hero_subtitle", "about_section", "bonus_section", "games_section", "footer_seo_text"]
-    missing = [f for f in fields if f not in content]
-    if missing:
-        raise SystemExit(f"Missing fields in content.json: {missing}")
-
+    fields = HUMANIZE_FIELDS
     must_phrase_rule = ""
     if must_phrase:
         must_phrase_rule = f'- Include this phrase exactly once across rewritten fields: "{must_phrase}".\n'
-    prompt = f"""
+
+    if content_format_version(content) < CONTENT_FORMAT_V2:
+        assert_landing_fields(content, ["hero_title", *fields])
+        home = landing_home_block(content)
+        prompt = f"""
 You are an SEO copywriter and anti-AI-detection editor for locale {locale} (language: {lang}).
 
 Rewrite these texts so they sound genuinely human:
@@ -307,38 +596,119 @@ Return ONLY valid JSON (no markdown) with exactly these keys:
 {fields}
 
 Input texts (JSON):
-{json.dumps({k: content[k] for k in fields}, ensure_ascii=False, indent=2)}
+{json.dumps({k: home[k] for k in fields}, ensure_ascii=False, indent=2)}
 """.strip()
+        models = resolve_models(env)
+        last_err: Optional[Exception] = None
+        for model in models:
+            try:
+                res = call_anthropic(api_key=api_key, prompt=prompt, model=model, max_tokens=1800)
+                obj = extract_json_from_text(res["text"])
+                for k in fields:
+                    if not isinstance(obj.get(k), str) or not obj[k].strip():
+                        raise ValueError(f"Field {k} missing/empty in model output.")
+                merged = merge_landing_field_updates(content, {k: obj[k] for k in fields})
+                write_json(in_path, merged)
+                write_json(out_path, humanized_snapshot(merged))
+                html_path = resolve_a3_html_path(env)
+                html = html_path.read_text(encoding="utf-8", errors="replace")
+                html_path.write_text(apply_landing_content_to_html(html, landing_home_block(merged), env), encoding="utf-8")
+                print(f"Saved: {out_path}")
+                print("\n=== Comparison (original vs humanized, truncated) ===")
+                for k in fields:
+                    b, a = summarize_diff(str(home[k]), str(obj[k]))
+                    print(f"\n[{k}]")
+                    print("ORIG:", b)
+                    print("NEW :", a)
+                return 0
+            except Exception as e:
+                last_err = e
+                time.sleep(0.4)
+        raise SystemExit(str(last_err))
 
     models = resolve_models(env)
     last_err: Optional[Exception] = None
-    for model in models:
+    for attempt in range(1, 4):
         try:
-            res = call_anthropic(api_key=api_key, prompt=prompt, model=model, max_tokens=1800)
-            obj = extract_json_from_text(res["text"])
-            for k in fields:
-                if not isinstance(obj.get(k), str) or not obj[k].strip():
-                    raise ValueError(f"Field {k} missing/empty in model output.")
+            merged = copy.deepcopy(content)
+            pages_in = dict(merged.get("pages") or {})
 
-            merged = dict(content)
-            merged.update({k: obj[k] for k in fields})
-            write_json(out_path, {k: merged.get(k, "") for k in ["hero_title", *fields]})
+            def _page_order(pid: str) -> Tuple[int, str]:
+                return (0, pid) if pid == "home" else (1, pid)
 
-            html_path = default_html_path(env)
-            html = html_path.read_text(encoding="utf-8", errors="replace")
-            html_path.write_text(apply_content_to_index_html(html, merged), encoding="utf-8")
+            for page_id in sorted(pages_in.keys(), key=_page_order):
+                pdata = pages_in[page_id]
+                if not isinstance(pdata, dict):
+                    continue
+                pk = str(pdata.get("page_kind") or "")
+                if pk == "landing":
+                    assert_landing_fields(merged, ["hero_title", *fields], page_id=page_id)
+                    blk = landing_page_block(merged, page_id)
+                    prompt = f"""
+You are an SEO copywriter and anti-AI-detection editor for locale {locale} (language: {lang}).
+
+Page id: {page_id}
+Rewrite these texts so they sound genuinely human:
+- natural style, varied sentence lengths, concrete vocabulary
+- keep meaning and language aligned with locale {locale}
+- avoid mechanical repetition and robotic marketing phrasing
+- preserve relevant keywords already present
+{must_phrase_rule}- do not add new sections; keep fluent paragraph style
+
+Return ONLY valid JSON (no markdown) with exactly these keys:
+{fields}
+
+Input texts (JSON):
+{json.dumps({k: blk[k] for k in fields}, ensure_ascii=False, indent=2)}
+""".strip()
+                    obj: Optional[Dict[str, Any]] = None
+                    for model in models:
+                        try:
+                            res = call_anthropic(api_key=api_key, prompt=prompt, model=model, max_tokens=2400)
+                            obj = extract_json_from_text(res["text"])
+                            break
+                        except Exception as e:
+                            last_err = e
+                            time.sleep(0.35)
+                    if not obj:
+                        raise RuntimeError(str(last_err or "model failed"))
+                    for k in fields:
+                        if not isinstance(obj.get(k), str) or not obj[k].strip():
+                            raise ValueError(f"{page_id}: field {k} missing/empty in model output.")
+                    merged = merge_landing_field_updates(merged, {k: obj[k] for k in fields}, page_id=page_id)
+                    print(f"--- Humanized landing: {page_id} ---")
+                    for k in fields:
+                        b, a = summarize_diff(str(blk[k]), str(obj[k]))
+                        print(f"[{page_id}.{k}] ORIG:", b, "\nNEW :", a)
+
+            write_json(in_path, merged)
+            write_json(out_path, humanized_snapshot(merged))
+
+            for page_id, pdata in (merged.get("pages") or {}).items():
+                if not isinstance(pdata, dict):
+                    continue
+                th = str(pdata.get("target_html_path") or "").strip()
+                if not th:
+                    continue
+                hp = (ROOT / th).resolve()
+                if not hp.exists():
+                    print(f"WARN: skip missing HTML for {page_id}: {th}")
+                    continue
+                doc = hp.read_text(encoding="utf-8", errors="replace")
+                pk = str(pdata.get("page_kind") or "")
+                if pk == "landing":
+                    doc2 = apply_landing_content_to_html(doc, pdata, env)
+                else:
+                    doc2 = doc
+                hp.write_text(doc2, encoding="utf-8")
+                print(f"Updated HTML: {hp.relative_to(ROOT)}")
 
             print(f"Saved: {out_path}")
-            print("\n=== Comparison (original vs humanized, truncated) ===")
-            for k in fields:
-                b, a = summarize_diff(str(content[k]), str(obj[k]))
-                print(f"\n[{k}]")
-                print("ORIG:", b)
-                print("NEW :", a)
             return 0
         except Exception as e:
             last_err = e
-            time.sleep(0.4)
+            print(f"Attempt {attempt} failed: {e}")
+            time.sleep(0.5 * attempt)
 
     raise SystemExit(str(last_err))
 
@@ -365,61 +735,136 @@ def run_recheck(env: Dict[str, str]) -> int:
     if not isinstance(qa, dict):
         qa = {}
 
-    offender_kws = offender_keywords_from_qa(qa)
+    fields = HUMANIZE_FIELDS
 
-    fields = ["hero_subtitle", "about_section", "bonus_section", "games_section", "footer_seo_text"]
-    missing = [f for f in fields if f not in content]
-    if missing:
-        raise SystemExit(f"Missing fields in content.json: {missing}")
+    if content_format_version(content) < CONTENT_FORMAT_V2:
+        offender_kws = offender_keywords_from_qa(qa)
+        assert_landing_fields(content, ["hero_title", *fields])
+        home = landing_home_block(content)
+        changed_fields = [f for f in fields if str(home.get(f, "")).strip() != str(prev.get(f, "")).strip()]
+        if not changed_fields:
+            changed_fields = fields[:]
+        subset = {k: home[k] for k in changed_fields}
+        prompt = build_humanize_subset_prompt(changed_fields, subset, offender_kws, env)
+        models = resolve_models(env)
+        last_err: Optional[Exception] = None
+        obj: Dict[str, Any] = {}
+        for model in models:
+            try:
+                res = call_anthropic(api_key=api_key, prompt=prompt, model=model, max_tokens=2000)
+                obj = extract_json_from_text(res["text"])
+                for k in changed_fields:
+                    if not isinstance(obj.get(k), str) or not obj[k].strip():
+                        raise ValueError(f"Field {k} missing/empty in model output.")
+                break
+            except Exception as e:
+                last_err = e
+                time.sleep(0.4)
+                obj = {}
+        if not obj:
+            raise SystemExit(str(last_err))
+        merged = merge_landing_field_updates(content, {k: obj[k] for k in changed_fields})
+        write_json(content_path, merged)
+        out_path = ROOT / "output" / "content_humanized.json"
+        write_json(out_path, humanized_snapshot(merged))
+        html_path = resolve_a3_html_path(env)
+        html_before = html_path.read_text(encoding="utf-8", errors="replace")
+        counts_before = {k: count_kw_in_body(html_before, k) for k in offender_kws}
+        html_path.write_text(apply_landing_content_to_html(html_before, landing_home_block(merged), env), encoding="utf-8")
+        html_after = html_path.read_text(encoding="utf-8", errors="replace")
+        counts_after = {k: count_kw_in_body(html_after, k) for k in offender_kws}
+        for kw in offender_kws:
+            if counts_after.get(kw, 0) < 1:
+                raise SystemExit(f"Recheck validation failed: offender keyword missing after humanize: {kw}")
+        for kw in offender_kws:
+            b = int(counts_before.get(kw, 0))
+            a = int(counts_after.get(kw, 0))
+            print(f"✅ Density fixed: {kw}: было {b} раз → стало {a} раз")
+        return 0
 
-    changed_fields = [f for f in fields if str(content.get(f, "")).strip() != str(prev.get(f, "")).strip()]
-    if not changed_fields:
-        changed_fields = fields[:]  # if no baseline, re-humanize everything except hero_title
+    prev_pages: Dict[str, Any] = {}
+    if isinstance(prev.get("pages"), dict):
+        prev_pages = prev["pages"]
+    elif prev and any(k in prev for k in fields):
+        prev_pages["home"] = prev
 
-    subset = {k: content[k] for k in changed_fields}
-    prompt = build_humanize_subset_prompt(changed_fields, subset, offender_kws, env)
-
+    merged = copy.deepcopy(content)
     models = resolve_models(env)
     last_err: Optional[Exception] = None
-    obj: Dict[str, Any] = {}
-    for model in models:
-        try:
-            res = call_anthropic(api_key=api_key, prompt=prompt, model=model, max_tokens=2000)
-            obj = extract_json_from_text(res["text"])
-            for k in changed_fields:
-                if not isinstance(obj.get(k), str) or not obj[k].strip():
-                    raise ValueError(f"Field {k} missing/empty in model output.")
-            break
-        except Exception as e:
-            last_err = e
-            time.sleep(0.4)
-            obj = {}
 
-    if not obj:
-        raise SystemExit(str(last_err))
+    for page_id, pdata in list((merged.get("pages") or {}).items()):
+        if not isinstance(pdata, dict):
+            continue
+        pk = str(pdata.get("page_kind") or "")
+        if pk != "landing":
+            continue
+        assert_landing_fields(merged, ["hero_title", *fields], page_id=page_id)
+        blk = landing_page_block(merged, page_id)
+        prev_blk = prev_pages.get(page_id) if isinstance(prev_pages.get(page_id), dict) else {}
+        changed_fields = [f for f in fields if str(blk.get(f, "")).strip() != str(prev_blk.get(f, "")).strip()]
+        if not changed_fields:
+            changed_fields = fields[:]
+        subset = {k: blk[k] for k in changed_fields}
+        off = offender_keywords_for_page(qa, page_id)
+        if not off and page_id == str(qa.get("meta", {}).get("primary_page_id") or ""):
+            off = offender_keywords_from_qa(qa)
+        prompt = build_humanize_subset_prompt(changed_fields, subset, off, env)
+        obj: Dict[str, Any] = {}
+        for model in models:
+            try:
+                res = call_anthropic(api_key=api_key, prompt=prompt, model=model, max_tokens=2400)
+                obj = extract_json_from_text(res["text"])
+                for k in changed_fields:
+                    if not isinstance(obj.get(k), str) or not obj[k].strip():
+                        raise ValueError(f"{page_id}: field {k} missing/empty in model output.")
+                break
+            except Exception as e:
+                last_err = e
+                time.sleep(0.4)
+                obj = {}
+        if not obj:
+            raise SystemExit(f"{page_id}: {last_err!s}")
+        merged = merge_landing_field_updates(merged, {k: obj[k] for k in changed_fields}, page_id=page_id)
+        print(f"--- Recheck landing: {page_id} ---")
 
-    merged = dict(content)
-    merged.update({k: obj[k] for k in changed_fields})
+    write_json(content_path, merged)
     out_path = ROOT / "output" / "content_humanized.json"
-    write_json(out_path, {k: merged.get(k, "") for k in ["hero_title", *fields]})
+    write_json(out_path, humanized_snapshot(merged))
 
-    html_path = default_html_path(env)
-    html_before = html_path.read_text(encoding="utf-8", errors="replace")
-    counts_before = {k: count_kw_in_body(html_before, k) for k in offender_kws}
+    for page_id, pdata in (merged.get("pages") or {}).items():
+        if not isinstance(pdata, dict):
+            continue
+        th = str(pdata.get("target_html_path") or "").strip()
+        if not th:
+            continue
+        hp = (ROOT / th).resolve()
+        if not hp.exists():
+            continue
+        doc = hp.read_text(encoding="utf-8", errors="replace")
+        pk = str(pdata.get("page_kind") or "")
+        if pk == "landing":
+            hp.write_text(apply_landing_content_to_html(doc, pdata, env), encoding="utf-8")
 
-    html_path.write_text(apply_content_to_index_html(html_before, merged), encoding="utf-8")
-
-    html_after = html_path.read_text(encoding="utf-8", errors="replace")
-    counts_after = {k: count_kw_in_body(html_after, k) for k in offender_kws}
-
-    for kw in offender_kws:
-        if counts_after.get(kw, 0) < 1:
-            raise SystemExit(f"Recheck validation failed: offender keyword missing after humanize: {kw}")
-
-    for kw in offender_kws:
-        b = int(counts_before.get(kw, 0))
-        a = int(counts_after.get(kw, 0))
-        print(f"✅ Density fixed: {kw}: было {b} раз → стало {a} раз")
+    for p in qa.get("pages") or []:
+        if not isinstance(p, dict):
+            continue
+        pid = str(p.get("page_id", "")).strip()
+        if not pid:
+            continue
+        pdata = (merged.get("pages") or {}).get(pid)
+        if not isinstance(pdata, dict):
+            continue
+        th = str(pdata.get("target_html_path") or "").strip()
+        if not th:
+            continue
+        hp = (ROOT / th).resolve()
+        if not hp.exists():
+            continue
+        html_after = hp.read_text(encoding="utf-8", errors="replace")
+        for kw in offender_keywords_for_page(qa, pid):
+            if count_kw_in_body(html_after, kw) < 1:
+                raise SystemExit(f"Recheck validation failed on {pid}: offender keyword missing: {kw}")
+            print(f"✅ {pid}: retained offender keyword {kw!r}")
 
     return 0
 

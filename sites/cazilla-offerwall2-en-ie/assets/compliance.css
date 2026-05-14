@@ -1,0 +1,82 @@
+/* Compliance — spacing + type aligned with shell tokens */
+#siteContent.isBlurred {
+  filter: blur(12px);
+  user-select: none;
+  pointer-events: none;
+}
+
+.complianceOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: grid;
+  place-items: center;
+  padding: var(--s-5, 1.25rem);
+  background: rgba(6, 5, 4, 0.82);
+  backdrop-filter: blur(12px);
+}
+
+.complianceOverlay[hidden] {
+  display: none !important;
+}
+
+.complianceDialog {
+  width: min(26rem, 100%);
+  border-radius: var(--r-lg, 20px);
+  border: 1px solid rgba(251, 191, 36, 0.2);
+  background: rgba(28, 24, 20, 0.97);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.58);
+  padding: var(--s-6, 1.5rem) var(--s-6, 1.5rem) var(--s-5, 1.25rem);
+}
+
+.complianceDialog h2 {
+  margin: 0 0 var(--s-3, 0.75rem);
+  font-family: var(--font-display, Georgia, serif);
+  font-size: clamp(1.125rem, 0.35vw + 1.02rem, 1.3125rem);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.complianceDialog p {
+  margin: 0 0 var(--s-4, 1rem);
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 0.9375rem;
+  line-height: 1.58;
+  color: var(--muted, rgba(230, 220, 210, 0.76));
+}
+
+.complianceDialog p:last-of-type {
+  margin-bottom: var(--s-2, 0.5rem);
+}
+
+.complianceActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3, 0.75rem);
+  margin-top: var(--s-4, 1rem);
+}
+
+.inTextLink {
+  color: #fbbf24;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+  text-decoration-color: rgba(251, 191, 36, 0.45);
+  transition: color 0.15s ease;
+}
+
+.inTextLink:hover {
+  color: #fde68a;
+}
+
+.inTextLink:focus-visible {
+  outline: 2px solid rgba(251, 191, 36, 0.75);
+  outline-offset: 2px;
+}
+
+html.compliance-no-scroll,
+html.compliance-no-scroll body {
+  overflow: hidden;
+  height: 100%;
+}

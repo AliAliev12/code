@@ -1,0 +1,429 @@
+/* Offerwall2 — layout: header, drawer, main column, cards (harmonic spacing) */
+
+html.ow-drawer-open,
+html.ow-drawer-open body {
+  overflow: hidden;
+}
+
+#siteContent {
+  position: relative;
+  z-index: 1;
+}
+
+/* One column with page padding — aligns visually with .ow-main */
+.ow-topbar {
+  --bar-pad-x: clamp(var(--s-4, 1rem), 4vw, var(--s-8, 2rem));
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(var(--content-max, 56rem), 100%);
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--s-3, 0.75rem);
+  min-height: 3.5rem;
+  padding: var(--s-3, 0.75rem) calc(var(--bar-pad-x) + 3.25rem) var(--s-3, 0.75rem) var(--bar-pad-x);
+  margin-top: var(--s-2, 0.5rem);
+  border: 1px solid rgba(251, 191, 36, 0.1);
+  border-radius: var(--r-lg, 20px);
+  background: rgba(18, 16, 14, 0.82);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+}
+
+.ow-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3, 0.75rem);
+  text-decoration: none;
+  color: var(--text);
+  font-family: var(--font-display, Georgia, serif);
+  font-weight: 700;
+  font-size: clamp(1rem, 0.35vw + 0.92rem, 1.125rem);
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+}
+
+.ow-brand img {
+  width: 2.25rem;
+  height: 2.25rem;
+  display: block;
+  border-radius: var(--r-sm, 10px);
+  border: 1px solid rgba(251, 191, 36, 0.28);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35) inset;
+}
+
+.ow-menuBtn {
+  position: fixed;
+  top: calc(var(--s-2, 0.5rem) + 0.35rem);
+  right: max(var(--s-4, 1rem), calc(50vw - min(var(--content-max, 56rem), 100vw) / 2 + var(--s-4, 1rem)));
+  z-index: 130;
+  appearance: none;
+  border: 1px solid rgba(251, 191, 36, 0.38);
+  background: rgba(245, 158, 11, 0.14);
+  color: var(--text);
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-weight: 650;
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.65rem 1rem;
+  border-radius: var(--r-md, 14px);
+  cursor: pointer;
+  box-shadow: var(--shadow, 0 12px 36px rgba(0, 0, 0, 0.4));
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.ow-menuBtn:hover {
+  background: rgba(245, 158, 11, 0.24);
+}
+
+.ow-menuBtn:focus-visible {
+  outline: 2px solid rgba(251, 191, 36, 0.85);
+  outline-offset: 3px;
+}
+
+.ow-drawerOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 140;
+  background: rgba(8, 6, 4, 0.58);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.24s ease;
+}
+
+.ow-drawerOverlay.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.ow-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 150;
+  width: min(22.5rem, 92vw);
+  height: 100vh;
+  max-height: 100dvh;
+  background: linear-gradient(200deg, #221e1a 0%, #12100e 48%, #0a0908 100%);
+  border-left: 1px solid rgba(251, 191, 36, 0.12);
+  box-shadow: -20px 0 56px rgba(0, 0, 0, 0.5);
+  transform: translateX(102%);
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.ow-drawer.is-open {
+  transform: translateX(0);
+}
+
+.ow-drawerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding: var(--s-5, 1.25rem) var(--s-5, 1.25rem) var(--s-4, 1rem);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.ow-drawerTitle {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted2);
+  font-weight: 650;
+}
+
+.ow-drawerClose {
+  appearance: none;
+  border: none;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--muted);
+  font-size: 1.35rem;
+  line-height: 1;
+  width: 2.25rem;
+  height: 2.25rem;
+  cursor: pointer;
+  padding: 0;
+  border-radius: var(--r-sm, 10px);
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.ow-drawerClose:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.ow-drawerNav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1, 0.25rem);
+  padding: var(--s-4, 1rem) var(--s-4, 1rem) var(--s-8, 2rem);
+  overflow-y: auto;
+  flex: 1;
+}
+
+a.ow-navAnchor {
+  display: block;
+  margin: 0;
+  padding: var(--s-3, 0.75rem) var(--s-4, 1rem);
+  border-radius: var(--r-md, 14px);
+  color: inherit;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  font-weight: 480;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+a.ow-navAnchor:hover {
+  color: var(--accent-bright, #fbbf24);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+a.ow-navAnchor:focus-visible {
+  outline: 2px solid rgba(251, 191, 36, 0.55);
+  outline-offset: 2px;
+}
+
+a.ow-navAnchor.is-current {
+  font-weight: 650;
+  color: var(--accent-bright, #fbbf24);
+  background: rgba(245, 158, 11, 0.08);
+  border-right: 3px solid var(--accent, #f59e0b);
+  padding-right: calc(var(--s-4, 1rem) - 3px);
+  margin-right: 0;
+}
+
+.ow-main {
+  max-width: var(--content-max, 56rem);
+  margin: 0 auto;
+  padding: clamp(5.25rem, 14vw, 6.75rem) clamp(var(--s-4, 1rem), 4vw, var(--s-8, 2rem)) clamp(var(--s-10, 2.5rem), 8vw, var(--s-12, 3rem));
+}
+
+.ow-hero {
+  margin-bottom: var(--s-8, 2rem);
+  padding-bottom: var(--s-6, 1.5rem);
+  border-bottom: 1px solid rgba(251, 191, 36, 0.1);
+}
+
+.ow-hero h1 {
+  margin: 0 0 var(--s-4, 1rem);
+  max-width: min(34ch, 100%);
+  font-family: var(--font-display, Georgia, serif);
+  font-size: clamp(1.875rem, 2.2vw + 1.2rem, 2.625rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  color: var(--text);
+}
+
+.ow-lead {
+  margin: 0;
+  max-width: var(--measure, 65ch);
+  color: var(--muted);
+  font-size: clamp(1.0625rem, 0.45vw + 0.95rem, 1.1875rem);
+  line-height: 1.65;
+  font-weight: 450;
+}
+
+.ow-prose {
+  max-width: var(--measure, 65ch);
+  font-size: clamp(1rem, 0.25vw + 0.95rem, 1.0625rem);
+  line-height: 1.72;
+  color: var(--muted);
+  font-weight: 450;
+}
+
+.ow-prose p {
+  margin: 0 0 var(--s-5, 1.25rem);
+}
+
+.ow-prose p:last-child {
+  margin-bottom: 0;
+}
+
+.ow-prose h2 {
+  margin: var(--s-10, 2.5rem) 0 var(--s-3, 0.75rem);
+  font-family: var(--font-display, Georgia, serif);
+  font-size: clamp(1.125rem, 0.5vw + 1rem, 1.375rem);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.ow-prose h2:first-child {
+  margin-top: var(--s-6, 1.5rem);
+}
+
+.ow-footer {
+  margin-top: var(--s-12, 3rem);
+  padding-top: var(--s-6, 1.5rem);
+  border-top: 1px solid rgba(251, 191, 36, 0.1);
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--muted2);
+  letter-spacing: 0.015em;
+}
+
+.ow-footerLegal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2, 0.5rem) var(--s-3, 0.75rem);
+  margin-bottom: var(--s-5, 1.25rem);
+}
+
+.ow-footerLegal a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.8125rem;
+  padding: var(--s-1, 0.25rem) 0;
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.ow-footerLegal a:hover {
+  color: var(--accent-bright, #fbbf24);
+  border-bottom-color: rgba(251, 191, 36, 0.35);
+}
+
+/* Aggregator — wider than prose for cards */
+.ow-aggregatorTop5 {
+  margin: 0 0 var(--s-10, 2.5rem);
+  max-width: none;
+}
+
+.ow-aggDisclaimer {
+  margin: 0 0 var(--s-5, 1.25rem);
+  max-width: var(--measure, 65ch);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.ow-topGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15.5rem, 1fr));
+  gap: var(--s-5, 1.25rem);
+}
+
+.ow-topCard {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--r-md, 14px);
+  padding: var(--s-5, 1.25rem) var(--s-5, 1.25rem) var(--s-6, 1.5rem);
+  background: linear-gradient(168deg, rgba(255, 248, 240, 0.07) 0%, var(--panel, rgba(255, 248, 240, 0.045)) 100%);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05) inset;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.ow-topCard:hover {
+  border-color: rgba(251, 191, 36, 0.12);
+}
+
+.ow-topCard--featured {
+  outline: 2px solid rgba(251, 191, 36, 0.38);
+  box-shadow: 0 18px 48px rgba(180, 83, 9, 0.18), 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+
+.ow-topCardRank {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted2);
+  margin-bottom: var(--s-2, 0.5rem);
+}
+
+.ow-topCardMedia {
+  margin: var(--s-2, 0.5rem) 0 var(--s-4, 1rem);
+  border-radius: var(--r-md, 14px);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.ow-topCardMedia img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ow-topCard h3,
+.ow-topCard .ow-topCardName {
+  margin: 0 0 var(--s-2, 0.5rem);
+  font-family: var(--font-display, Georgia, serif);
+  font-size: clamp(1.0625rem, 0.3vw + 1rem, 1.1875rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.ow-topCardTag {
+  margin: 0 0 var(--s-3, 0.75rem);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.ow-topCardCta {
+  margin: var(--s-4, 1rem) 0 0;
+  font-size: 0.9375rem;
+}
+
+.ow-galleryTitle {
+  margin: var(--s-10, 2.5rem) 0 var(--s-4, 1rem);
+  font-family: var(--font-display, Georgia, serif);
+  font-size: clamp(1.0625rem, 0.4vw + 1rem, 1.25rem);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.ow-galleryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: var(--s-4, 1rem);
+}
+
+.ow-galleryCell {
+  margin: 0;
+}
+
+.ow-galleryCell img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--r-sm, 10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ow-galleryCell figcaption {
+  margin-top: var(--s-2, 0.5rem);
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  color: var(--muted2);
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 640px) {
+  .ow-topbar {
+    margin-top: var(--s-1, 0.25rem);
+    padding-right: calc(var(--bar-pad-x) + 3.5rem);
+    border-radius: var(--r-md, 14px);
+  }
+
+  .ow-menuBtn {
+    right: var(--s-4, 1rem);
+  }
+
+  .ow-hero h1 {
+    max-width: none;
+  }
+}

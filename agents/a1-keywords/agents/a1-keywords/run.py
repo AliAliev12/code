@@ -64,6 +64,11 @@ def _int_env(name: str) -> Optional[int]:
         return None
 
 
+def _bool_env(name: str) -> bool:
+    raw = (os.getenv(name) or "").strip().lower()
+    return raw in {"1", "true", "yes", "on"}
+
+
 def resolve_location_language() -> Tuple[Dict[str, Any], str]:
     """
     Build DataForSEO Labs location/language fields.
@@ -215,7 +220,7 @@ def output_dir() -> Path:
     return d
 
 
-def run(seeds_file: Optional[Path]) -> None:
+def run(seeds_file: Optional[Path], allow_overwrite: bool = False) -> None:
     env = load_env(ENV_PATH)
     for k, v in env.items():
         os.environ.setdefault(k, v)
@@ -233,6 +238,17 @@ def run(seeds_file: Optional[Path]) -> None:
     seeds = load_seed_keywords(seeds_file)
     if not seeds:
         raise SystemExit("Seed keyword list is empty.")
+
+    out_dir = output_dir()
+    csv_path = out_dir / "keywords.csv"
+    json_path = out_dir / "keywords.json"
+    overwrite_enabled = allow_overwrite or _bool_env("ALLOW_KEYWORDS_OVERWRITE")
+    if json_path.exists() and not overwrite_enabled:
+        raise SystemExit(
+            f"Refusing to overwrite existing keywords file: {json_path}\n"
+            "Provide your own keywords.json, or explicitly allow overwrite via "
+            "--allow-overwrite / ALLOW_KEYWORDS_OVERWRITE=1."
+        )
 
     print("=== A1 Keywords Agent ===")
     print("Location:", loc_desc)
@@ -256,10 +272,6 @@ def run(seeds_file: Optional[Path]) -> None:
     unique = [k for k in all_kw if k["keyword"] not in seen and not seen.add(k["keyword"])]
     filtered = sorted(unique, key=lambda x: (x["search_volume"], x["keyword_difficulty"]), reverse=True)
 
-    out_dir = output_dir()
-    csv_path = out_dir / "keywords.csv"
-    json_path = out_dir / "keywords.json"
-
     with csv_path.open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=["keyword", "search_volume", "keyword_difficulty", "cpc", "competition"])
         w.writeheader()
@@ -281,8 +293,13 @@ def main(argv: List[str]) -> int:
         default=None,
         help="JSON array, {\"seed_keywords\": [...]}, or one keyword per line.",
     )
+    p.add_argument(
+        "--allow-overwrite",
+        action="store_true",
+        help="Allow overwriting an existing keywords.json output file.",
+    )
     args = p.parse_args(argv)
-    run(seeds_file=args.seeds_file)
+    run(seeds_file=args.seeds_file, allow_overwrite=args.allow_overwrite)
     return 0
 
 

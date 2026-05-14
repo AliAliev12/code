@@ -3,10 +3,17 @@ from __future__ import annotations
 
 import argparse
 import os
+import sys
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
+
+_AGENTS_DIR = ROOT / "agents"
+if str(_AGENTS_DIR) not in sys.path:
+    sys.path.insert(0, str(_AGENTS_DIR))
+
+from _lib.repo_env import apply_repo_dotenv  # noqa: E402
 
 
 def read_text(p: Path) -> str:
@@ -20,8 +27,11 @@ def write_text(p: Path, s: str) -> None:
 
 def iter_html_pages(site_dir: Path) -> list[Path]:
     pages: list[Path] = []
-    pages.append(site_dir / "index.html")
-    pages.extend(sorted([p for p in site_dir.glob("*/index.html") if p.is_file()]))
+    root_index = site_dir / "index.html"
+    if root_index.is_file():
+        pages.append(root_index)
+    pages.extend(sorted(p for p in site_dir.glob("*.html") if p.is_file() and p != root_index))
+    pages.extend(sorted(p for p in site_dir.glob("*/index.html") if p.is_file()))
     return pages
 
 
@@ -98,7 +108,13 @@ def to_url(site_origin: str, site_dir: Path, html_path: Path) -> str:
     rel = html_path.relative_to(site_dir)
     if rel.as_posix() == "index.html":
         return f"{site_origin}/"
-    return f"{site_origin}/{rel.parent.as_posix().strip('/')}/"
+    parts = rel.parts
+    if len(parts) == 1 and parts[0].endswith(".html"):
+        return f"{site_origin}/{parts[0]}"
+    parent = rel.parent.as_posix().strip("/").strip(".")
+    if parent:
+        return f"{site_origin}/{parent}/"
+    return f"{site_origin}/"
 
 
 def write_sitemap(site_dir: Path, sitemap_xml: Path, site_origin: str, locale: str) -> None:

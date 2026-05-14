@@ -13,6 +13,12 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 
 ROOT = Path(__file__).resolve().parents[2]
 
+_AGENTS_DIR = ROOT / "agents"
+if str(_AGENTS_DIR) not in sys.path:
+    sys.path.insert(0, str(_AGENTS_DIR))
+
+from _lib.repo_env import apply_repo_dotenv  # noqa: E402
+
 
 def read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8", errors="replace")
@@ -64,6 +70,8 @@ class Issue:
 
 
 def main() -> int:
+    apply_repo_dotenv(ROOT)
+
     ap = argparse.ArgumentParser(description="Static site smoke QA (links/anchors/meta/assets).")
     ap.add_argument("--site-dir", default="", help="Path to site directory.")
     args = ap.parse_args()

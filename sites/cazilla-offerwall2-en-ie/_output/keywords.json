@@ -1,177 +1,453 @@
-[
-  {
-    "keyword": "ireland online casino",
-    "search_volume": 6600,
-    "keyword_difficulty": 37.0,
-    "cpc": 163.27,
-    "competition": "LOW"
-  },
-  {
-    "keyword": "casino ireland online",
-    "search_volume": 6600,
-    "keyword_difficulty": 30.0,
-    "cpc": 163.27,
-    "competition": "LOW"
-  },
-  {
-    "keyword": "best online casino ireland",
-    "search_volume": 1300,
-    "keyword_difficulty": 33.0,
-    "cpc": 142.2,
-    "competition": "LOW"
-  },
-  {
-    "keyword": "best ireland online casino",
-    "search_volume": 1300,
-    "keyword_difficulty": 33.0,
-    "cpc": 142.2,
-    "competition": "LOW"
-  },
-  {
-    "keyword": "best casino online ireland",
-    "search_volume": 1300,
-    "keyword_difficulty": 31.0,
-    "cpc": 142.2,
-    "competition": "LOW"
-  },
-  {
-    "keyword": "top online casino ireland",
-    "search_volume": 40,
-    "keyword_difficulty": 34.0,
-    "cpc": 114.3,
-    "competition": "LOW"
-  },
-  {
-    "keyword": "best online casino bonus ireland",
-    "search_volume": 30,
-    "keyword_difficulty": 0.0,
-    "cpc": 0.0,
-    "competition": "LOW"
-  },
-  {
-    "keyword": "online casino ireland fast withdrawal",
-    "search_volume": 20,
-    "keyword_difficulty": 0.0,
-    "cpc": 128.78,
-    "competition": "MEDIUM"
-  },
-  {
-    "keyword": "most trusted online casino ireland",
-    "search_volume": 10,
-    "keyword_difficulty": 0.0,
-    "cpc": 0.0,
-    "competition": "LOW"
-  },
-  {
-    "keyword": "most popular online casino ireland",
-    "search_volume": 10,
-    "keyword_difficulty": 0.0,
-    "cpc": 0.0,
-    "competition": ""
-  },
-  {
-    "keyword": "best online casino sites ireland",
-    "search_volume": 10,
-    "keyword_difficulty": 0.0,
-    "cpc": 144.62,
-    "competition": "MEDIUM"
-  },
-  {
-    "keyword": "best online casino sites in ireland",
-    "search_volume": 0,
-    "keyword_difficulty": 0.0,
-    "cpc": 0.0,
-    "competition": ""
-  },
-  {
-    "keyword": "top ireland online casino sites",
-    "search_volume": 0,
-    "keyword_difficulty": 0.0,
-    "cpc": 0.0,
-    "competition": ""
-  },
-  {
-    "keyword": "online casino site ireland",
-    "search_volume": 0,
-    "keyword_difficulty": 0.0,
-    "cpc": 0.0,
-    "competition": ""
-  },
-  {
-    "keyword": "best online casino bonus offers in ireland",
-    "search_volume": 0,
-    "keyword_difficulty": 0.0,
-    "cpc": 0.0,
-    "competition": ""
-  },
-  {
-    "keyword": "best online casino bonuses in ireland",
-    "search_volume": 0,
-    "keyword_difficulty": 0.0,
-    "cpc": 0.0,
-    "competition": ""
-  },
-  {
-    "keyword": "fast withdrawal online casino ireland",
-    "search_volume": 0,
-    "keyword_difficulty": 0.0,
-    "cpc": 0.0,
-    "competition": ""
-  },
-  {
-    "keyword": "best online roulette casino ireland",
-    "search_volume": 0,
-    "keyword_difficulty": 0.0,
-    "cpc": 0.0,
-    "competition": ""
-  },
-  {
-    "keyword": "online casino bonuses in ireland",
-    "search_volume": 0,
-    "keyword_difficulty": 0.0,
-    "cpc": 0.0,
-    "competition": ""
-  },
-  {
-    "keyword": "online casino bonus offers in ireland",
-    "search_volume": 0,
-    "keyword_difficulty": 0.0,
-    "cpc": 0.0,
-    "competition": ""
-  },
-  {
-    "keyword": "top online casino sites ireland",
-    "search_volume": 0,
-    "keyword_difficulty": 0.0,
-    "cpc": 0.0,
-    "competition": ""
-  },
-  {
-    "keyword": "compare online casino in ireland",
-    "search_volume": 0,
-    "keyword_difficulty": 0.0,
-    "cpc": 0.0,
-    "competition": ""
-  },
-  {
-    "keyword": "best payout online casino ireland",
-    "search_volume": 0,
-    "keyword_difficulty": 0.0,
-    "cpc": 0.0,
-    "competition": ""
-  },
-  {
-    "keyword": "best payout online casino sites ireland",
-    "search_volume": 0,
-    "keyword_difficulty": 0.0,
-    "cpc": 0.0,
-    "competition": ""
-  },
-  {
-    "keyword": "ireland online casino sites",
-    "search_volume": 0,
-    "keyword_difficulty": 0.0,
-    "cpc": 0.0,
-    "competition": ""
-  }
-]
+{
+  "version": 2,
+  "locale": "en-IE",
+  "site": "cazilla-offerwall2-en-ie",
+  "pages": [
+    {
+      "id": "home",
+      "path": "/index.html",
+      "menu_label": "Brand List",
+      "cluster": "cl_home",
+      "notes": "list of the brands",
+      "keywords": [
+        {
+          "keyword": "best online casino",
+          "search_volume": 880,
+          "keyword_difficulty": 32.0,
+          "cpc": 156.97,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "top rated online casino",
+          "search_volume": 390,
+          "keyword_difficulty": 29.0,
+          "cpc": 140.28,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best casino online",
+          "search_volume": 320,
+          "keyword_difficulty": 32.0,
+          "cpc": 193.1,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "top casino online",
+          "search_volume": 170,
+          "keyword_difficulty": 30.0,
+          "cpc": 166.15,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "top online casino",
+          "search_volume": 110,
+          "keyword_difficulty": 31.0,
+          "cpc": 135.93,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best online casino deals",
+          "search_volume": 40,
+          "keyword_difficulty": 38.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "best casino bonuses online",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "top ireland online casino sites",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "we-recommend",
+      "path": "/we-recommend.html",
+      "menu_label": "We Recommend",
+      "cluster": "cl_recommend",
+      "notes": "recommendation with general descriptions",
+      "keywords": [
+        {
+          "keyword": "irish online casino",
+          "search_volume": 6600,
+          "keyword_difficulty": 46.0,
+          "cpc": 163.27,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "casino online no deposit bonus",
+          "search_volume": 2400,
+          "keyword_difficulty": 2.0,
+          "cpc": 10.68,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "online casino best",
+          "search_volume": 880,
+          "keyword_difficulty": 36.0,
+          "cpc": 156.97,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "casino online bonus",
+          "search_volume": 390,
+          "keyword_difficulty": 47.0,
+          "cpc": 186.44,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino sites",
+          "search_volume": 320,
+          "keyword_difficulty": 53.0,
+          "cpc": 119.01,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino list",
+          "search_volume": 110,
+          "keyword_difficulty": 9.0,
+          "cpc": 42.53,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "casino online offers",
+          "search_volume": 90,
+          "keyword_difficulty": 47.0,
+          "cpc": 130.04,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino offers",
+          "search_volume": 90,
+          "keyword_difficulty": 27.0,
+          "cpc": 130.04,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino minimum deposit",
+          "search_volume": 30,
+          "keyword_difficulty": 0.0,
+          "cpc": 22.52,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "irish online casino sites",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "how-to-choose",
+      "path": "/how-to-choose.html",
+      "menu_label": "How to choose",
+      "cluster": "cl_how_to_choose",
+      "notes": "",
+      "keywords": [
+        {
+          "keyword": "no deposit bonus online casino",
+          "search_volume": 2400,
+          "keyword_difficulty": 2.0,
+          "cpc": 10.68,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "best online casino for payout",
+          "search_volume": 260,
+          "keyword_difficulty": 8.0,
+          "cpc": 183.18,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino with no minimum deposit",
+          "search_volume": 30,
+          "keyword_difficulty": 0.0,
+          "cpc": 45.62,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best online casino bonus offers",
+          "search_volume": 20,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best online casino with instant withdrawal",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online live casino bonus",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "secure online casino with fast withdrawal options",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "real casino online for real money",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "player-faq",
+      "path": "/faq.html",
+      "menu_label": "FAQ",
+      "cluster": "support",
+      "notes": "FAQ",
+      "keywords": [
+        {
+          "keyword": "online casino games real money",
+          "search_volume": 590,
+          "keyword_difficulty": 55.0,
+          "cpc": 139.38,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "casino games online real money",
+          "search_volume": 590,
+          "keyword_difficulty": 49.0,
+          "cpc": 139.38,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino games for real money",
+          "search_volume": 590,
+          "keyword_difficulty": 38.0,
+          "cpc": 139.38,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino no deposit free spins",
+          "search_volume": 110,
+          "keyword_difficulty": 0.0,
+          "cpc": 10.97,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino best deals",
+          "search_volume": 70,
+          "keyword_difficulty": 38.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best online casino games for real money",
+          "search_volume": 20,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "no deposit real money online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    }
+  ],
+  "technical_pages": [
+    {
+      "id": "cookie-policy",
+      "path": "cookie-policy/index.html",
+      "menu_label": "Cookie policy",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "online casino 10 minimum deposit",
+          "search_volume": 30,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino no minimum deposit",
+          "search_volume": 30,
+          "keyword_difficulty": 0.0,
+          "cpc": 45.62,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino minimum deposit 5 euro",
+          "search_volume": 20,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino instant withdrawal",
+          "search_volume": 20,
+          "keyword_difficulty": 0.0,
+          "cpc": 160.65,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino ireland paypal",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino legal in ireland",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino ireland no deposit free spins",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 10.97,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "good online casino ireland",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 180.41,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "online casino license ireland",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "casino play online ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "live online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino payment methods ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "republic of ireland online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casinos ireland ireland casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "ireland online casino games",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "how online casino cashback bonuses work ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "real online casino ireland no deposit",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "best online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino ireland no deposit bonus",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "best casino ireland online",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "free online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "fast payout online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "legit online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "newest online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    }
+  ],
+  "reserve": []
+}

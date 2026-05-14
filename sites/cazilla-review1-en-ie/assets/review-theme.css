@@ -1,0 +1,448 @@
+/* Editorial light theme — overrides shell.css + page.css + compliance */
+
+:root {
+  --bg: #f3f1ea;
+  --bg2: #ebe7dc;
+  --paper: #fdfcfa;
+  --ink: #14120f;
+  --ink-soft: #3d3a34;
+  --muted: #5a564c;
+  --muted2: #7a7568;
+  --stroke: rgba(20, 18, 15, 0.1);
+  --stroke2: rgba(20, 18, 15, 0.06);
+  --accent: #0d5c4a;
+  --accent-hover: #0a4a3c;
+  --accent-soft: #c4e4dc;
+  --accent-ink: #0a3d32;
+  --shadow: 0 2px 3px rgba(20, 18, 15, 0.04), 0 12px 40px rgba(20, 18, 15, 0.08);
+  --shadow-sm: 0 1px 2px rgba(20, 18, 15, 0.06);
+  --purple: var(--accent);
+  --purple2: var(--accent-hover);
+  --gold: var(--accent);
+  --gold2: var(--accent-hover);
+  --danger: #b42318;
+  --ok: #0d5c4a;
+  --r-lg: 14px;
+  --r-md: 12px;
+  --r-sm: 8px;
+  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", ui-serif, serif;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  color: var(--ink);
+  background-color: var(--bg);
+  background-image: linear-gradient(180deg, #faf8f3 0%, var(--bg) 38%, #e8e4d9 100%);
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+
+body::before,
+body::after {
+  display: none !important;
+}
+
+.app,
+.main {
+  position: relative;
+  z-index: 1;
+}
+
+a {
+  color: inherit;
+}
+
+.main :focus-visible,
+.topbar :focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.sectionCard .subtitle a:not(.btn):not(.seoLink):not(.linkish) {
+  text-decoration: underline;
+  text-decoration-color: rgba(13, 92, 74, 0.35);
+  text-underline-offset: 3px;
+}
+
+.seoLink {
+  color: var(--accent);
+  text-decoration: underline dotted;
+  text-underline-offset: 2px;
+}
+
+.topbar {
+  top: 0;
+  padding: 12px 18px;
+  border: none;
+  border-bottom: 1px solid var(--stroke);
+  border-radius: 0;
+  background: rgba(253, 252, 250, 0.92);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-sm);
+  width: min(var(--max), 100%);
+}
+
+.logoText .logoWord {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: var(--accent-ink);
+  text-shadow: none;
+  letter-spacing: 0.14em;
+}
+
+.logoText .logoWord::after {
+  background: var(--accent);
+  opacity: 1;
+  height: 3px;
+  bottom: -6px;
+}
+
+.navLinks a {
+  color: var(--muted);
+  border-radius: var(--r-sm);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.navLinks a:hover {
+  color: var(--ink);
+  background: rgba(13, 92, 74, 0.06);
+  border-color: transparent;
+}
+
+.btn {
+  border: 1px solid var(--stroke);
+  background: var(--paper);
+  color: var(--ink-soft);
+  border-radius: var(--r-sm);
+  box-shadow: none;
+  font-weight: 600;
+}
+
+.btn:hover {
+  background: #fff;
+  border-color: rgba(20, 18, 15, 0.14);
+  color: var(--ink);
+}
+
+.btn.primary {
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #fff;
+  box-shadow: none;
+}
+
+.btn.primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: #fff;
+}
+
+.btn.icon {
+  border-radius: var(--r-sm);
+  background: transparent;
+}
+
+.sectionCard {
+  border-radius: var(--r-lg);
+  padding: 22px 22px 20px;
+  border: 1px solid var(--stroke);
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+
+.sectionCard > h1 {
+  margin: 0 0 12px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.sectionCard > h2 {
+  margin: 0 0 10px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.1rem, 1.8vw, 1.35rem);
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.sectionCard h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.sectionHead h2 {
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.15rem, 2vw, 1.45rem);
+}
+
+.sectionHead p {
+  color: var(--muted2);
+}
+
+.subtitle {
+  color: var(--muted);
+}
+
+body.innerPage .topbar .actions .btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+body.innerPage .topbar .actions .btn.primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: #fff;
+}
+
+/* --- page.css components --- */
+.reviewRibbon {
+  border: 1px solid rgba(13, 92, 74, 0.2);
+  background: rgba(196, 228, 220, 0.45);
+  color: var(--ink-soft);
+  border-radius: var(--r-sm);
+}
+
+.hero {
+  border-radius: var(--r-lg);
+  padding: 32px 28px;
+  border: 1px solid var(--stroke);
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+
+.hero::before {
+  display: none;
+}
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+
+.hero .subtitle strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.card {
+  border-radius: var(--r-md);
+  border: 1px solid var(--stroke2);
+  background: #faf9f6;
+}
+
+.card h3 {
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+.list li {
+  color: var(--muted);
+}
+
+.list .dot {
+  border: 1px solid var(--stroke);
+  background: var(--paper);
+  color: var(--accent);
+}
+
+.numList {
+  color: var(--muted);
+}
+
+.dataTable th,
+.dataTable td {
+  border: 1px solid var(--stroke);
+  color: var(--muted);
+}
+
+.dataTable th {
+  background: rgba(13, 92, 74, 0.06);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+.mediaRow img {
+  border: none;
+  border-radius: 8px;
+  clip-path: inset(0 round 8px);
+}
+
+.mediaRow figcaption {
+  color: var(--muted2);
+}
+
+/* Body copy: full-width bonuses, games + about in two columns on wide viewports */
+.reviewBodyGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  margin-top: 22px;
+}
+
+.main .reviewBodyGrid > .sectionCard + .sectionCard {
+  margin-top: 0;
+}
+
+@media (min-width: 900px) {
+  .reviewBodyGrid {
+    grid-template-columns: 1.12fr 0.88fr;
+    column-gap: 22px;
+    row-gap: 20px;
+    align-items: start;
+  }
+
+  .reviewBodyGrid > #bonuses {
+    grid-column: 1 / -1;
+  }
+
+  .reviewBodyGrid > #games {
+    grid-column: 1;
+  }
+
+  .reviewBodyGrid > #about {
+    grid-column: 2;
+  }
+}
+
+.footer {
+  border-radius: var(--r-lg);
+  border: 1px solid var(--stroke);
+  background: var(--paper);
+  box-shadow: var(--shadow-sm);
+}
+
+.footer .sectionHead h2 {
+  font-size: 15px;
+}
+
+.fineprint {
+  color: var(--muted2);
+}
+
+.fineprint code {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(13, 92, 74, 0.08);
+  color: var(--accent-ink);
+}
+
+.linkList a {
+  border: 1px solid var(--stroke2);
+  background: #faf9f6;
+  color: var(--ink-soft);
+  border-radius: var(--r-sm);
+}
+
+.linkList a:hover {
+  border-color: rgba(13, 92, 74, 0.25);
+  background: #fff;
+}
+
+body.innerPage .disclaimerBar,
+.disclaimerBar {
+  border: 1px solid rgba(13, 92, 74, 0.28);
+  background: rgba(196, 228, 220, 0.52);
+  color: var(--ink);
+}
+
+/* --- compliance --- */
+.complianceOverlay {
+  background: rgba(20, 18, 15, 0.45);
+}
+
+.complianceDialog {
+  border: 1px solid var(--stroke);
+  background: var(--paper);
+  box-shadow: var(--shadow);
+  border-radius: var(--r-lg);
+}
+
+.complianceDialog h2 {
+  font-family: var(--font-display);
+  color: var(--ink);
+}
+
+.complianceDialog p {
+  color: var(--muted);
+}
+
+.inTextLink:hover {
+  border-bottom-color: rgba(13, 92, 74, 0.35);
+}
+
+.inTextLink:focus-visible {
+  outline-color: var(--accent);
+}
+
+/* Mobile topbar from shell */
+@media (max-width: 768px) {
+  .topbar {
+    background: rgba(253, 252, 250, 0.98);
+  }
+
+  .logoText .logoWord {
+    letter-spacing: 0.1em;
+  }
+
+  .navLinks[data-open="true"] {
+    border: 1px solid var(--stroke);
+    background: var(--paper);
+    box-shadow: var(--shadow);
+  }
+
+  .navLinks a:hover {
+    background: rgba(13, 92, 74, 0.06);
+  }
+}
+
+/* Wide desktop layout: cap width on hero/ribbon/footer and on the body grid wrapper */
+@media (min-width: 1280px) {
+  .main .reviewRibbon,
+  .main .hero,
+  .main .reviewBodyGrid,
+  .main .footer {
+    max-width: 1020px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  body.innerPage .main > .sectionCard {
+    max-width: 1020px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  body.innerPage .heroInner {
+    max-width: 860px;
+  }
+
+  .main .subtitle,
+  body.innerPage .hero .subtitle {
+    max-width: none;
+  }
+
+  .main .heroInner,
+  body.innerPage .heroInner {
+    max-width: none;
+  }
+}

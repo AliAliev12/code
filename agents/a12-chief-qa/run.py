@@ -2,14 +2,22 @@
 from __future__ import annotations
 
 import json
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 
 ROOT = Path(__file__).resolve().parents[2]
+
+_AGENTS_DIR = ROOT / "agents"
+if str(_AGENTS_DIR) not in sys.path:
+    sys.path.insert(0, str(_AGENTS_DIR))
+
+from _lib.repo_env import apply_repo_dotenv  # noqa: E402
 OUT = ROOT / "output"
-CFG_PATH = ROOT / "agents" / "chief_qa.config.json"
+_AGENT_DIR = Path(__file__).resolve().parent
+CFG_PATH = _AGENT_DIR / "chief_qa.config.json"
 
 
 def load_json(path: Path) -> Dict[str, Any]:
@@ -72,37 +80,51 @@ def extract_findings() -> List[Finding]:
         )
 
     seo = load_json(OUT / "qa_report.json")
-    for c in seo.get("results", []) or []:
-        if not isinstance(c, dict):
-            continue
-        st = str(c.get("status", "")).upper()
-        if st not in ("FAIL", "WARN"):
-            continue
-        # Map FAIL->P0, WARN->P1 by default
-        sev = "P0" if st == "FAIL" else "P1"
-        check_id = str(c.get("id", "seo.check"))
 
-        # Config overrides
-        if check_id in severity_overrides:
-            sev = str(severity_overrides.get(check_id) or sev)
-        if check_id in downgrade_to_p2 and sev == "P1":
-            sev = "P2"
+    def _append_seo_checks(container: Any, *, page_prefix: str = "") -> None:
+        if not isinstance(container, list):
+            return
+        for c in container:
+            if not isinstance(c, dict):
+                continue
+            st = str(c.get("status", "")).upper()
+            if st not in ("FAIL", "WARN"):
+                continue
+            sev = "P0" if st == "FAIL" else "P1"
+            raw_id = str(c.get("id", "seo.check"))
+            check_id = f"{page_prefix}{raw_id}" if page_prefix else raw_id
 
-        findings.append(
-            Finding(
-                id=check_id,
-                severity=sev,
-                source="seo",
-                message=str(c.get("message", "")),
-                file=str(c.get("details", {}).get("file", "")) if isinstance(c.get("details"), dict) else "",
-                hint="See output/qa_report.json details.",
+            if check_id in severity_overrides:
+                sev = str(severity_overrides.get(check_id) or sev)
+            if check_id in downgrade_to_p2 and sev == "P1":
+                sev = "P2"
+
+            findings.append(
+                Finding(
+                    id=check_id,
+                    severity=sev,
+                    source="seo",
+                    message=str(c.get("message", "")),
+                    file=str(c.get("details", {}).get("file", "")) if isinstance(c.get("details"), dict) else "",
+                    hint="See output/qa_report.json details.",
+                )
             )
-        )
+
+    _append_seo_checks(seo.get("results") or [])
+
+    pages_list = [p for p in (seo.get("pages") or []) if isinstance(p, dict)]
+    if len(pages_list) > 1:
+        for p in pages_list:
+            pid = str(p.get("page_id", "")).strip()
+            prefix = f"{pid}::" if pid else ""
+            _append_seo_checks(p.get("results") or [], page_prefix=prefix)
 
     return findings
 
 
 def main() -> int:
+    apply_repo_dotenv(ROOT)
+
     cfg = load_config()
     max_p1 = int((cfg.get("publishable") or {}).get("max_p1") or 5)
 

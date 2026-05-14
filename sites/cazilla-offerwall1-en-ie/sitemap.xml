@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://cazilla.world/</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.world/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.world/"/>
+    <lastmod>2026-05-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://cazilla.world/we-recommend.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.world/we-recommend.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.world/we-recommend.html"/>
+    <lastmod>2026-05-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://cazilla.world/how-to-choose.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.world/how-to-choose.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.world/how-to-choose.html"/>
+    <lastmod>2026-05-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://cazilla.world/faq.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.world/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.world/faq.html"/>
+    <lastmod>2026-05-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://cazilla.world/cookie-policy/</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.world/cookie-policy/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.world/cookie-policy/"/>
+    <lastmod>2026-05-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://cazilla.world/user-agreement/</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.world/user-agreement/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.world/user-agreement/"/>
+    <lastmod>2026-05-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://cazilla.world/privacy-policy/</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.world/privacy-policy/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.world/privacy-policy/"/>
+    <lastmod>2026-05-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://cazilla.world/fair-play/</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.world/fair-play/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.world/fair-play/"/>
+    <lastmod>2026-05-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://cazilla.world/payments-withdrawals/</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.world/payments-withdrawals/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.world/payments-withdrawals/"/>
+    <lastmod>2026-05-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://cazilla.world/responsible-gambling/</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.world/responsible-gambling/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.world/responsible-gambling/"/>
+    <lastmod>2026-05-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://cazilla.world/aml-kyc/</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.world/aml-kyc/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.world/aml-kyc/"/>
+    <lastmod>2026-05-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+</urlset>

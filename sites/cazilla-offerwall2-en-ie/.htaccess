@@ -1,0 +1,30 @@
+Options -MultiViews
+DirectoryIndex index.html
+
+RewriteEngine On
+
+# Strip www first (so the next hop is already on the apex host if both issues apply)
+RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L,NE]
+
+# Force HTTPS
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L,NE]
+
+# /index.html and nested */index.html → clean URL with trailing slash where applicable
+RewriteCond %{THE_REQUEST} \s/+(.*/)?index\.html(?:[\s?]|$) [NC]
+RewriteRule ^(.*/)?index\.html$ /$1 [R=301,L,NE]
+
+# Visible URLs without .html (skip root index)
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.html(?:[\s?]|$) [NC]
+RewriteCond %{REQUEST_URI} !^/index\.html$ [NC]
+RewriteRule ^(.+)\.html$ /$1 [R=301,L,NE]
+
+# Map extensionless path to existing *.html at site root
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+RewriteRule ^(.+)$ $1.html [L]
+
+# Block dotfiles except ACME / well-known
+RewriteRule "(^|/)\.(?!well-known/)" - [F]

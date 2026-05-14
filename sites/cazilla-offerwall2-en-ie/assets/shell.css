@@ -1,0 +1,131 @@
+/* Offerwall2 — Ember editorial: type scale + spacing rhythm */
+:root {
+  --bg: #12100e;
+  --bg-elev: #1a1714;
+  --bg-deep: #0a0908;
+  --panel: rgba(255, 248, 240, 0.045);
+  --stroke: rgba(251, 191, 36, 0.12);
+  --text: rgba(255, 250, 245, 0.94);
+  --muted: rgba(230, 220, 210, 0.76);
+  --muted2: rgba(190, 180, 168, 0.52);
+  --accent: #f59e0b;
+  --accent-bright: #fbbf24;
+  --accent-deep: #b45309;
+  --shadow: 0 22px 56px rgba(0, 0, 0, 0.55);
+  --r-lg: 20px;
+  --r-md: 14px;
+  --r-sm: 10px;
+  /* 4px grid */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.25rem;
+  --s-6: 1.5rem;
+  --s-8: 2rem;
+  --s-10: 2.5rem;
+  --s-12: 3rem;
+  --measure: 65ch;
+  --content-max: 56rem;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, ui-serif, serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body.lv-body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: clamp(1rem, 0.28vw + 0.94rem, 1.0625rem);
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  color: var(--text);
+  background-color: var(--bg-deep);
+  background-image: radial-gradient(ellipse 120% 85% at 50% -18%, rgba(180, 83, 9, 0.2), transparent 56%),
+    radial-gradient(ellipse 95% 55% at 100% 38%, rgba(245, 158, 11, 0.07), transparent 52%),
+    radial-gradient(ellipse 75% 48% at 0% 82%, rgba(234, 88, 12, 0.05), transparent 48%),
+    linear-gradient(180deg, #171512 0%, var(--bg) 40%, var(--bg-deep) 100%);
+  background-attachment: fixed;
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgba(245, 158, 11, 0.35);
+  color: var(--text);
+}
+
+a {
+  color: inherit;
+}
+
+.ow-main a[href^="http"],
+.ow-prose a[href^="http"] {
+  color: var(--accent-bright);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: rgba(251, 191, 36, 0.5);
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+.ow-main a[href^="http"]:hover,
+.ow-prose a[href^="http"]:hover {
+  color: #fde68a;
+  text-decoration-color: rgba(253, 230, 138, 0.65);
+}
+
+.ow-prose strong {
+  font-weight: 650;
+  color: rgba(255, 250, 245, 0.98);
+}
+
+/* Age / cookie dialogs */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  min-height: 2.75rem;
+  padding: 0.625rem 1.125rem;
+  border-radius: var(--r-md);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-weight: 650;
+  font-size: 0.8125rem;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+  user-select: none;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(251, 191, 36, 0.28);
+}
+
+.btn.primary {
+  border: 1px solid rgba(251, 191, 36, 0.45);
+  background: linear-gradient(180deg, #fbbf24, #d97706);
+  color: #1c0f05;
+  box-shadow: 0 10px 28px rgba(217, 119, 6, 0.32);
+}
+
+.btn.primary:hover {
+  filter: brightness(1.06);
+}
