@@ -15,6 +15,13 @@ LEGACY_CASINO_HOSTS = (
     "https://cazilla.online/",
 )
 
+# Legacy preview hosts replaced by SITE_URL from .env
+LEGACY_SITE_URLS = (
+    "https://cazilla-offerwall2-en-ie.invalid",
+    "https://cazilla-response-en-ie.invalid",
+    "https://cazilla.tmp.invalid",
+)
+
 
 def load_env(path: Path) -> dict[str, str]:
     out: dict[str, str] = {}
@@ -65,7 +72,13 @@ def main() -> int:
             s = fp.read_text(encoding="utf-8", errors="replace")
             orig = s
             if site_url:
-                s = s.replace("https://cazilla-offerwall2-en-ie.invalid", site_url)
+                for old in LEGACY_SITE_URLS:
+                    if old.rstrip("/") == site_url.rstrip("/"):
+                        continue
+                    s = s.replace(old, site_url)
+                    bare = old.rstrip("/")
+                    if bare != old:
+                        s = s.replace(bare, site_url.rstrip("/"))
             s = apply_casino_urls(s, casino)
             if s != orig:
                 fp.write_text(s, encoding="utf-8")

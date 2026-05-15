@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://thecazilla.site/</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://thecazilla.site/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://thecazilla.site/"/>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://thecazilla.site/aml-kyc.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://thecazilla.site/aml-kyc.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://thecazilla.site/aml-kyc.html"/>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://thecazilla.site/cookie-policy.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://thecazilla.site/cookie-policy.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://thecazilla.site/cookie-policy.html"/>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://thecazilla.site/fair-play.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://thecazilla.site/fair-play.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://thecazilla.site/fair-play.html"/>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://thecazilla.site/payments-withdrawals.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://thecazilla.site/payments-withdrawals.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://thecazilla.site/payments-withdrawals.html"/>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://thecazilla.site/privacy-policy.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://thecazilla.site/privacy-policy.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://thecazilla.site/privacy-policy.html"/>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://thecazilla.site/responsible-gambling.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://thecazilla.site/responsible-gambling.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://thecazilla.site/responsible-gambling.html"/>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://thecazilla.site/user-agreement.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://thecazilla.site/user-agreement.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://thecazilla.site/user-agreement.html"/>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+</urlset>

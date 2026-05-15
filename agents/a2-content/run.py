@@ -46,6 +46,26 @@ HOME_CONTENT_KEYS = [
     "footer_seo_text",
 ]
 
+RESPONSE_CONTENT_KEYS = [
+    "hero_title",
+    "hero_subtitle",
+    "intro_meta",
+    "pros",
+    "cons",
+    "overview_section",
+    "licence_section",
+    "design_section",
+    "bonus_section",
+    "vip_section",
+    "payments_section",
+    "games_section",
+    "comparison_section",
+    "summary_section",
+    "faq_section",
+    "author_bio",
+    "footer_seo_text",
+]
+
 # Offerwall home: Cazilla #1 + four fictional brands; images assigned in code (see apply_content_to_offerwall_html).
 FICTIONAL_OPERATORS_KEY = "fictional_operators"
 OFFERWALL_TOP5_IMAGES = [
@@ -268,6 +288,7 @@ def build_prompt(
     reserve_phrases: List[str],
     include_site_factory_spec: bool = False,
     home_offerwall_aggregator: bool = False,
+    home_response: bool = False,
 ) -> str:
     top = kws[:20]
     kw_lines = "\n".join(
@@ -287,6 +308,12 @@ def build_prompt(
     role = (
         f"You are an SEO copywriter for locale {locale} (language: {lang}). Write original, natural copy for a Cazilla review-style casino site."
     )
+    if home_response:
+        role = (
+            f"You are an SEO copywriter for locale {locale} (language: {lang}). "
+            "Write an independent expert test-drive review of the Cazilla online casino for readers in the target region. "
+            "Tone: methodical, fair, safety-first; mention licence checks, bonus wagering, payments, and game catalogue."
+        )
     length_constraints = """- Length targets:
   - hero_title: H1 (<= 70 chars) and must contain main keyword.
   - hero_subtitle: 2-3 sentences.
@@ -302,6 +329,17 @@ def build_prompt(
   - bonus_section: 950-1400 characters. Cover any keywords not yet used in prior fields with the same <strong> and sentence-spacing rules; if all are already used, deepen Ireland-player context without stuffing.
   - games_section: 950-1400 characters; same rules; distribute any remaining keywords.
   - footer_seo_text: 750-1100 characters; independent review disclaimer; weave any keywords not yet used at least once if still missing from earlier fields."""
+    if home_response:
+        length_constraints = """- Length targets (expert single-page Cazilla response review):
+  - hero_title: plain text, <= 70 chars, must start with the main keyword (capital first letter).
+  - hero_subtitle: 650-950 characters. Independent expert test-drive of Cazilla. Allowed inline HTML: <strong>exact keyword phrases</strong>, <br><br> between short paragraphs only.
+  - intro_meta: 120-220 characters plain text (launch year, platform type, licence jurisdiction) — no HTML.
+  - pros: JSON array of 3-5 short strings (advantages), each <= 120 chars, no HTML.
+  - cons: JSON array of 2-4 short strings (drawbacks), each <= 120 chars, no HTML.
+  - overview_section, licence_section, design_section, bonus_section, vip_section, payments_section, games_section, comparison_section, summary_section: each 900-1400 characters. Include EVERY keyword from the list at least once; wrap first occurrence of each keyword in <strong>...</strong>; separate keyword mentions by at least one full sentence.
+  - faq_section: JSON array of 3-5 objects with "question" and "answer" keys; answers 80-180 chars each; distribute remaining keywords naturally.
+  - author_bio: 280-450 characters plain text about the lead reviewer (no fake credentials).
+  - footer_seo_text: 750-1100 characters; independent review disclaimer; weave any keywords not yet used."""
     if home_offerwall_aggregator:
         role = (
             f"You are an SEO copywriter for locale {locale} (language: {lang}). "
@@ -341,6 +379,30 @@ def build_prompt(
     {{"brand_name": "...", "tagline": "...", "summary_sentence": "..."}},
     {{"brand_name": "...", "tagline": "...", "summary_sentence": "..."}}
   ]
+}}"""
+    if home_response:
+        json_tail = """Exact output format (JSON):
+{{
+  "hero_title": "...",
+  "hero_subtitle": "...",
+  "intro_meta": "...",
+  "pros": ["...", "..."],
+  "cons": ["...", "..."],
+  "overview_section": "...",
+  "licence_section": "...",
+  "design_section": "...",
+  "bonus_section": "...",
+  "vip_section": "...",
+  "payments_section": "...",
+  "games_section": "...",
+  "comparison_section": "...",
+  "summary_section": "...",
+  "faq_section": [
+    {{"question": "...", "answer": "..."}},
+    {{"question": "...", "answer": "..."}}
+  ],
+  "author_bio": "...",
+  "footer_seo_text": "..."
 }}"""
     return f"""
 {role}
@@ -427,6 +489,159 @@ def site_dir_is_offerwall_aggregator(site_dir: Path) -> bool:
     if "offerwall" not in s:
         return False
     return (site_dir / "assets" / "pictures").is_dir()
+
+
+def is_response_html(html: str) -> bool:
+    """Expert single-page response shell (sites/*response*)."""
+    h = html.lower()
+    return 'data-site-kind="response"' in h or 'class="rs-layout"' in h
+
+
+def site_dir_is_response(site_dir: Path) -> bool:
+    return "response" in str(site_dir).lower()
+
+
+def content_keys_for_html(html: str, site_dir: Path, *, page_id: str = "home") -> List[str]:
+    if page_id == "home" and (is_response_html(html) or site_dir_is_response(site_dir)):
+        return RESPONSE_CONTENT_KEYS
+    return HOME_CONTENT_KEYS
+
+
+def missing_response_fields(content: Dict[str, Any]) -> List[str]:
+    missing: List[str] = []
+    for k in RESPONSE_CONTENT_KEYS:
+        v = content.get(k)
+        if k in ("pros", "cons"):
+            if not isinstance(v, list) or len(v) < 2:
+                missing.append(k)
+        elif k == "faq_section":
+            if not isinstance(v, list) or len(v) < 2:
+                missing.append(k)
+            else:
+                ok = any(isinstance(it, dict) and str(it.get("question", "")).strip() for it in v)
+                if not ok:
+                    missing.append(k)
+        elif not str(v or "").strip():
+            missing.append(k)
+    return missing
+
+
+def apply_content_to_response_html(html_doc: str, content: Dict[str, Any]) -> str:
+    """Map RESPONSE_CONTENT_KEYS into sites/cazilla-response-* layout via data-a2-field anchors."""
+    out = html_doc
+
+    def prose_field(field: str, text: str) -> None:
+        nonlocal out
+        if not text:
+            return
+        out = replace_first_submatch(
+            out,
+            rf'(?is)(<div[^>]*\bdata-a2-field=["\']{re.escape(field)}["\'][^>]*>\s*<p class="rs-body"[^>]*>)([\s\S]*?)(</p>)',
+            r"\g<1>\n" + text + r"\n\g<3>",
+        )
+
+    hero_title = str(content.get("hero_title", "")).strip()
+    if hero_title:
+        out = replace_first_submatch(
+            out,
+            r'(?is)(<h1[^>]*\bdata-a2-field=["\']hero_title["\'][^>]*>)(.*?)(</h1>)',
+            r"\g<1>" + hero_title + r"\g<3>",
+        )
+
+    hero_sub = str(content.get("hero_subtitle", "")).strip()
+    if hero_sub:
+        out = replace_first_submatch(
+            out,
+            r'(?is)(<p class="subtitle"[^>]*\bdata-a2-field=["\']hero_subtitle["\'][^>]*>\s*)([\s\S]*?)(\s*</p>)',
+            r"\g<1>\n" + hero_sub + r"\n\g<3>",
+        )
+
+    intro = str(content.get("intro_meta", "")).strip()
+    if intro:
+        out = replace_first_submatch(
+            out,
+            r'(?is)(<p class="rs-intro-meta"[^>]*\bdata-a2-field=["\']intro_meta["\'][^>]*>)(.*?)(</p>)',
+            r"\g<1>" + html.escape(intro) + r"\g<3>",
+        )
+
+    pros = content.get("pros")
+    if isinstance(pros, list) and pros:
+        lis = "".join(f"<li>{str(p).strip()}</li>" for p in pros if str(p).strip())
+        if lis:
+            out = replace_first_submatch(
+                out,
+                r'(?is)(<ul class="rs-pros"[^>]*\bdata-a2-field=["\']pros["\'][^>]*>)([\s\S]*?)(</ul>)',
+                r"\g<1>\n" + lis + r"\n\g<3>",
+            )
+
+    cons = content.get("cons")
+    if isinstance(cons, list) and cons:
+        lis = "".join(f"<li>{str(c).strip()}</li>" for c in cons if str(c).strip())
+        if lis:
+            out = replace_first_submatch(
+                out,
+                r'(?is)(<ul class="rs-cons"[^>]*\bdata-a2-field=["\']cons["\'][^>]*>)([\s\S]*?)(</ul>)',
+                r"\g<1>\n" + lis + r"\n\g<3>",
+            )
+
+    for field in (
+        "overview_section",
+        "licence_section",
+        "design_section",
+        "bonus_section",
+        "vip_section",
+        "payments_section",
+        "games_section",
+        "comparison_section",
+        "summary_section",
+    ):
+        prose_field(field, str(content.get(field, "")).strip())
+
+    faq = content.get("faq_section")
+    if isinstance(faq, list) and faq:
+        blocks: List[str] = []
+        for it in faq:
+            if not isinstance(it, dict):
+                continue
+            q = str(it.get("question", "")).strip()
+            a = str(it.get("answer", "")).strip()
+            if not q or not a:
+                continue
+            blocks.append(
+                f"<details><summary>{html.escape(q)}</summary><p class=\"rs-body\">{a}</p></details>"
+            )
+        if blocks:
+            out = replace_first_submatch(
+                out,
+                r'(?is)(<div class="rs-prose"[^>]*\bdata-a2-field=["\']faq_section["\'][^>]*>)([\s\S]*?)(</div>)',
+                r"\g<1>\n" + "\n".join(blocks) + r"\n\g<3>",
+            )
+
+    author = str(content.get("author_bio", "")).strip()
+    if author:
+        out = replace_first_submatch(
+            out,
+            r'(?is)(<div class="rs-author-card"[^>]*\bdata-a2-field=["\']author_bio["\'][^>]*>\s*<p class="rs-body"[^>]*>)([\s\S]*?)(</p>)',
+            r"\g<1>\n" + html.escape(author) + r"\n\g<3>",
+        )
+
+    footer = str(content.get("footer_seo_text", "")).strip()
+    if footer:
+        out = replace_first_submatch(
+            out,
+            r'(?is)(<p class="fineprint"[^>]*\bdata-a2-field=["\']footer["\'][^>]*>)([\s\S]*?)(</p>)',
+            r"\g<1>\n" + footer + r"\n\g<3>",
+        )
+
+    return out
+
+
+def apply_content_to_page_html(html: str, content: Dict[str, Any], env: Dict[str, str]) -> str:
+    if is_offerwall_html(html):
+        return apply_content_to_offerwall_html(html, content, env)
+    if is_response_html(html):
+        return apply_content_to_response_html(html, content)
+    return apply_content_to_index_html(html, content)
 
 
 def asset_href_for_html_page(page_rel: str, asset_site_rel: str) -> str:
@@ -810,12 +1025,15 @@ def run_generate(env: Dict[str, str], *, include_site_factory_spec: bool, page_i
                 main_kw, about_kws, footer_kws = pick_keywords(rows)
                 print("  Main keyword:", main_kw)
                 hp_probe = resolve_site_html(site_dir, t.rel_path)
+                hp_text = hp_probe.read_text(encoding="utf-8", errors="replace") if hp_probe.exists() else ""
                 agg_home = (
                     t.page_id == "home"
                     and site_dir_is_offerwall_aggregator(site_dir)
                     and hp_probe.exists()
-                    and is_offerwall_html(hp_probe.read_text(encoding="utf-8", errors="replace"))
+                    and is_offerwall_html(hp_text)
                 )
+                resp_home = t.page_id == "home" and hp_probe.exists() and is_response_html(hp_text)
+                page_keys = RESPONSE_CONTENT_KEYS if resp_home else HOME_CONTENT_KEYS
                 prompt = build_prompt(
                     main_kw,
                     about_kws,
@@ -826,21 +1044,27 @@ def run_generate(env: Dict[str, str], *, include_site_factory_spec: bool, page_i
                     reserve_phrases=reserve_phrases,
                     include_site_factory_spec=include_site_factory_spec,
                     home_offerwall_aggregator=agg_home,
+                    home_response=resp_home,
                 )
-                if include_site_factory_spec and agg_home:
-                    max_tokens = 6000
+                if include_site_factory_spec and (agg_home or resp_home):
+                    max_tokens = 8192 if resp_home else 6000
                 elif include_site_factory_spec:
                     max_tokens = 8192
                 elif agg_home:
                     max_tokens = 2400
+                elif resp_home:
+                    max_tokens = 8192
                 else:
                     max_tokens = 1800
                 content = call_anthropic(api_key=api_key, prompt=prompt, max_tokens=max_tokens, env=env)
-                missing = [k for k in HOME_CONTENT_KEYS if k not in content or not str(content.get(k, "")).strip()]
+                if resp_home:
+                    missing = missing_response_fields(content)
+                else:
+                    missing = [k for k in HOME_CONTENT_KEYS if k not in content or not str(content.get(k, "")).strip()]
                 if missing:
                     raise RuntimeError(f"page {t.page_id}: missing fields: " + ", ".join(missing))
                 hp = resolve_site_html(site_dir, t.rel_path)
-                page_obj: Dict[str, Any] = {k: content[k] for k in HOME_CONTENT_KEYS}
+                page_obj: Dict[str, Any] = {k: content[k] for k in page_keys}
                 page_obj["target_html_path"] = str(hp.relative_to(ROOT))
                 page_obj["page_kind"] = "landing"
                 page_obj["site_rel_path"] = str(t.rel_path or "").strip().lstrip("/")
@@ -864,10 +1088,7 @@ def run_generate(env: Dict[str, str], *, include_site_factory_spec: bool, page_i
                     continue
                 hp = resolve_site_html(site_dir, t.rel_path)
                 html_in = hp.read_text(encoding="utf-8", errors="replace")
-                if is_offerwall_html(html_in):
-                    html_out = apply_content_to_offerwall_html(html_in, pdata, env)
-                else:
-                    html_out = apply_content_to_index_html(html_in, pdata)
+                html_out = apply_content_to_page_html(html_in, pdata, env)
                 hp.write_text(html_out, encoding="utf-8")
                 print("Updated:", hp)
             return
@@ -978,7 +1199,7 @@ def run_fix_density(env: Dict[str, str], *, include_site_factory_spec: bool) -> 
         apply_src = dict((merged.get("pages") or {}).get("home") or {})
     else:
         apply_src = merged
-    new_html = apply_content_to_index_html(full_html, apply_src)
+    new_html = apply_content_to_page_html(full_html, apply_src, env)
     html_path.write_text(new_html, encoding="utf-8")
     print("Updated:", html_path)
 

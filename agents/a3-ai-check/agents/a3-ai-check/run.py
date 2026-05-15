@@ -431,6 +431,16 @@ def apply_landing_content_to_html(html: str, content_block: Dict[str, Any], env:
         if callable(fn):
             return fn(html, content_block, env)
 
+    a2 = _load_a2_module()
+    if callable(getattr(a2, "is_response_html", None)) and a2.is_response_html(html):
+        fn = getattr(a2, "apply_content_to_response_html", None)
+        if callable(fn):
+            return fn(html, content_block)
+
+    page_apply = getattr(a2, "apply_content_to_page_html", None)
+    if callable(page_apply):
+        return page_apply(html, content_block, env)
+
     return apply_content_to_index_html(html, content_block)
 
 
