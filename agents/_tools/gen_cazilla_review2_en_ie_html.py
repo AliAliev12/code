@@ -8,7 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 SITE = ROOT / "sites" / "cazilla-review2-en-ie"
 ORIGIN = "https://cazilla.skin"
-MAIN = "https://cazilla.online"
+MAIN = "https://cazilla.casino"
 
 NAV = [
     ("index.html", "Home"),

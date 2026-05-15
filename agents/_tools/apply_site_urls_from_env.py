@@ -7,6 +7,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 ENV = ROOT / ".env"
+SITES = ROOT / "sites"
+
+# Legacy operator hosts replaced by MAIN_CASINO_URL from .env
+LEGACY_CASINO_HOSTS = (
+    "https://cazilla.online",
+    "https://cazilla.online/",
+)
 
 
 def load_env(path: Path) -> dict[str, str]:
@@ -22,31 +29,51 @@ def load_env(path: Path) -> dict[str, str]:
     return out
 
 
+def apply_casino_urls(text: str, casino: str) -> str:
+    for old in LEGACY_CASINO_HOSTS:
+        text = text.replace(old, casino)
+    # Normalize trailing slash variants of the target URL
+    if casino.endswith("/"):
+        bare = casino.rstrip("/")
+        text = text.replace(bare, casino)
+    return text
+
+
 def main() -> int:
     env = load_env(ENV)
     site_url = (env.get("SITE_URL") or "").strip().rstrip("/")
     casino = (env.get("MAIN_CASINO_URL") or "").strip().rstrip("/")
-    if not site_url or not casino:
-        print("Missing SITE_URL or MAIN_CASINO_URL in .env", file=sys.stderr)
-        return 1
-    rel = (env.get("SITE_DIR") or "").strip().lstrip("/")
-    site_dir = ROOT / rel
-    if not site_dir.is_dir():
-        print(f"SITE_DIR not a directory: {site_dir}", file=sys.stderr)
+    if not casino:
+        print("Missing MAIN_CASINO_URL in .env", file=sys.stderr)
         return 1
 
-    files = [site_dir / "index.html", site_dir / "cookie-policy" / "index.html"]
-    for fp in files:
-        if not fp.exists():
-            print(f"Skip missing: {fp}", file=sys.stderr)
+    site_dirs: list[Path]
+    rel = (env.get("SITE_DIR") or "").strip().lstrip("/")
+    if len(sys.argv) > 1 and sys.argv[1] == "--all":
+        site_dirs = sorted(p for p in SITES.iterdir() if p.is_dir() and not p.name.endswith(".zip"))
+    elif rel:
+        site_dirs = [ROOT / rel]
+    else:
+        site_dirs = sorted(p for p in SITES.iterdir() if p.is_dir() and not p.name.endswith(".zip"))
+
+    updated = 0
+    for site_dir in site_dirs:
+        if not site_dir.is_dir():
+            print(f"Skip missing: {site_dir}", file=sys.stderr)
             continue
-        s = fp.read_text(encoding="utf-8", errors="replace")
-        orig = s
-        s = s.replace("https://cazilla-offerwall2-en-ie.invalid", site_url)
-        s = s.replace("https://cazilla.casino", casino)
-        if s != orig:
-            fp.write_text(s, encoding="utf-8")
-            print("Updated URLs:", fp.relative_to(ROOT))
+        for fp in sorted(site_dir.rglob("*.html")):
+            s = fp.read_text(encoding="utf-8", errors="replace")
+            orig = s
+            if site_url:
+                s = s.replace("https://cazilla-offerwall2-en-ie.invalid", site_url)
+            s = apply_casino_urls(s, casino)
+            if s != orig:
+                fp.write_text(s, encoding="utf-8")
+                print("Updated URLs:", fp.relative_to(ROOT))
+                updated += 1
+
+    if updated == 0:
+        print("No HTML files needed URL updates.")
     return 0
 
 

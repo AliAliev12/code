@@ -221,7 +221,7 @@ def main() -> int:
     for k, v in env.items():
         os.environ.setdefault(k, v)
     site_origin = (os.getenv("SITE_URL") or "https://example.invalid").strip().rstrip("/")
-    main_url = (os.getenv("MAIN_CASINO_URL") or "https://cazilla.online").strip()
+    main_url = (os.getenv("MAIN_CASINO_URL") or "https://cazilla.casino").strip()
 
     kw_path = site_dir / "_output" / "keywords.json"
     if not kw_path.exists():
