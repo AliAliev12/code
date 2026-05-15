@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import os
 import sys
+from datetime import date
 from pathlib import Path
 
 
@@ -120,7 +121,7 @@ def to_url(site_origin: str, site_dir: Path, html_path: Path) -> str:
 def write_sitemap(site_dir: Path, sitemap_xml: Path, site_origin: str, locale: str) -> None:
     urls = [to_url(site_origin, site_dir, p) for p in iter_html_pages(site_dir) if p.exists()]
 
-    today = "2026-04-23"
+    today = date.today().isoformat()
     parts = [
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"',
@@ -159,6 +160,8 @@ def default_site_dir() -> str:
 
 
 def main() -> int:
+    apply_repo_dotenv(ROOT)
+
     ap = argparse.ArgumentParser()
     ap.add_argument("--mode", choices=["open", "close"], required=False)
     ap.add_argument("--site-dir", default=default_site_dir())

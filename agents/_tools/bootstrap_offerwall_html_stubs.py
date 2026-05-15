@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Write minimal offerwall HTML stubs (ow-hero + ow-prose + footer-legal) so A2 can
-apply_content_to_offerwall_html. Also writes standard legal stubs not in keywords bundle.
+apply_content_to_offerwall_html. Content paths come from keywords pages[] only; legal and
+cookie-policy stubs use a fixed path list and do not read technical_pages keywords.
 
 Usage (from repo root, with .env):
   python3 agents/_tools/bootstrap_offerwall_html_stubs.py --site-dir sites/cazilla-offerwall2-en-ie
@@ -200,13 +201,9 @@ def _shell(
 
 
 def _kw_pages(data: dict) -> list[tuple[str, dict]]:
+    """Only pages[]; technical/legal HTML is written from LEGAL_STUBS in main()."""
     out: list[tuple[str, dict]] = []
     for page in data.get("pages") or []:
-        if isinstance(page, dict):
-            rel = str(page.get("path") or "").strip().lstrip("/")
-            if rel:
-                out.append((rel, page))
-    for page in data.get("technical_pages") or []:
         if isinstance(page, dict):
             rel = str(page.get("path") or "").strip().lstrip("/")
             if rel:
@@ -277,6 +274,12 @@ def main() -> int:
             "Privacy policy",
             "We process limited technical data to run this site (for example age-check and cookie choices on your device). "
             "We do not sell personal data. Contact details for the publisher should be listed on the main site policy if required.",
+        ),
+        (
+            "cookie-policy/index.html",
+            "Cookie policy",
+            "This site uses cookies to remember your age check, cookie preference, and basic session needs. "
+            "Analytics or similar cookies, if any, are described here; you can revisit choices when prompted.",
         ),
         (
             "fair-play/index.html",

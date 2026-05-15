@@ -29,33 +29,35 @@ _BLOCK_TAGS = re.compile(
 )
 
 
-def _load_page_keywords() -> dict[str, list[str]]:
+def _load_keywords_bundle() -> tuple[dict[str, list[str]], dict[str, str]]:
+    """Return (page_id -> keyword phrases, page_id -> html path relative to site root)."""
     data = json.loads(KW_PATH.read_text(encoding="utf-8"))
-    out: dict[str, list[str]] = {}
+    kws_map: dict[str, list[str]] = {}
+    path_map: dict[str, str] = {}
     for key in ("pages", "technical_pages"):
         for page in data.get(key) or []:
             pid = str(page.get("id") or "").strip()
             if not pid:
                 continue
+            rel = str(page.get("path") or page.get("html") or "").strip().lstrip("/")
+            if rel:
+                path_map[pid] = rel
             kws = [
                 str(x.get("keyword", "")).strip().lower()
                 for x in (page.get("keywords") or [])
                 if str(x.get("keyword", "")).strip()
             ]
-            out[pid] = sorted(set(kws), key=len, reverse=True)
-    return out
+            kws_map[pid] = sorted(set(kws), key=len, reverse=True)
+    return kws_map, path_map
 
 
-def _html_path(page_id: str) -> Path | None:
-    m = {
-        "home": SITE / "index.html",
-        "we-recommend": SITE / "we-recommend.html",
-        "how-to-choose": SITE / "how-to-choose.html",
-        "player-faq": SITE / "faq.html",
-        "cookie-policy": SITE / "cookie-policy" / "index.html",
-    }
-    p = m.get(page_id)
-    return p if p and p.is_file() else None
+def _resolve_html_path(rel: str) -> Path | None:
+    p = (SITE / rel).resolve()
+    try:
+        p.relative_to(SITE.resolve())
+    except ValueError:
+        return None
+    return p if p.is_file() else None
 
 
 def _split_main(html: str) -> tuple[str, str, str] | None:
@@ -179,12 +181,18 @@ def process_file(path: Path, keywords: list[str]) -> bool:
 
 
 def main() -> int:
-    by_page = _load_page_keywords()
+    by_page, id_to_rel = _load_keywords_bundle()
     n = 0
     for pid, kws in by_page.items():
-        hp = _html_path(pid)
+        rel = id_to_rel.get(pid)
+        if not rel:
+            print(f"SKIP no path for page_id={pid!r}")
+            continue
+        hp = _resolve_html_path(rel)
         if hp and process_file(hp, kws):
             n += 1
+        elif not hp:
+            print(f"SKIP missing file: {SITE.name}/{rel}")
     print(f"Files updated: {n}")
     return 0
 

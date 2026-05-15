@@ -632,6 +632,21 @@ Input texts (JSON):
         try:
             merged = copy.deepcopy(content)
             pages_in = dict(merged.get("pages") or {})
+            site_rel = default_site_dir(env).strip().strip("/").replace("\\", "/")
+            site_prefix = site_rel + "/"
+
+            def _page_belongs_to_site_dir(pdata: Any) -> bool:
+                if not isinstance(pdata, dict):
+                    return False
+                th = str(pdata.get("target_html_path") or "").strip().replace("\\", "/")
+                return bool(th) and th.startswith(site_prefix)
+
+            pages_in = {pid: v for pid, v in pages_in.items() if _page_belongs_to_site_dir(v)}
+            if not pages_in:
+                raise SystemExit(
+                    f"No v2 content pages with target_html_path under {site_prefix!r} — "
+                    "check output/content.json and SITE_DIR."
+                )
 
             def _page_order(pid: str) -> Tuple[int, str]:
                 return (0, pid) if pid == "home" else (1, pid)
@@ -686,6 +701,8 @@ Input texts (JSON):
 
             for page_id, pdata in (merged.get("pages") or {}).items():
                 if not isinstance(pdata, dict):
+                    continue
+                if not _page_belongs_to_site_dir(pdata):
                     continue
                 th = str(pdata.get("target_html_path") or "").strip()
                 if not th:

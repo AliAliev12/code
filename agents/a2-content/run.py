@@ -287,6 +287,21 @@ def build_prompt(
     role = (
         f"You are an SEO copywriter for locale {locale} (language: {lang}). Write original, natural copy for a Cazilla review-style casino site."
     )
+    length_constraints = """- Length targets:
+  - hero_title: H1 (<= 70 chars) and must contain main keyword.
+  - hero_subtitle: 2-3 sentences.
+  - about_section: 150-200 words, include 5-7 provided keywords.
+  - bonus_section: 100-150 words.
+  - games_section: 100-150 words.
+  - footer_seo_text: 100-150 words, include as many remaining keywords as natural."""
+    if include_site_factory_spec:
+        length_constraints = """- Length targets (site factory; Ireland en-IE editorial player review of Cazilla):
+  - hero_title: plain text only, <= 70 chars, must start with the main keyword (capital first letter).
+  - hero_subtitle: 650-950 characters. State that this page is an independent player review focused on Cazilla. Allowed inline HTML: <strong>exact keyword phrases</strong>, <br><br> between short paragraphs only.
+  - about_section: 1400-2000 characters. Include EVERY keyword from the full Keyword context list at least once as exact wording. Wrap each keyword phrase in <strong>...</strong> on its first occurrence only. Separate keyword mentions by at least one full sentence; aim for roughly 250-400 characters between occurrences when practical.
+  - bonus_section: 950-1400 characters. Cover any keywords not yet used in prior fields with the same <strong> and sentence-spacing rules; if all are already used, deepen Ireland-player context without stuffing.
+  - games_section: 950-1400 characters; same rules; distribute any remaining keywords.
+  - footer_seo_text: 750-1100 characters; independent review disclaimer; weave any keywords not yet used at least once if still missing from earlier fields."""
     if home_offerwall_aggregator:
         role = (
             f"You are an SEO copywriter for locale {locale} (language: {lang}). "
@@ -335,13 +350,7 @@ Strict constraints:
 - No misleading promises, no unverifiable legal/regulator claims.
 - Neutral, informative, user-focused tone.
 - Integrate keywords naturally; avoid stuffing.
-- Length targets:
-  - hero_title: H1 (<= 70 chars) and must contain main keyword.
-  - hero_subtitle: 2-3 sentences.
-  - about_section: 150-200 words, include 5-7 provided keywords.
-  - bonus_section: 100-150 words.
-  - games_section: 100-150 words.
-  - footer_seo_text: 100-150 words, include as many remaining keywords as natural.
+{length_constraints}
 {reserve_block}
 {agg_block}
 Main keyword (H1): "{main_kw}"
@@ -779,6 +788,15 @@ def run_generate(env: Dict[str, str], *, include_site_factory_spec: bool, page_i
         if not targets_run:
             raise SystemExit(f"PAGE_ID / --page-id={filter_pid!r} not found in keywords bundle targets.")
 
+    include_tech = (env.get("A2_INCLUDE_TECHNICAL") or os.getenv("A2_INCLUDE_TECHNICAL") or "").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+        "on",
+    )
+    if not include_tech:
+        targets_run = [t for t in targets_run if t.kind == "page"]
+
     print("Keywords file:", bundle.source_path, "(bundle v2)")
     print("Targets to generate:", ", ".join(f"{t.page_id}({t.rel_path})" for t in targets_run))
     print("Reserve phrases:", len(bundle.reserve_rows))
@@ -812,7 +830,7 @@ def run_generate(env: Dict[str, str], *, include_site_factory_spec: bool, page_i
                 if include_site_factory_spec and agg_home:
                     max_tokens = 6000
                 elif include_site_factory_spec:
-                    max_tokens = 4096
+                    max_tokens = 8192
                 elif agg_home:
                     max_tokens = 2400
                 else:
