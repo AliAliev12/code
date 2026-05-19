@@ -28,6 +28,28 @@ from _lib.keywords_bundle import parse_keywords_file, pick_target, resolve_site_
 CONTENT_FORMAT_V2 = 2
 
 HUMANIZE_FIELDS = ["hero_subtitle", "about_section", "bonus_section", "games_section", "footer_seo_text"]
+CLONE_HUMANIZE_FIELDS = ["page_lead", "main_seo_html", "footer_note"]
+REVIEW_LOBBY_HUMANIZE_FIELDS = list(CLONE_HUMANIZE_FIELDS)
+OFFERWALL_SLOTS_HUMANIZE_FIELDS = list(CLONE_HUMANIZE_FIELDS)
+OFFERWALL_BONUS_HUMANIZE_FIELDS = list(CLONE_HUMANIZE_FIELDS) + ["expert_callout"]
+OFFERWALL_ABOUT_HUMANIZE_FIELDS = list(CLONE_HUMANIZE_FIELDS)
+TECHNICAL_HUMANIZE_FIELDS = ["hero_subtitle", "body_html"]
+RESPONSE_HUMANIZE_FIELDS = [
+    "hero_title",
+    "hero_subtitle",
+    "intro_meta",
+    "overview_section",
+    "licence_section",
+    "design_section",
+    "bonus_section",
+    "vip_section",
+    "payments_section",
+    "games_section",
+    "comparison_section",
+    "summary_section",
+    "author_bio",
+    "footer_seo_text",
+]
 
 
 def load_env(path: Path) -> Dict[str, str]:
@@ -135,11 +157,11 @@ def assert_landing_fields(content: Dict[str, Any], field_names: List[str], *, pa
         raise SystemExit(f"Missing fields in {loc}: {missing}")
 
 
-def merge_landing_field_updates(
-    content: Dict[str, Any], updates: Dict[str, str], *, page_id: Optional[str] = None
+def merge_page_field_updates(
+    content: Dict[str, Any], updates: Dict[str, str], *, page_id: str
 ) -> Dict[str, Any]:
     merged = copy.deepcopy(content)
-    pid = (page_id or "home").strip() or "home"
+    pid = page_id.strip() or "home"
     if content_format_version(merged) >= CONTENT_FORMAT_V2:
         pages = dict(merged.get("pages") or {})
         blk = dict(pages.get(pid) or {})
@@ -152,14 +174,35 @@ def merge_landing_field_updates(
     return merged
 
 
+def merge_landing_field_updates(
+    content: Dict[str, Any], updates: Dict[str, str], *, page_id: Optional[str] = None
+) -> Dict[str, Any]:
+    return merge_page_field_updates(content, updates, page_id=(page_id or "home").strip() or "home")
+
+
 def humanized_snapshot(merged: Dict[str, Any]) -> Any:
     if content_format_version(merged) >= CONTENT_FORMAT_V2:
         pages_out: Dict[str, Any] = {}
         for pid, pdata in (merged.get("pages") or {}).items():
             if not isinstance(pdata, dict):
                 continue
-            if pdata.get("page_kind") == "landing":
+            pk = str(pdata.get("page_kind") or "")
+            if pk == "landing":
                 pages_out[pid] = {k: str(pdata.get(k, "")) for k in ["hero_title", *HUMANIZE_FIELDS]}
+            elif pk == "clone":
+                pages_out[pid] = {k: str(pdata.get(k, "")) for k in CLONE_HUMANIZE_FIELDS}
+            elif pk == "review_lobby":
+                pages_out[pid] = {k: str(pdata.get(k, "")) for k in REVIEW_LOBBY_HUMANIZE_FIELDS}
+            elif pk == "offerwall_slots":
+                pages_out[pid] = {k: str(pdata.get(k, "")) for k in OFFERWALL_SLOTS_HUMANIZE_FIELDS}
+            elif pk == "offerwall_bonus":
+                pages_out[pid] = {k: str(pdata.get(k, "")) for k in OFFERWALL_BONUS_HUMANIZE_FIELDS}
+            elif pk == "offerwall_about":
+                pages_out[pid] = {k: str(pdata.get(k, "")) for k in OFFERWALL_ABOUT_HUMANIZE_FIELDS}
+            elif pk == "technical":
+                pages_out[pid] = {k: str(pdata.get(k, "")) for k in TECHNICAL_HUMANIZE_FIELDS}
+            elif pk == "response":
+                pages_out[pid] = {k: str(pdata.get(k, "")) for k in RESPONSE_HUMANIZE_FIELDS}
         return {"content_format_version": 2, "pages": pages_out}
     home = landing_home_block(merged)
     return {k: str(home.get(k, "")) for k in ["hero_title", *HUMANIZE_FIELDS]}
@@ -536,6 +579,129 @@ def offender_keywords_for_page(qa: Dict[str, Any], page_id: str) -> List[str]:
     return []
 
 
+def humanize_fields_for_page_kind(page_kind: str) -> List[str]:
+    pk = (page_kind or "").strip().lower()
+    if pk == "clone":
+        return list(CLONE_HUMANIZE_FIELDS)
+    if pk == "review_lobby":
+        return list(REVIEW_LOBBY_HUMANIZE_FIELDS)
+    if pk == "offerwall_slots":
+        return list(OFFERWALL_SLOTS_HUMANIZE_FIELDS)
+    if pk == "offerwall_bonus":
+        return list(OFFERWALL_BONUS_HUMANIZE_FIELDS)
+    if pk == "offerwall_about":
+        return list(OFFERWALL_ABOUT_HUMANIZE_FIELDS)
+    if pk == "technical":
+        return list(TECHNICAL_HUMANIZE_FIELDS)
+    if pk == "response":
+        return list(RESPONSE_HUMANIZE_FIELDS)
+    return list(HUMANIZE_FIELDS)
+
+
+def effective_page_kind(pdata: Dict[str, Any]) -> str:
+    """Resolve page_kind; treat response HTML stored as landing as response."""
+    pk = str(pdata.get("page_kind") or "").strip().lower()
+    if pk == "landing":
+        th = str(pdata.get("target_html_path") or "").strip()
+        if th:
+            hp = (ROOT / th).resolve()
+            if hp.is_file():
+                a2 = _load_a2_module()
+                if callable(getattr(a2, "is_response_html", None)) and a2.is_response_html(
+                    hp.read_text(encoding="utf-8", errors="replace")
+                ):
+                    return "response"
+    return pk
+
+
+def build_humanize_prompt(
+    *,
+    fields: List[str],
+    blk: Dict[str, Any],
+    page_id: str,
+    locale: str,
+    lang: str,
+    must_phrase_rule: str,
+) -> str:
+    return f"""
+You are an SEO copywriter and anti-AI-detection editor for locale {locale} (language: {lang}).
+
+Page id: {page_id}
+Rewrite these texts so they sound genuinely human:
+- natural style, varied sentence lengths, concrete vocabulary
+- keep meaning and language aligned with locale {locale}
+- avoid mechanical repetition and robotic marketing phrasing
+- preserve relevant keywords and <strong> markup already present in HTML fields
+{must_phrase_rule}- do not add new sections; keep fluent paragraph style
+- for HTML fields: keep valid HTML (<h2>, <p>, <ul><li>, <strong>); do not add <h1>
+
+Return ONLY valid JSON (no markdown) with exactly these keys:
+{fields}
+
+Input texts (JSON):
+{json.dumps({k: blk[k] for k in fields}, ensure_ascii=False, indent=2)}
+""".strip()
+
+
+def call_humanize_json(
+    *,
+    api_key: str,
+    prompt: str,
+    fields: List[str],
+    models: List[str],
+    max_tokens: int = 2400,
+) -> Dict[str, Any]:
+    last_err: Optional[Exception] = None
+    for model in models:
+        try:
+            res = call_anthropic(api_key=api_key, prompt=prompt, model=model, max_tokens=max_tokens)
+            obj = extract_json_from_text(res["text"])
+            for k in fields:
+                if not isinstance(obj.get(k), str) or not obj[k].strip():
+                    raise ValueError(f"Field {k} missing/empty in model output.")
+            return obj
+        except Exception as e:
+            last_err = e
+            time.sleep(0.35)
+    raise RuntimeError(str(last_err or "model failed"))
+
+
+def apply_v2_page_html(doc: str, pdata: Dict[str, Any], env: Dict[str, str]) -> str:
+    pk = str(pdata.get("page_kind") or "")
+    a2 = _load_a2_module()
+    if pk == "landing":
+        return apply_landing_content_to_html(doc, pdata, env)
+    if pk == "offerwall_slots":
+        fn = getattr(a2, "apply_content_to_offerwall_slots_html", None)
+        if callable(fn):
+            return fn(doc, pdata, env)
+    if pk == "offerwall_bonus":
+        fn = getattr(a2, "apply_content_to_offerwall_bonus_html", None)
+        if callable(fn):
+            return fn(doc, pdata, env)
+    if pk == "offerwall_about":
+        fn = getattr(a2, "apply_content_to_offerwall_about_html", None)
+        if callable(fn):
+            return fn(doc, pdata, env)
+    if pk == "clone":
+        fn = getattr(a2, "apply_content_to_clone_html", None)
+        if callable(fn):
+            return fn(doc, pdata)
+    if pk == "review_lobby":
+        fn = getattr(a2, "apply_content_to_review_lobby_html", None)
+        if callable(fn):
+            return fn(doc, pdata)
+    if pk == "technical":
+        fn = getattr(a2, "apply_content_to_technical_html", None)
+        if callable(fn):
+            return fn(doc, pdata)
+    if pk == "response":
+        fn = getattr(a2, "apply_content_to_response_html", None)
+        if callable(fn):
+            return fn(doc, pdata)
+    return doc
+
+
 def build_humanize_subset_prompt(fields: List[str], subset: Dict[str, Any], offender_kws: List[str], env: Dict[str, str]) -> str:
     offenders = ", ".join([f'"{k}"' for k in offender_kws]) if offender_kws else "(none)"
     locale, lang = require_locale_lang(env)
@@ -661,50 +827,53 @@ Input texts (JSON):
             def _page_order(pid: str) -> Tuple[int, str]:
                 return (0, pid) if pid == "home" else (1, pid)
 
+            humanize_kinds = {
+                "landing",
+                "clone",
+                "review_lobby",
+                "offerwall_slots",
+                "offerwall_bonus",
+                "offerwall_about",
+                "technical",
+                "response",
+            }
             for page_id in sorted(pages_in.keys(), key=_page_order):
                 pdata = pages_in[page_id]
                 if not isinstance(pdata, dict):
                     continue
-                pk = str(pdata.get("page_kind") or "")
+                pk = effective_page_kind(pdata)
+                if pk not in humanize_kinds:
+                    continue
+                page_fields = humanize_fields_for_page_kind(pk)
                 if pk == "landing":
-                    assert_landing_fields(merged, ["hero_title", *fields], page_id=page_id)
+                    assert_landing_fields(merged, ["hero_title", *page_fields], page_id=page_id)
                     blk = landing_page_block(merged, page_id)
-                    prompt = f"""
-You are an SEO copywriter and anti-AI-detection editor for locale {locale} (language: {lang}).
-
-Page id: {page_id}
-Rewrite these texts so they sound genuinely human:
-- natural style, varied sentence lengths, concrete vocabulary
-- keep meaning and language aligned with locale {locale}
-- avoid mechanical repetition and robotic marketing phrasing
-- preserve relevant keywords already present
-{must_phrase_rule}- do not add new sections; keep fluent paragraph style
-
-Return ONLY valid JSON (no markdown) with exactly these keys:
-{fields}
-
-Input texts (JSON):
-{json.dumps({k: blk[k] for k in fields}, ensure_ascii=False, indent=2)}
-""".strip()
-                    obj: Optional[Dict[str, Any]] = None
-                    for model in models:
-                        try:
-                            res = call_anthropic(api_key=api_key, prompt=prompt, model=model, max_tokens=2400)
-                            obj = extract_json_from_text(res["text"])
-                            break
-                        except Exception as e:
-                            last_err = e
-                            time.sleep(0.35)
-                    if not obj:
-                        raise RuntimeError(str(last_err or "model failed"))
-                    for k in fields:
-                        if not isinstance(obj.get(k), str) or not obj[k].strip():
-                            raise ValueError(f"{page_id}: field {k} missing/empty in model output.")
-                    merged = merge_landing_field_updates(merged, {k: obj[k] for k in fields}, page_id=page_id)
-                    print(f"--- Humanized landing: {page_id} ---")
-                    for k in fields:
-                        b, a = summarize_diff(str(blk[k]), str(obj[k]))
-                        print(f"[{page_id}.{k}] ORIG:", b, "\nNEW :", a)
+                else:
+                    blk = dict((merged.get("pages") or {}).get(page_id) or {})
+                    missing = [f for f in page_fields if f not in blk or not str(blk.get(f, "")).strip()]
+                    if missing:
+                        raise SystemExit(f"{page_id}: missing fields in content.json: {missing}")
+                prompt = build_humanize_prompt(
+                    fields=page_fields,
+                    blk=blk,
+                    page_id=page_id,
+                    locale=locale,
+                    lang=lang,
+                    must_phrase_rule=must_phrase_rule,
+                )
+                max_tok = 8192 if pk in ("clone", "review_lobby", "technical", "response") else 2400
+                obj = call_humanize_json(
+                    api_key=api_key,
+                    prompt=prompt,
+                    fields=page_fields,
+                    models=models,
+                    max_tokens=max_tok,
+                )
+                merged = merge_page_field_updates(merged, {k: obj[k] for k in page_fields}, page_id=page_id)
+                print(f"--- Humanized {pk}: {page_id} ---")
+                for k in page_fields:
+                    b, a = summarize_diff(str(blk[k]), str(obj[k]))
+                    print(f"[{page_id}.{k}] ORIG:", b, "\nNEW :", a)
 
             write_json(in_path, merged)
             write_json(out_path, humanized_snapshot(merged))
@@ -721,12 +890,13 @@ Input texts (JSON):
                 if not hp.exists():
                     print(f"WARN: skip missing HTML for {page_id}: {th}")
                     continue
+                pk = effective_page_kind(pdata)
+                if pk not in humanize_kinds:
+                    continue
                 doc = hp.read_text(encoding="utf-8", errors="replace")
-                pk = str(pdata.get("page_kind") or "")
-                if pk == "landing":
-                    doc2 = apply_landing_content_to_html(doc, pdata, env)
-                else:
-                    doc2 = doc
+                apply_pdata = dict(pdata)
+                apply_pdata["page_kind"] = pk
+                doc2 = apply_v2_page_html(doc, apply_pdata, env)
                 hp.write_text(doc2, encoding="utf-8")
                 print(f"Updated HTML: {hp.relative_to(ROOT)}")
 
@@ -900,6 +1070,9 @@ def main(argv: List[str]) -> int:
     env = load_env(ENV_PATH)
     for k, v in env.items():
         os.environ.setdefault(k, v)
+    for k, v in os.environ.items():
+        if v is not None and str(v).strip():
+            env[k] = str(v).strip()
 
     p = argparse.ArgumentParser()
     p.add_argument("--recheck", action="store_true")

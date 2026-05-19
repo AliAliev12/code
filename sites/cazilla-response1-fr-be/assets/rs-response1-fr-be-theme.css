@@ -1,0 +1,96 @@
+/* Cazilla response1-fr-be — Belgian editorial (teal / coral) */
+:root {
+  --rs-navy: #0d3d38;
+  --rs-navy-dark: #062824;
+  --rs-accent: #d64545;
+  --rs-accent-hover: #b83838;
+  --rs-bg: #f0f7f6;
+  --rs-card: #ffffff;
+  --rs-ink: #0f1f1e;
+  --rs-muted: #5a6f6c;
+  --rs-line: #cfe5e1;
+  --rs-star: #e8a317;
+  --rs-star-empty: #c5d9d5;
+  --rs-success: #0d7a5f;
+  --rs-max: 1100px;
+}
+
+body {
+  background-image: linear-gradient(165deg, #f7fcfb 0%, var(--rs-bg) 45%, #e8f2f0 100%);
+}
+
+.hero h1,
+.sectionHead h2,
+.rs-section h2,
+.rs-section h3,
+.reviewTitle {
+  color: var(--rs-navy);
+  letter-spacing: -0.02em;
+}
+
+.topbar {
+  background: var(--rs-navy-dark);
+  border-bottom: 3px solid var(--rs-accent);
+}
+
+.logoMark {
+  background: linear-gradient(135deg, var(--rs-accent), #f08080);
+  color: #fff;
+}
+
+.btn.primary {
+  background: var(--rs-accent);
+  border-color: var(--rs-accent);
+  color: #fff;
+  font-weight: 700;
+}
+
+.btn.primary:hover {
+  background: var(--rs-accent-hover);
+  border-color: var(--rs-accent-hover);
+}
+
+.rs-sidebar a:hover,
+.rs-sidebar a.is-active {
+  background: #e6f4f1;
+  color: var(--rs-navy);
+}
+
+.rs-ribbon {
+  background: #e6f4f1;
+  border-bottom: 1px solid var(--rs-line);
+  color: var(--rs-navy);
+}
+
+.rs-score-pill {
+  background: var(--rs-navy);
+  color: #fff;
+}
+
+.rs-toc a:hover {
+  border-color: var(--rs-accent);
+  color: var(--rs-accent);
+}
+
+.rs-gallery-viewport {
+  background: linear-gradient(145deg, #062824 0%, #0d3d38 100%);
+}
+
+.rs-gallery-viewport img {
+  object-fit: contain;
+  object-position: center;
+}
+
+.rs-gallery-dots button.is-active {
+  background: var(--rs-accent);
+}
+
+.tag {
+  background: #e6f4f1;
+  color: var(--rs-navy);
+}
+
+.heroActions .btn.primary {
+  background: var(--rs-success);
+  border-color: var(--rs-success);
+}

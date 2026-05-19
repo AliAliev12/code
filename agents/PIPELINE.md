@@ -23,7 +23,7 @@ This repo contains static sites under `sites/` and a set of agents to generate, 
 }
 ```
 
-- **Footer / `technical_pages`**: состав юрстраниц в футере и правила ключей (умеренный объём на страницу; необязательность вставки ключей в **H2**/**H3** — **только** для страниц из **`technical_pages`**) — см. **`agents/prompts/cazilla-site-factory-ru.md`** (раздел **«Футер и технические страницы»**).
+- **Footer / `technical_pages`**: состав юрстраниц в футере, ключи только из `technical_pages[]`, объём **1500–3000** символов в `<main>`, генерация текста A2 (`--technical`); оболочка — `tech_page_html` + `assets/` — см. **`agents/prompts/cazilla-site-factory-ru.md`** (раздел **«Футер и технические страницы»**).
 
 - **Site output**: `<SITE_DIR>/**/index.html` + `assets/*` + `robots.txt` + `sitemap.xml`
 - **QA outputs** (written to `output/`):

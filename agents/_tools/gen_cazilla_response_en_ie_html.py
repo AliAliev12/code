@@ -8,9 +8,14 @@ from __future__ import annotations
 import html
 import json
 import shutil
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+_TOOLS = Path(__file__).resolve().parent
+if str(_TOOLS) not in sys.path:
+    sys.path.insert(0, str(_TOOLS))
+from response_locale_profiles import apply_fr_be_profile, fr_be_compliance_block, is_fr_be_site  # noqa: E402
 ENV_PATH = ROOT / ".env"
 PICTURE_SRC = ROOT / "sites" / "cazilla-offerwall2-en-ie" / "assets" / "pictures"
 R3_ASSETS = ROOT / "sites" / "cazilla-review3-en-ie" / "assets"
@@ -43,6 +48,55 @@ SITE, ORIGIN, SITE_SLUG = resolve_site_targets()
 SITE_NAME = "Cazilla Expert Test"
 STUB = "Editorial placeholder. A2 will replace with locale-specific expert review copy."
 
+HTML_LANG = "en-IE"
+MIN_AGE = 18
+HREFLANG = "en-IE"
+OG_LOCALE = "en_IE"
+ROBOTS_CONTENT = "index, follow"
+USE_FR_COMPLIANCE = False
+THEME_CSS_FILE = ""
+THEME_CSS_BODY = ""
+INDEX_TITLE = "Cazilla expert review | Ireland online casino test"
+INDEX_DESC = "Independent expert test-drive review of Cazilla for Ireland: licence, bonuses, payments, games, and player-focused verdict."
+HERO_H1_DEFAULT = "Cazilla expert review for Ireland"
+RIBBON = "independent expert review for Ireland (en-IE). We do not operate a casino."
+DISCLAIMER = "18+ only. Gambling involves risk. Use licensed operators."
+SCORE_META = "Expert test-drive score"
+CTA_OFFICIAL = "Official site"
+CTA_VISIT = "Visit Cazilla"
+FOOTER_POLICIES_H2 = "Policies and disclosures"
+FOOTER_COOKIE = "Cookie policy"
+BACK_REVIEW = "Back to review"
+LEGAL_RIBBON = "Legal information for Ireland readers"
+GALLERY_PREV = "Prev"
+GALLERY_NEXT = "Next"
+PROS_LABEL = "Pros"
+CONS_LABEL = "Cons"
+COMMENTS_H2 = "Reader comments"
+FAQ_H2 = "FAQ"
+AUTHOR_H2 = "About the author"
+INTRO_H2 = "Introduction"
+OVERVIEW_TABLE_ARIA = "Cazilla at a glance"
+OVERVIEW_ROWS = [
+    ("Licence", "Malta Gaming Authority (MGA)"),
+    ("Welcome bonus", "First-deposit match + free spins (40x wagering)"),
+    ("Min deposit", "€10"),
+    ("Withdrawal speed", "E-wallets ~24h; cards 1–3 business days"),
+    ("Game providers", "40+ (NetEnt, Pragmatic Play, Evolution, Play'n GO)"),
+    ("Mobile", "Responsive web — full catalogue on iOS and Android"),
+]
+SECTION_SPECS = [
+    ("rs-overview", "Overview & methodology", "overview_section"),
+    ("rs-licence", "Licence & security", "licence_section"),
+    ("rs-design", "Design & UX", "design_section"),
+    ("rs-bonuses", "Bonuses & promotions", "bonus_section"),
+    ("rs-vip", "VIP programme", "vip_section"),
+    ("rs-payments", "Payments & withdrawals", "payments_section"),
+    ("rs-games", "Games & providers", "games_section"),
+    ("rs-comparison", "Comparison with alternatives", "comparison_section"),
+    ("rs-summary", "Summary & verdict", "summary_section"),
+]
+
 SCREENSHOTS = [
     "assets/pictures/casino-feature-visual.png",
     "assets/pictures/slots-showcase.png",
@@ -65,7 +119,7 @@ PAGE_COMMENTS = [
         "date": "12 Apr 2026",
         "stars": "★★★★★",
         "title": "Fair bonus terms",
-        "body": "Welcome offer was clear and wagering sat in a sensible range. Withdrawal to my Irish debit card took two business days after KYC.",
+        "body": "Clear welcome offer and fair wagering. Paid out to my Irish debit card in two business days once KYC was done.",
         "tags": "bonus,withdrawal",
     },
     {
@@ -74,7 +128,7 @@ PAGE_COMMENTS = [
         "date": "3 Apr 2026",
         "stars": "★★★★☆",
         "title": "Strong slots lobby",
-        "body": "Huge catalogue and filters work on mobile. Would like more transparent RTP notes beside thumbnails.",
+        "body": "Massive slots library; filters work well on mobile. RTP info next to each thumbnail would be a nice touch.",
         "tags": "slots,mobile",
     },
     {
@@ -83,7 +137,7 @@ PAGE_COMMENTS = [
         "date": "28 Mar 2026",
         "stars": "★★★★☆",
         "title": "VIP feels attainable",
-        "body": "Cashback tier unlocked after regular play without chasing losses. Support answered a limit question quickly.",
+        "body": "Reached cashback tier through normal play, not grinding. Live chat sorted a deposit-limit question in minutes.",
         "tags": "vip,support",
     },
 ]
@@ -293,8 +347,7 @@ def footer_legal_html(*, current: str | None = None) -> str:
     )
 
 
-def compliance_block() -> str:
-    return """<div class="complianceOverlay" id="ageGate" role="dialog" aria-modal="true" aria-labelledby="ageTitle">
+_COMPLIANCE_EN_IE = """<div class="complianceOverlay" id="ageGate" role="dialog" aria-modal="true" aria-labelledby="ageTitle">
   <div class="complianceDialog">
     <h2 id="ageTitle">Confirm you are 18 or over</h2>
     <p>This site discusses regulated gambling topics for readers in Ireland. You must be at least 18 to continue.</p>
@@ -315,13 +368,17 @@ def compliance_block() -> str:
   </div>
 </div>"""
 
+def compliance_block() -> str:
+    if USE_FR_COMPLIANCE:
+        return fr_be_compliance_block()
+    return _COMPLIANCE_EN_IE
 
 def actions_html() -> str:
     return f"""          <div class="actions">
             <button class="btn icon hamburger" id="hamburger" type="button" aria-label="Open menu">≡</button>
             <button class="btn icon sidebarToggle" id="sidebarToggle" type="button" aria-label="Open section menu">☰</button>
-            <a class="btn" href="{MAIN}" rel="noopener noreferrer" target="_blank">Official site</a>
-            <a class="btn primary" href="{MAIN}" rel="noopener noreferrer" target="_blank">Visit Cazilla</a>
+            <a class="btn" href="{MAIN}" rel="noopener noreferrer" target="_blank">{CTA_OFFICIAL}</a>
+            <a class="btn primary" href="{MAIN}" rel="noopener noreferrer" target="_blank">{CTA_VISIT}</a>
           </div>"""
 
 
@@ -379,13 +436,13 @@ def pros_cons_html() -> str:
     cons = "\n".join(f"              <li>{html.escape(STUB[:65])}</li>" for _ in range(2))
     return f"""        <div class="rs-pros-cons">
           <div>
-            <h3>Pros</h3>
+            <h3>{PROS_LABEL}</h3>
             <ul class="rs-pros" data-a2-field="pros">
 {pros}
             </ul>
           </div>
           <div>
-            <h3>Cons</h3>
+            <h3>{CONS_LABEL}</h3>
             <ul class="rs-cons" data-a2-field="cons">
 {cons}
             </ul>
@@ -429,7 +486,7 @@ def faq_html() -> str:
           </details>"""
         )
     return f"""        <section id="rs-faq" class="rs-section rs-faq">
-          <h2>FAQ</h2>
+          <h2>{FAQ_H2}</h2>
           <div class="rs-prose" data-a2-field="faq_section">
 {chr(10).join(items)}
           </div>
@@ -439,7 +496,7 @@ def faq_html() -> str:
 def comments_html() -> str:
     cards = "\n".join(review_card(c) for c in PAGE_COMMENTS)
     return f"""        <section id="rs-comments" class="rs-section rs-comments">
-          <h2>Reader comments</h2>
+          <h2>{COMMENTS_H2}</h2>
           <div class="reviewFeed">
 {cards}
           </div>
@@ -447,24 +504,23 @@ def comments_html() -> str:
 
 
 def index_html() -> str:
-    sections = "\n".join(
-        [
-            section_html("rs-overview", "Overview & methodology", "overview_section", extra=overview_table_html() + "\n"),
-            f"""        <section id="rs-intro" class="rs-section">
-          <h2>Introduction</h2>
+    theme_link = f'<link rel="stylesheet" href="assets/{THEME_CSS_FILE}" />\n' if THEME_CSS_FILE else ""
+    section_parts: list[str] = []
+    for sid, heading, field in SECTION_SPECS:
+        extra = overview_table_html() + "\n" if sid == "rs-overview" else ""
+        section_parts.append(section_html(sid, heading, field, extra=extra))
+    section_parts.insert(
+        1,
+        f"""        <section id="rs-intro" class="rs-section">
+          <h2>{html.escape(INTRO_H2)}</h2>
           <p class="rs-intro-meta" data-a2-field="intro_meta">{html.escape(STUB)}</p>
         </section>""",
-            section_html("rs-licence", "Licence & security", "licence_section"),
-            section_html("rs-design", "Design & UX", "design_section"),
-            section_html("rs-bonuses", "Bonuses & promotions", "bonus_section"),
-            section_html("rs-vip", "VIP programme", "vip_section"),
-            section_html("rs-payments", "Payments & withdrawals", "payments_section"),
-            section_html("rs-games", "Games & providers", "games_section"),
-            section_html("rs-comparison", "Comparison with alternatives", "comparison_section"),
-            section_html("rs-summary", "Summary & verdict", "summary_section"),
+    )
+    section_parts.extend(
+        [
             faq_html(),
             f"""        <section id="rs-author" class="rs-section">
-          <h2>About the author</h2>
+          <h2>{html.escape(AUTHOR_H2)}</h2>
           <div class="rs-author-card" data-a2-field="author_bio">
             <p class="rs-body">{html.escape(STUB)}</p>
           </div>
@@ -472,22 +528,23 @@ def index_html() -> str:
             comments_html(),
         ]
     )
+    sections = "\n".join(section_parts)
     return f"""<!doctype html>
-<html lang="en-IE" data-site-kind="response" data-min-gambling-age="18">
+<html lang="{HTML_LANG}" data-site-kind="response" data-min-gambling-age="{MIN_AGE}">
   <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Cazilla expert review | Ireland online casino test</title>
-<meta name="description" content="Independent expert test-drive review of Cazilla for Ireland: licence, bonuses, payments, games, and player-focused verdict." />
-<meta name="robots" content="index, follow" />
+<title>{html.escape(INDEX_TITLE)}</title>
+<meta name="description" content="{html.escape(INDEX_DESC)}" />
+<meta name="robots" content="{ROBOTS_CONTENT}" />
 <link rel="canonical" href="{ORIGIN}/" />
-<link rel="alternate" hreflang="en-IE" href="{ORIGIN}/" />
+<link rel="alternate" hreflang="{HREFLANG}" href="{ORIGIN}/" />
 <link rel="alternate" hreflang="x-default" href="{ORIGIN}/" />
-<meta property="og:title" content="Cazilla expert review | Ireland" />
-<meta property="og:description" content="Expert test-drive review of Cazilla for Irish players." />
+<meta property="og:title" content="{html.escape(INDEX_TITLE)}" />
+<meta property="og:description" content="{html.escape(INDEX_DESC)}" />
 <meta property="og:url" content="{ORIGIN}/" />
 <meta property="og:type" content="article" />
-<meta property="og:locale" content="en_IE" />
+<meta property="og:locale" content="{OG_LOCALE}" />
 <meta property="og:image" content="{ORIGIN}/assets/pictures/og-logo.svg" />
 <script type="application/ld+json">
   {{
@@ -500,7 +557,7 @@ def index_html() -> str:
 <link rel="stylesheet" href="assets/rs-shell.css" />
 <link rel="stylesheet" href="assets/rs-page.css" />
 <link rel="stylesheet" href="assets/rs-compliance.css" />
-  </head>
+{theme_link}  </head>
   <body class="rs-layout">
 {compliance_block()}
 <div id="siteContent" class="app rs-app">
@@ -516,20 +573,20 @@ def index_html() -> str:
         </nav>
 {actions_html()}
       </header>
-      <p class="rs-ribbon"><span class="stars" aria-hidden="true">★★★★★</span> <strong>{html.escape(SITE_NAME)}</strong> — independent expert review for Ireland (en-IE). We do not operate a casino.</p>
+      <p class="rs-ribbon"><span class="stars" aria-hidden="true">★★★★★</span> <strong>{html.escape(SITE_NAME)}</strong> — {html.escape(RIBBON)}</p>
       <main class="main rs-main" id="top">
         <section class="hero" aria-label="Hero">
           <div class="heroInner">
-            <h1 data-a2-field="hero_title">Cazilla expert review for Ireland</h1>
+            <h1 data-a2-field="hero_title">{html.escape(HERO_H1_DEFAULT)}</h1>
             <p class="subtitle" data-a2-field="hero_subtitle">{html.escape(STUB)}</p>
             <div class="rs-hero-rating" aria-label="Editorial rating">
               <p class="rs-score-pill">5.0 <span>/ 5.0</span></p>
               <span class="scoreStars" aria-hidden="true">★★★★★</span>
-              <span class="scoreMeta">Expert test-drive score</span>
+              <span class="scoreMeta">{html.escape(SCORE_META)}</span>
             </div>
-            <div class="disclaimerBar">18+ only. Gambling involves risk. Use licensed operators.</div>
+            <div class="disclaimerBar">{html.escape(DISCLAIMER)}</div>
             <div class="heroActions">
-              <a class="btn primary" href="{MAIN}" rel="noopener noreferrer" target="_blank">Visit Cazilla</a>
+              <a class="btn primary" href="{MAIN}" rel="noopener noreferrer" target="_blank">{CTA_VISIT}</a>
             </div>
           </div>
         </section>
@@ -539,10 +596,10 @@ def index_html() -> str:
 {sections}
       </main>
       <footer class="footer rs-footer" id="footer">
-        <div class="sectionHead"><h2>Policies and disclosures</h2></div>
+        <div class="sectionHead"><h2>{html.escape(FOOTER_POLICIES_H2)}</h2></div>
 {footer_legal_html()}
         <p class="fineprint" data-a2-field="footer">{html.escape(STUB)}</p>
-        <p class="fineprint">© <span id="year">2026</span> {html.escape(SITE_NAME)}. <a href="cookie-policy.html">Cookie policy</a></p>
+        <p class="fineprint">© <span id="year">2026</span> {html.escape(SITE_NAME)}. <a href="cookie-policy.html">{html.escape(FOOTER_COOKIE)}</a></p>
       </footer>
     </div>
   </div>
@@ -576,27 +633,28 @@ def tech_body(slug: str) -> str:
 def tech_page_html(rel: str, title: str, description: str, h1: str, hero_sub: str, slug: str) -> str:
     canonical = f"{ORIGIN}/{rel}"
     body = tech_body(slug)
+    theme_link = f'<link rel="stylesheet" href="assets/{THEME_CSS_FILE}" />\n' if THEME_CSS_FILE else ""
     return f"""<!doctype html>
-<html lang="en-IE" data-site-kind="response" data-min-gambling-age="18">
+<html lang="{HTML_LANG}" data-site-kind="response" data-min-gambling-age="{MIN_AGE}">
   <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>{html.escape(title)}</title>
 <meta name="description" content="{html.escape(description)}" />
-<meta name="robots" content="index, follow" />
+<meta name="robots" content="{ROBOTS_CONTENT}" />
 <link rel="canonical" href="{html.escape(canonical)}" />
-<link rel="alternate" hreflang="en-IE" href="{html.escape(canonical)}" />
+<link rel="alternate" hreflang="{HREFLANG}" href="{html.escape(canonical)}" />
 <link rel="alternate" hreflang="x-default" href="{html.escape(canonical)}" />
 <meta property="og:title" content="{html.escape(title)}" />
 <meta property="og:description" content="{html.escape(description)}" />
 <meta property="og:url" content="{html.escape(canonical)}" />
 <meta property="og:type" content="website" />
-<meta property="og:locale" content="en_IE" />
+<meta property="og:locale" content="{OG_LOCALE}" />
 <meta property="og:image" content="{ORIGIN}/assets/pictures/og-logo.svg" />
 <link rel="stylesheet" href="assets/rs-shell.css" />
 <link rel="stylesheet" href="assets/rs-page.css" />
 <link rel="stylesheet" href="assets/rs-compliance.css" />
-  </head>
+{theme_link}  </head>
   <body class="rs-layout innerPage">
 {compliance_block()}
 <div id="siteContent" class="app rs-app">
@@ -605,11 +663,11 @@ def tech_page_html(rel: str, title: str, description: str, h1: str, hero_sub: st
       <a class="logoText" href="index.html" aria-label="{html.escape(SITE_NAME)} home"><span class="logoMark" aria-hidden="true">C</span><span class="logoWord">{html.escape(SITE_NAME.upper())}</span></a>
     </div>
     <nav class="navLinks" id="mainNav" aria-label="Main navigation">
-      <a href="index.html">Review home</a>
+      <a href="index.html">{html.escape("Accueil" if HTML_LANG == "fr-BE" else "Review home")}</a>
     </nav>
 {actions_html()}
   </header>
-  <p class="rs-ribbon"><strong>Legal information</strong> for Ireland readers — {html.escape(SITE_NAME)}.</p>
+  <p class="rs-ribbon">{html.escape(LEGAL_RIBBON)}</p>
   <main class="main rs-main">
     <section class="hero" aria-label="Hero">
       <div class="heroInner">
@@ -618,7 +676,7 @@ def tech_page_html(rel: str, title: str, description: str, h1: str, hero_sub: st
       </div>
     </section>
     <div class="policyCard">{body}</div>
-    <p class="fineprint" style="margin: 24px 0"><a href="index.html">Back to review</a></p>
+    <p class="fineprint" style="margin: 24px 0"><a href="index.html">{html.escape(BACK_REVIEW)}</a></p>
   </main>
   <footer class="footer rs-footer">
 {footer_legal_html(current=rel)}
@@ -833,6 +891,8 @@ def write_assets() -> None:
         encoding="utf-8",
     )
     (assets / "rs-site.js").write_text(RS_SITE_JS, encoding="utf-8")
+    if THEME_CSS_FILE and THEME_CSS_BODY:
+        (assets / THEME_CSS_FILE).write_text(THEME_CSS_BODY, encoding="utf-8")
 
 
 def copy_pictures() -> None:
@@ -859,7 +919,7 @@ def write_sitemap() -> None:
         entries.append(
             f"""  <url>
     <loc>{loc}</loc>
-    <xhtml:link rel="alternate" hreflang="en-IE" href="{loc}"/>
+    <xhtml:link rel="alternate" hreflang="{HREFLANG}" href="{loc}"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="{loc}"/>
     <lastmod>2026-05-15</lastmod>
     <changefreq>weekly</changefreq>
@@ -933,7 +993,44 @@ def write_keywords_scaffold() -> None:
     out.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
+
+def configure_from_env(env: dict[str, str]) -> None:
+    global SITE, ORIGIN, SITE_SLUG, SITE_NAME, STUB, MAIN, HTML_LANG, MIN_AGE, HREFLANG
+    global OG_LOCALE, ROBOTS_CONTENT, USE_FR_COMPLIANCE, THEME_CSS_FILE, THEME_CSS_BODY, TECH_SPECS
+    SITE, ORIGIN, SITE_SLUG = resolve_site_targets(env)
+    MAIN = (env.get("MAIN_CASINO_URL") or MAIN).strip().rstrip("/") or MAIN
+    noindex = (env.get("PREDEPLOY_NOINDEX") or "").strip().lower() in ("true", "1", "yes")
+    ROBOTS_CONTENT = "noindex, nofollow" if noindex else "index, follow"
+    if is_fr_be_site(env, SITE_SLUG):
+        apply_fr_be_profile(globals())
+        load_tech_specs_from_keywords()
+
+
+def load_tech_specs_from_keywords() -> None:
+    global TECH_SPECS
+    kw_path = SITE / "_output" / "keywords.json"
+    if not kw_path.is_file():
+        return
+    data = json.loads(kw_path.read_text(encoding="utf-8"))
+    specs: list[tuple[str, str, str, str, str, str]] = []
+    for tp in data.get("technical_pages") or []:
+        if not isinstance(tp, dict):
+            continue
+        slug = str(tp.get("id", "")).strip()
+        rel = str(tp.get("path", "")).strip()
+        label = str(tp.get("menu_label", slug)).strip()
+        if not slug or not rel:
+            continue
+        title = f"{label} | {SITE_NAME}"
+        desc = f"{label} — {SITE_NAME}, lecteurs en Belgique."
+        specs.append((slug, rel, title, desc, label, f"Informations — {label}"))
+    if specs:
+        TECH_SPECS = specs
+
+
 def main() -> None:
+    env = _load_env()
+    configure_from_env(env)
     SITE.mkdir(parents=True, exist_ok=True)
     (SITE / "index.html").write_text(index_html(), encoding="utf-8")
     for slug, rel, title, desc, h1, hero_sub in TECH_SPECS:
@@ -946,7 +1043,11 @@ def main() -> None:
     write_robots()
     write_sitemap()
     write_htaccess()
-    write_keywords_scaffold()
+    kw_path = SITE / "_output" / "keywords.json"
+    if not kw_path.is_file():
+        write_keywords_scaffold()
+    else:
+        print("Keep existing keywords:", kw_path)
     print("Wrote response site ->", SITE)
 
 

@@ -1,0 +1,154 @@
+/* Cazilla response2 — distinct editorial theme (not response1 navy/blue) */
+:root {
+  --rs-navy: #2d1b3d;
+  --rs-navy-dark: #1a0f24;
+  --rs-accent: #c9a227;
+  --rs-accent-hover: #b8921f;
+  --rs-bg: #faf6f0;
+  --rs-card: #fffcf7;
+  --rs-ink: #1c1410;
+  --rs-muted: #6b5d52;
+  --rs-line: #e8ddd0;
+  --rs-star: #c9a227;
+  --rs-star-empty: #d4c4b0;
+  --rs-success: #2d6a4f;
+  --rs-max: 1080px;
+  --rs-font: "Georgia", "Times New Roman", Times, serif;
+  --rs-font-ui: "Segoe UI", ui-sans-serif, system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+  font-family: var(--rs-font-ui);
+  background-image: linear-gradient(180deg, #fff9f0 0%, var(--rs-bg) 40%, #f0e6d8 100%);
+}
+
+.hero h1,
+.sectionHead h2,
+.rs-section h2,
+.rs-section h3,
+.reviewTitle {
+  font-family: var(--rs-font);
+  color: var(--rs-navy);
+}
+
+.topbar {
+  background: var(--rs-navy-dark);
+  border-bottom: 3px solid var(--rs-accent);
+}
+
+.logoMark {
+  background: linear-gradient(135deg, var(--rs-accent), #e8c96a);
+  color: var(--rs-navy-dark);
+}
+
+.btn.primary {
+  background: var(--rs-accent);
+  border-color: var(--rs-accent);
+  color: var(--rs-navy-dark);
+  font-weight: 700;
+}
+
+.btn.primary:hover {
+  background: var(--rs-accent-hover);
+  border-color: var(--rs-accent-hover);
+}
+
+.rs-sidebar {
+  background: var(--rs-card);
+  border-right: 1px solid var(--rs-line);
+}
+
+.rs-sidebar a:hover,
+.rs-sidebar a.is-active {
+  background: #f5ecd8;
+  color: var(--rs-navy);
+}
+
+.rs-ribbon {
+  background: #f5ecd8;
+  border-bottom: 1px solid var(--rs-line);
+  color: var(--rs-navy);
+}
+
+.rs-score-pill {
+  background: var(--rs-navy);
+  color: var(--rs-accent);
+}
+
+.rs-toc {
+  background: var(--rs-card);
+  border: 1px solid var(--rs-line);
+  border-radius: 10px;
+}
+
+/* Gallery: show full logos, never crop */
+.rs-gallery {
+  border-radius: 14px;
+  border-color: var(--rs-line);
+}
+
+.rs-gallery-viewport {
+  position: relative;
+  min-height: 280px;
+  max-height: 420px;
+  aspect-ratio: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, #1a0f24 0%, #2d1b3d 100%);
+  padding: 24px 16px;
+}
+
+.rs-gallery-viewport img {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: auto;
+  height: auto;
+  max-width: min(92%, 520px);
+  max-height: min(88%, 360px);
+  object-fit: contain;
+  object-position: center;
+  display: none;
+}
+
+.rs-gallery-viewport img.is-active {
+  display: block;
+}
+
+.rs-gallery-dots button.is-active {
+  background: var(--rs-accent);
+}
+
+.tag {
+  background: #f5ecd8;
+  color: var(--rs-navy);
+}
+
+.heroActions .btn.primary {
+  background: var(--rs-success);
+  border-color: var(--rs-success);
+  color: #fff;
+}
+
+.rs-game-logos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  margin: 0 0 18px;
+  padding: 16px;
+  background: #f5ecd8;
+  border-radius: 12px;
+  border: 1px solid var(--rs-line);
+}
+
+.rs-game-logos img {
+  max-width: 140px;
+  max-height: 90px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+}

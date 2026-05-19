@@ -273,3 +273,31 @@ body.innerPage .topbar .actions .btn.primary:hover {
     grid-template-columns: 1fr;
   }
 }
+
+/* A2 technical pages: policy body container */
+body.innerPage .policyCard,
+body.lv-body .policyCard {
+  max-width: 1180px;
+  margin: 22px auto;
+  padding: 0 22px;
+}
+body.innerPage .policyCard .sectionCard,
+body.lv-body .policyCard .sectionCard {
+  margin: 0;
+}
+body.innerPage .policyCard p,
+body.lv-body .policyCard p,
+body.innerPage .policyCard .ow-prose p {
+  margin: 0 0 12px;
+  line-height: 1.7;
+  color: #334155;
+}
+body.innerPage .policyCard .sectionHead h2,
+body.lv-body .policyCard h2 {
+  margin-top: 18px;
+}
+body.innerPage .policyCard h3,
+body.lv-body .policyCard h3 {
+  margin: 14px 0 8px;
+  font-size: 15px;
+}

@@ -1,0 +1,531 @@
+{
+  "version": 2,
+  "locale": "en-IE",
+  "site": "cazilla-clone2-en-ie",
+  "pages": [
+    {
+      "id": "home",
+      "path": "/index.html",
+      "menu_label": "Home",
+      "cluster": "cl_home",
+      "notes": "",
+      "keywords": [
+        {
+          "keyword": "irish casino online",
+          "search_volume": 6600,
+          "keyword_difficulty": 38.0,
+          "cpc": 163.27,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "casino online",
+          "search_volume": 3600,
+          "keyword_difficulty": 46.0,
+          "cpc": 111.89,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "online casino site",
+          "search_volume": 320,
+          "keyword_difficulty": 53.0,
+          "cpc": 119.01,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "play casino online",
+          "search_volume": 170,
+          "keyword_difficulty": 53.0,
+          "cpc": 98.24,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "play online casino for real money",
+          "search_volume": 40,
+          "keyword_difficulty": 62.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "casino mobile online",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino play casino games",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "live-casino",
+      "path": "/live-casino.html",
+      "menu_label": "Live casino",
+      "cluster": "cl_live_casino",
+      "notes": "Live Casino",
+      "keywords": [
+        {
+          "keyword": "online casino live",
+          "search_volume": 320,
+          "keyword_difficulty": 37.0,
+          "cpc": 112.29,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "live casino online",
+          "search_volume": 320,
+          "keyword_difficulty": 35.0,
+          "cpc": 112.29,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "casino live online",
+          "search_volume": 320,
+          "keyword_difficulty": 35.0,
+          "cpc": 112.29,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online live casino",
+          "search_volume": 320,
+          "keyword_difficulty": 33.0,
+          "cpc": 112.29,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "live online casino",
+          "search_volume": 70,
+          "keyword_difficulty": 35.0,
+          "cpc": 184.35,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best online live casino",
+          "search_volume": 50,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "live online casino real money",
+          "search_volume": 30,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "play live casino games online",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "live casino games online",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "about",
+      "path": "/about.html",
+      "menu_label": "About",
+      "cluster": "cl_about",
+      "notes": "About",
+      "keywords": [
+        {
+          "keyword": "new online casino",
+          "search_volume": 880,
+          "keyword_difficulty": 37.0,
+          "cpc": 126.69,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino real money",
+          "search_volume": 590,
+          "keyword_difficulty": 62.0,
+          "cpc": 139.38,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino sites",
+          "search_volume": 320,
+          "keyword_difficulty": 53.0,
+          "cpc": 119.01,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino reviews",
+          "search_volume": 170,
+          "keyword_difficulty": 11.0,
+          "cpc": 75.71,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "fastest payout online casino",
+          "search_volume": 110,
+          "keyword_difficulty": 8.0,
+          "cpc": 242.33,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "casino online offers",
+          "search_volume": 90,
+          "keyword_difficulty": 47.0,
+          "cpc": 130.04,
+          "competition": "LOW"
+        }
+      ]
+    },
+    {
+      "id": "casino-games",
+      "path": "/casino-games.html",
+      "menu_label": "Casino games",
+      "cluster": "cl_casino_games",
+      "notes": "Casino Games",
+      "keywords": [
+        {
+          "keyword": "casino online games",
+          "search_volume": 5400,
+          "keyword_difficulty": 53.0,
+          "cpc": 133.64,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino game",
+          "search_volume": 590,
+          "keyword_difficulty": 53.0,
+          "cpc": 120.23,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino free spins",
+          "search_volume": 260,
+          "keyword_difficulty": 57.0,
+          "cpc": 20.83,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "casino online no deposit",
+          "search_volume": 260,
+          "keyword_difficulty": 22.0,
+          "cpc": 12.77,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino free spins no deposit",
+          "search_volume": 110,
+          "keyword_difficulty": 22.0,
+          "cpc": 10.97,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino bonus offers",
+          "search_volume": 30,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        }
+      ]
+    },
+    {
+      "id": "slots",
+      "path": "/slots.html",
+      "menu_label": "Slots",
+      "cluster": "cl_slots",
+      "notes": "Slots",
+      "keywords": [
+        {
+          "keyword": "online casino slots",
+          "search_volume": 590,
+          "keyword_difficulty": 55.0,
+          "cpc": 154.22,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "casino slots online",
+          "search_volume": 590,
+          "keyword_difficulty": 45.0,
+          "cpc": 154.22,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "casino online for real money",
+          "search_volume": 590,
+          "keyword_difficulty": 42.0,
+          "cpc": 139.38,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online slots casino",
+          "search_volume": 590,
+          "keyword_difficulty": 38.0,
+          "cpc": 154.22,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino bonuses",
+          "search_volume": 390,
+          "keyword_difficulty": 47.0,
+          "cpc": 186.44,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best online casino slots",
+          "search_volume": 140,
+          "keyword_difficulty": 47.0,
+          "cpc": 247.97,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best casino bonuses online",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    }
+  ],
+  "technical_pages": [
+    {
+      "id": "user-agreement",
+      "path": "user-agreement.html",
+      "menu_label": "User agreement",
+      "cluster": "cl_user_agreement",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "casino play online ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "live online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "cookie-policy",
+      "path": "cookie-policy.html",
+      "menu_label": "Cookie policy",
+      "cluster": "cl_cookie_policy",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "online casino payment methods ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "republic of ireland online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casinos ireland ireland casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "fair-play",
+      "path": "fair-play.html",
+      "menu_label": "Fair play",
+      "cluster": "cl_fair_play",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "ireland online casino games",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "how online casino cashback bonuses work ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino legal in ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "payments-withdrawals",
+      "path": "payments-withdrawals.html",
+      "menu_label": "Payments & withdrawals",
+      "cluster": "cl_payments_withdrawals",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "online casino ireland paypal",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "real online casino ireland no deposit",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "best online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino ireland no deposit free spins",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "privacy-policy",
+      "path": "privacy-policy.html",
+      "menu_label": "Privacy policy",
+      "cluster": "cl_privacy_policy",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "online casino ireland no deposit bonus",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "best casino ireland online",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "free online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "responsible-gambling",
+      "path": "responsible-gambling.html",
+      "menu_label": "Responsible gambling",
+      "cluster": "cl_responsible_gambling",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "fast payout online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "good online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino license ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "aml-kyc",
+      "path": "aml-kyc.html",
+      "menu_label": "AML & KYC",
+      "cluster": "cl_aml_kyc",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "legit online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "newest online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino 10 minimum deposit",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino minimum deposit 5 euro",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino no minimum deposit",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino instant withdrawal",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
+    }
+  ],
+  "reserve": []
+}

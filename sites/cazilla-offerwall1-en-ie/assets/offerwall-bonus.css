@@ -1,0 +1,208 @@
+/* Offerwall bonuses hub */
+.ow-bonusHero h1 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.35rem, 3vw, 1.85rem);
+  line-height: 1.25;
+}
+
+.ow-bonusChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0 0 1.25rem;
+}
+
+.ow-bonusChips a {
+  display: inline-flex;
+  padding: 0.38rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--text, #f4f2ff);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--stroke, rgba(255, 255, 255, 0.14));
+}
+
+.ow-bonusChips a:hover {
+  border-color: rgba(177, 76, 255, 0.45);
+  background: rgba(177, 76, 255, 0.12);
+}
+
+.ow-bonusIntro {
+  margin: 0 0 1.75rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--muted, rgba(255, 255, 255, 0.78));
+}
+
+.ow-bonusExpert {
+  margin: 0 0 2rem;
+  padding: 1rem 1.1rem;
+  border-radius: 14px;
+  border-left: 3px solid rgba(177, 76, 255, 0.65);
+  background: rgba(177, 76, 255, 0.08);
+}
+
+.ow-bonusExpert h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+}
+
+.ow-bonusExpert p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--muted, rgba(255, 255, 255, 0.78));
+}
+
+.ow-bonusToplist {
+  margin: 0 0 2.25rem;
+}
+
+.ow-bonusToplistTitle {
+  margin: 0 0 1rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.ow-bonusTableWrap {
+  overflow-x: auto;
+  margin: 0 0 2rem;
+}
+
+.ow-bonusTableWrap h2 {
+  margin: 0 0 0.85rem;
+  font-size: 1.15rem;
+}
+
+.ow-bonusTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.ow-bonusTable th,
+.ow-bonusTable td {
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--stroke, rgba(255, 255, 255, 0.12));
+  text-align: left;
+}
+
+.ow-bonusTable th {
+  background: rgba(255, 255, 255, 0.06);
+  font-weight: 700;
+}
+
+.ow-bonusTable tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.ow-bonusBrandCards {
+  display: grid;
+  gap: 1.25rem;
+  margin: 0 0 2.25rem;
+}
+
+.ow-bonusBrandCard {
+  border: 1px solid var(--stroke, rgba(255, 255, 255, 0.12));
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.ow-bonusBrandCard h3 {
+  margin: 0 0 0.65rem;
+  font-size: 1.05rem;
+}
+
+.ow-bonusSpecTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+
+.ow-bonusSpecTable th,
+.ow-bonusSpecTable td {
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--stroke, rgba(255, 255, 255, 0.1));
+}
+
+.ow-bonusSpecTable th {
+  width: 38%;
+  color: var(--muted2, rgba(255, 255, 255, 0.55));
+  font-weight: 600;
+}
+
+.ow-bonusQuickNav {
+  margin: 0 0 2rem;
+}
+
+.ow-bonusQuickNav h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.05rem;
+}
+
+.ow-bonusQuickNavGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ow-bonusQuickNavGrid a {
+  font-size: 0.82rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--stroke, rgba(255, 255, 255, 0.12));
+  color: var(--muted, rgba(255, 255, 255, 0.78));
+  text-decoration: none;
+}
+
+.ow-bonusQuickNavGrid a:hover {
+  color: var(--text);
+}
+
+.ow-bonusSeo h2 {
+  margin: 1.75rem 0 0.65rem;
+  font-size: 1.2rem;
+}
+
+.ow-bonusSeo h2:first-child {
+  margin-top: 0;
+}
+
+.ow-bonusSeo h3 {
+  margin: 1.1rem 0 0.45rem;
+  font-size: 1.02rem;
+}
+
+.ow-bonusFaq {
+  margin: 2rem 0 0;
+}
+
+.ow-bonusFaqTitle {
+  margin: 0 0 1rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.ow-bonusFaq details {
+  border: 1px solid var(--stroke, rgba(255, 255, 255, 0.12));
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.65rem;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.ow-bonusFaq summary {
+  cursor: pointer;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.ow-bonusFaq details p {
+  margin: 0.65rem 0 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--muted, rgba(255, 255, 255, 0.78));
+}

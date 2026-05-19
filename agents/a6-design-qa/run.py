@@ -155,7 +155,7 @@ def norm_space(s: str) -> str:
 
 
 def get_title(html: str) -> Optional[str]:
-    m = find_first(r"(?is)<title>\s*(.*?)\s*</title>", html)
+    m = find_first(r"(?is)<title[^>]*>\s*(.*?)\s*</title>", html)
     return norm_space(m.group(1)) if m else None
 
 
@@ -282,7 +282,23 @@ def audit_single_page(
     results: List[CheckResult] = []
 
     title = get_title(html)
-    if title and 30 <= len(title) <= 60:
+    if qa_profile == "technical":
+        if title and 55 <= len(title) <= 60:
+            results.append(
+                ok("seo.title.length", "title присутствует и длина 55-60 символов (technical)", length=len(title), title=title)
+            )
+        elif title:
+            results.append(
+                fail(
+                    "seo.title.length",
+                    "title присутствует, но длина вне диапазона 55-60 (technical)",
+                    length=len(title),
+                    title=title,
+                )
+            )
+        else:
+            results.append(fail("seo.title.length", "title отсутствует"))
+    elif title and 30 <= len(title) <= 60:
         results.append(ok("seo.title.length", "title присутствует и длина 30-60 символов", length=len(title), title=title))
     elif title:
         results.append(fail("seo.title.length", "title присутствует, но длина вне диапазона 30-60", length=len(title), title=title))
@@ -290,7 +306,26 @@ def audit_single_page(
         results.append(fail("seo.title.length", "title отсутствует"))
 
     desc = get_meta_content(html, name="description")
-    if desc and 110 <= len(desc) <= 180:
+    if qa_profile == "technical":
+        if desc and len(desc) <= 140:
+            results.append(
+                ok(
+                    "seo.meta_description.length",
+                    "meta description присутствует и длина ≤140 символов (technical)",
+                    length=len(desc),
+                )
+            )
+        elif desc:
+            results.append(
+                fail(
+                    "seo.meta_description.length",
+                    "meta description длиннее 140 символов (technical)",
+                    length=len(desc),
+                )
+            )
+        else:
+            results.append(fail("seo.meta_description.length", "meta description отсутствует"))
+    elif desc and 110 <= len(desc) <= 180:
         results.append(ok("seo.meta_description.length", "meta description присутствует и длина 110-180 символов", length=len(desc)))
     elif desc:
         results.append(
@@ -302,6 +337,43 @@ def audit_single_page(
         )
     else:
         results.append(fail("seo.meta_description.length", "meta description отсутствует"))
+
+    if qa_profile == "technical":
+        card_m = re.search(
+            r'(?is)<div\s+class="policyCard">([\s\S]*?)</div>\s*<p\s+class="fineprint"',
+            html,
+        )
+        if not card_m:
+            card_m = re.search(
+                r'(?is)<article\s+class="rb-policyArticle"[^>]*>([\s\S]*?)</article>',
+                html,
+            )
+        if not card_m:
+            card_m = re.search(
+                r'(?is)<div\s+class="rb-policyCard">([\s\S]*?)</div>\s*</main>',
+                html,
+            )
+        main_frag = card_m.group(1) if card_m else ""
+        if not main_frag.strip():
+            main_m = re.search(r"(?is)<main\b[^>]*>([\s\S]*?)</main>", html)
+            main_frag = main_m.group(1) if main_m else ""
+        main_len = len(strip_tags(main_frag))
+        if 1500 <= main_len <= 3000:
+            results.append(
+                ok(
+                    "content.technical.main_length",
+                    "объём текста в main 1500-3000 символов (technical)",
+                    length=main_len,
+                )
+            )
+        else:
+            results.append(
+                fail(
+                    "content.technical.main_length",
+                    "объём текста в main вне диапазона 1500-3000 (technical)",
+                    length=main_len,
+                )
+            )
 
     if has_link_rel(html, "canonical"):
         results.append(ok("seo.canonical", "canonical тег присутствует"))
@@ -339,7 +411,12 @@ def audit_single_page(
         if has_schema_type(html, "Organization")
         else warn("seo.schema.organization", "schema.org Organization отсутствует (optional)", note="Recommended but not required.")
     )
-    results.append(ok("seo.schema.website", "schema.org WebSite присутствует") if has_schema_type(html, "WebSite") else fail("seo.schema.website", "schema.org WebSite отсутствует"))
+    if has_schema_type(html, "WebSite"):
+        results.append(ok("seo.schema.website", "schema.org WebSite присутствует"))
+    elif qa_profile == "technical":
+        results.append(warn("seo.schema.website", "schema.org WebSite отсутствует (optional on technical pages)"))
+    else:
+        results.append(fail("seo.schema.website", "schema.org WebSite отсутствует"))
 
     robots = get_meta_content(html, name="robots")
     rl = (robots or "").lower()

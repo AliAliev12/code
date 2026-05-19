@@ -20,6 +20,9 @@ LEGACY_SITE_URLS = (
     "https://cazilla-offerwall2-en-ie.invalid",
     "https://cazilla-response-en-ie.invalid",
     "https://cazilla.tmp.invalid",
+    "https://cazilla.invalid.tmp.domain",
+    "https://cazilla.eu",
+    "https://cazilla.eu/",
 )
 
 

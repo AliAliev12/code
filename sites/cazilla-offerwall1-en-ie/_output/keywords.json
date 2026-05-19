@@ -397,378 +397,238 @@
       ]
     }
   ],
-  "technical_pages": [],
-  "reserve": [
+  "technical_pages": [
     {
-      "keyword": "casino online game",
-      "search_volume": 5400,
-      "keyword_difficulty": 68.0,
-      "cpc": 133.64,
-      "competition": "LOW"
+      "id": "user-agreement",
+      "path": "user-agreement/index.html",
+      "menu_label": "User agreement",
+      "cluster": "cl_user_agreement",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "casino play online ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "live online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
     },
     {
-      "keyword": "online games casino",
-      "search_volume": 5400,
-      "keyword_difficulty": 53.0,
-      "cpc": 133.64,
-      "competition": "LOW"
+      "id": "cookie-policy",
+      "path": "cookie-policy/index.html",
+      "menu_label": "Cookie policy",
+      "cluster": "cl_cookie_policy",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "online casino payment methods ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "republic of ireland online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casinos ireland ireland casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
     },
     {
-      "keyword": "no deposit bonus online casino",
-      "search_volume": 2400,
-      "keyword_difficulty": 2.0,
-      "cpc": 10.68,
-      "competition": "MEDIUM"
+      "id": "fair-play",
+      "path": "fair-play/index.html",
+      "menu_label": "Fair play",
+      "cluster": "cl_fair_play",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "ireland online casino games",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "how online casino cashback bonuses work ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino legal in ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
     },
     {
-      "keyword": "casino online games real money",
-      "search_volume": 590,
-      "keyword_difficulty": 69.0,
-      "cpc": 139.38,
-      "competition": "LOW"
+      "id": "payments-withdrawals",
+      "path": "payments-withdrawals/index.html",
+      "menu_label": "Payments & withdrawals",
+      "cluster": "cl_payments_withdrawals",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "online casino ireland paypal",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "real online casino ireland no deposit",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "best online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino ireland no deposit free spins",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
     },
     {
-      "keyword": "casino gambling online",
-      "search_volume": 590,
-      "keyword_difficulty": 56.0,
-      "cpc": 120.23,
-      "competition": "LOW"
+      "id": "privacy-policy",
+      "path": "privacy-policy/index.html",
+      "menu_label": "Privacy policy",
+      "cluster": "cl_privacy_policy",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "online casino ireland no deposit bonus",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "best casino ireland online",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "free online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
     },
     {
-      "keyword": "online casino games real money",
-      "search_volume": 590,
-      "keyword_difficulty": 55.0,
-      "cpc": 139.38,
-      "competition": "LOW"
+      "id": "responsible-gambling",
+      "path": "responsible-gambling/index.html",
+      "menu_label": "Responsible gambling",
+      "cluster": "cl_responsible_gambling",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "fast payout online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "good online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino license ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
     },
     {
-      "keyword": "casino games online real money",
-      "search_volume": 590,
-      "keyword_difficulty": 49.0,
-      "cpc": 139.38,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "slots casino online",
-      "search_volume": 590,
-      "keyword_difficulty": 47.0,
-      "cpc": 154.22,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "online casino for real money",
-      "search_volume": 590,
-      "keyword_difficulty": 38.0,
-      "cpc": 139.38,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "online casino games for real money",
-      "search_volume": 590,
-      "keyword_difficulty": 38.0,
-      "cpc": 139.38,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "biggest online casino",
-      "search_volume": 390,
-      "keyword_difficulty": 37.0,
-      "cpc": 140.28,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "best online casino payout",
-      "search_volume": 260,
-      "keyword_difficulty": 13.0,
-      "cpc": 183.18,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "best online casino for payout",
-      "search_volume": 260,
-      "keyword_difficulty": 8.0,
-      "cpc": 183.18,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "best paying online casino",
-      "search_volume": 260,
-      "keyword_difficulty": 6.0,
-      "cpc": 183.18,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "best online slots casino",
-      "search_volume": 140,
-      "keyword_difficulty": 47.0,
-      "cpc": 247.97,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "online casino no deposit free spins",
-      "search_volume": 110,
-      "keyword_difficulty": 0.0,
-      "cpc": 10.97,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "online casino best deals",
-      "search_volume": 70,
-      "keyword_difficulty": 38.0,
-      "cpc": 0.0,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "best casino online sites",
-      "search_volume": 70,
-      "keyword_difficulty": 21.0,
-      "cpc": 0.0,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "online casino irish",
-      "search_volume": 50,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "online casino with live dealers",
-      "search_volume": 30,
-      "keyword_difficulty": 0.0,
-      "cpc": 303.8,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "live dealer online casino",
-      "search_volume": 30,
-      "keyword_difficulty": 0.0,
-      "cpc": 303.8,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "online casino with no minimum deposit",
-      "search_volume": 30,
-      "keyword_difficulty": 0.0,
-      "cpc": 45.62,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "online casino games live",
-      "search_volume": 30,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "new casino games online",
-      "search_volume": 20,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "best online casino games for real money",
-      "search_volume": 20,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": ""
-    },
-    {
-      "keyword": "new online casino sites",
-      "search_volume": 20,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "best online casino bonus offers",
-      "search_volume": 20,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "crypto casino online",
-      "search_volume": 20,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "brand new online casino",
-      "search_volume": 20,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "best online casino apps",
-      "search_volume": 20,
-      "keyword_difficulty": 0.0,
-      "cpc": 211.72,
-      "competition": "MEDIUM"
-    },
-    {
-      "keyword": "play online casino slots",
-      "search_volume": 10,
-      "keyword_difficulty": 85.0,
-      "cpc": 0.0,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "online casino live roulette",
-      "search_volume": 10,
-      "keyword_difficulty": 46.0,
-      "cpc": 0.0,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "best online casino with instant withdrawal",
-      "search_volume": 10,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "best roulette online casino",
-      "search_volume": 10,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "online casino fast payout",
-      "search_volume": 10,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "play live casino online",
-      "search_volume": 10,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": "LOW"
-    },
-    {
-      "keyword": "online live casino bonus",
-      "search_volume": 10,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": ""
-    },
-    {
-      "keyword": "casino games online for money",
-      "search_volume": 0,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": ""
-    },
-    {
-      "keyword": "online casino best deal",
-      "search_volume": 0,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": ""
-    },
-    {
-      "keyword": "real casino online for real money",
-      "search_volume": 0,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": ""
-    },
-    {
-      "keyword": "online new casino",
-      "search_volume": 0,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": ""
-    },
-    {
-      "keyword": "play online live casino games",
-      "search_volume": 0,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": ""
-    },
-    {
-      "keyword": "secure online casino with fast withdrawal options",
-      "search_volume": 0,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": ""
-    },
-    {
-      "keyword": "no deposit real money online casino",
-      "search_volume": 0,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": ""
-    },
-    {
-      "keyword": "online casino slots ireland",
-      "search_volume": 0,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": ""
-    },
-    {
-      "keyword": "top rated casino online",
-      "search_volume": 0,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": ""
-    },
-    {
-      "keyword": "best new casino online",
-      "search_volume": 0,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": ""
-    },
-    {
-      "keyword": "casino online live games",
-      "search_volume": 0,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": ""
-    },
-    {
-      "keyword": "live casino games online slots",
-      "search_volume": 0,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": ""
-    },
-    {
-      "keyword": "live games casino online",
-      "search_volume": 0,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": ""
-    },
-    {
-      "keyword": "new casino online games",
-      "search_volume": 0,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": ""
-    },
-    {
-      "keyword": "online live roulette casino game",
-      "search_volume": 0,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": ""
-    },
-    {
-      "keyword": "online live casino games",
-      "search_volume": 0,
-      "keyword_difficulty": 0.0,
-      "cpc": 0.0,
-      "competition": ""
+      "id": "aml-kyc",
+      "path": "aml-kyc/index.html",
+      "menu_label": "AML & KYC",
+      "cluster": "cl_aml_kyc",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "legit online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "newest online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino 10 minimum deposit",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino minimum deposit 5 euro",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino no minimum deposit",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino instant withdrawal",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
     }
-  ]
+  ],
+  "reserve": []
 }

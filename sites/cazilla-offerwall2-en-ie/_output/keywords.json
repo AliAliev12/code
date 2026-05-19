@@ -271,6 +271,238 @@
       ]
     }
   ],
-  "technical_pages": [],
+  "technical_pages": [
+    {
+      "id": "user-agreement",
+      "path": "user-agreement/index.html",
+      "menu_label": "User agreement",
+      "cluster": "cl_user_agreement",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "casino play online ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "live online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "cookie-policy",
+      "path": "cookie-policy/index.html",
+      "menu_label": "Cookie policy",
+      "cluster": "cl_cookie_policy",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "online casino payment methods ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "republic of ireland online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casinos ireland ireland casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "fair-play",
+      "path": "fair-play/index.html",
+      "menu_label": "Fair play",
+      "cluster": "cl_fair_play",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "ireland online casino games",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "how online casino cashback bonuses work ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino legal in ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "payments-withdrawals",
+      "path": "payments-withdrawals/index.html",
+      "menu_label": "Payments & withdrawals",
+      "cluster": "cl_payments_withdrawals",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "online casino ireland paypal",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "real online casino ireland no deposit",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "best online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino ireland no deposit free spins",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "privacy-policy",
+      "path": "privacy-policy/index.html",
+      "menu_label": "Privacy policy",
+      "cluster": "cl_privacy_policy",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "online casino ireland no deposit bonus",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "best casino ireland online",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "free online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "responsible-gambling",
+      "path": "responsible-gambling/index.html",
+      "menu_label": "Responsible gambling",
+      "cluster": "cl_responsible_gambling",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "fast payout online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "good online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino license ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "aml-kyc",
+      "path": "aml-kyc/index.html",
+      "menu_label": "AML & KYC",
+      "cluster": "cl_aml_kyc",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "legit online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "newest online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino 10 minimum deposit",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino minimum deposit 5 euro",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino no minimum deposit",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino instant withdrawal",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
+    }
+  ],
   "reserve": []
 }

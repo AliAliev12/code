@@ -24,7 +24,7 @@ def _nice_label_from_id(page_id: str) -> str:
     return page_id.replace("-", " ").strip().title()
 
 
-def _collect_menu_items(data: dict) -> list[tuple[str, str]]:
+def _collect_menu_items(data: dict, *, content_only: bool = False) -> list[tuple[str, str]]:
     out: list[tuple[str, str]] = []
     for page in data.get("pages") or []:
         if not isinstance(page, dict):
@@ -34,6 +34,8 @@ def _collect_menu_items(data: dict) -> list[tuple[str, str]]:
             continue
         label = str(page.get("menu_label") or "").strip() or _nice_label_from_id(str(page.get("id") or "page"))
         out.append((rel, label))
+    if content_only:
+        return out
     for page in data.get("technical_pages") or []:
         if not isinstance(page, dict):
             continue
@@ -76,6 +78,11 @@ _NAV_RE = re.compile(
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--site-dir", type=Path, required=True)
+    ap.add_argument(
+        "--content-only",
+        action="store_true",
+        help="Drawer lists pages[] only (legal links stay in footer).",
+    )
     args = ap.parse_args()
     site_dir = (ROOT / args.site_dir).resolve() if not args.site_dir.is_absolute() else args.site_dir
     kw_path = site_dir / "_output" / "keywords.json"
@@ -84,7 +91,7 @@ def main() -> int:
         return 1
 
     data = json.loads(kw_path.read_text(encoding="utf-8"))
-    items = _collect_menu_items(data)
+    items = _collect_menu_items(data, content_only=bool(args.content_only))
     if not items:
         print("No pages in keywords.json", file=sys.stderr)
         return 1

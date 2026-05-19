@@ -1,0 +1,417 @@
+{
+  "version": 2,
+  "locale": "fr-BE",
+  "site": "cazilla-offerwall1-fr-be",
+  "pages": [
+    {
+      "id": "home",
+      "path": "/index.html",
+      "menu_label": "Accueil",
+      "cluster": "cl_home",
+      "notes": "",
+      "keywords": [
+        {
+          "keyword": "casino en ligne gratuit",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "casino en ligne belgique liste",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "site casino en ligne",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "nieuwe online casino belgie",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino be",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "slots",
+      "path": "/slots.html",
+      "menu_label": "Machines à sous",
+      "cluster": "cl_slots",
+      "notes": "Slots",
+      "keywords": [
+        {
+          "keyword": "jeux casino en ligne",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "casino jeux en ligne",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "jeux casino en ligne gratuit",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "jeux de casino gratuit en ligne",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "bonus",
+      "path": "/bonus.html",
+      "menu_label": "Bonus",
+      "cluster": "cl_bonus",
+      "notes": "Bonus",
+      "keywords": [
+        {
+          "keyword": "casino en ligne bonus",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "casino en ligne bonus gratuit",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "casino en ligne bonus sans depot",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "casino online belgie bonus gratis",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "casino en ligne sans depot",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "bonus de bienvenue casino en ligne",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "about",
+      "path": "/about.html",
+      "menu_label": "About",
+      "cluster": "cl_about",
+      "notes": "About",
+      "keywords": [
+        {
+          "keyword": "casino en ligne belgique",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "casino fiable en ligne",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "casino gratuit en ligne",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "meilleurs casino en ligne",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "meilleur site casino en ligne",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    }
+  ],
+  "technical_pages": [
+    {
+      "id": "user-agreement",
+      "path": "user-agreement.html",
+      "menu_label": "Conditions d'utilisation",
+      "cluster": "cl_user_agreement",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "casino play online ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "live online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "cookie-policy",
+      "path": "cookie-policy.html",
+      "menu_label": "Politique cookies",
+      "cluster": "cl_cookie_policy",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "online casino payment methods ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "republic of ireland online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casinos ireland ireland casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "fair-play",
+      "path": "fair-play.html",
+      "menu_label": "Jeu équitable",
+      "cluster": "cl_fair_play",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "ireland online casino games",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "how online casino cashback bonuses work ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino legal in ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "payments-withdrawals",
+      "path": "payments-withdrawals.html",
+      "menu_label": "Paiements et retraits",
+      "cluster": "cl_payments_withdrawals",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "online casino ireland paypal",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "real online casino ireland no deposit",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "best online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino ireland no deposit free spins",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "privacy-policy",
+      "path": "privacy-policy.html",
+      "menu_label": "Politique de confidentialité",
+      "cluster": "cl_privacy_policy",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "online casino ireland no deposit bonus",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "best casino ireland online",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "free online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "responsible-gambling",
+      "path": "responsible-gambling.html",
+      "menu_label": "Jeu responsable",
+      "cluster": "cl_responsible_gambling",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "fast payout online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "good online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino license ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "aml-kyc",
+      "path": "aml-kyc.html",
+      "menu_label": "AML et KYC",
+      "cluster": "cl_aml_kyc",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "legit online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "newest online casino ireland",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino 10 minimum deposit",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino minimum deposit 5 euro",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino no minimum deposit",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino instant withdrawal",
+          "search_volume": 0,
+          "keyword_difficulty": 0,
+          "cpc": 0,
+          "competition": ""
+        }
+      ]
+    }
+  ],
+  "reserve": []
+}

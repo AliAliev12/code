@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://cazilla.win/</loc>
+    <xhtml:link rel="alternate" hreflang="fr-BE" href="https://cazilla.win/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.win/"/>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://cazilla.win/user-agreement.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-BE" href="https://cazilla.win/user-agreement.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.win/user-agreement.html"/>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://cazilla.win/cookie-policy.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-BE" href="https://cazilla.win/cookie-policy.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.win/cookie-policy.html"/>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://cazilla.win/fair-play.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-BE" href="https://cazilla.win/fair-play.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.win/fair-play.html"/>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://cazilla.win/payments-withdrawals.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-BE" href="https://cazilla.win/payments-withdrawals.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.win/payments-withdrawals.html"/>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://cazilla.win/privacy-policy.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-BE" href="https://cazilla.win/privacy-policy.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.win/privacy-policy.html"/>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://cazilla.win/responsible-gambling.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-BE" href="https://cazilla.win/responsible-gambling.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.win/responsible-gambling.html"/>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://cazilla.win/aml-kyc.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr-BE" href="https://cazilla.win/aml-kyc.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.win/aml-kyc.html"/>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+</urlset>

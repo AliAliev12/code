@@ -1,0 +1,118 @@
+/* Offerwall about / trust page */
+.ow-aboutHero h1 {
+  margin: 0 0 0.85rem;
+  font-size: clamp(1.35rem, 3vw, 1.85rem);
+  line-height: 1.25;
+}
+
+.ow-aboutIntro {
+  margin: 0 0 2rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--muted, rgba(255, 255, 255, 0.78));
+}
+
+.ow-aboutValues {
+  margin: 0 0 2.25rem;
+}
+
+.ow-aboutValuesTitle {
+  margin: 0 0 1rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.ow-aboutValuesGrid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 720px) {
+  .ow-aboutValuesGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.ow-aboutValueCard {
+  padding: 1rem 1.05rem;
+  border-radius: 14px;
+  border: 1px solid var(--stroke, rgba(255, 255, 255, 0.12));
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.ow-aboutValueIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: 0 0 0.65rem;
+  border-radius: 12px;
+  background: rgba(177, 76, 255, 0.12);
+  color: rgba(210, 170, 255, 0.95);
+}
+
+.ow-aboutValueIcon svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+.ow-aboutValueCard h3 {
+  margin: 0 0 0.45rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.ow-aboutValueCard p {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--muted, rgba(255, 255, 255, 0.76));
+}
+
+.ow-aboutPolicyLinks {
+  margin: 0 0 2rem;
+  font-size: 0.9rem;
+}
+
+.ow-aboutPolicyLinks a {
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.ow-aboutPartner {
+  margin: 0 0 2.25rem;
+}
+
+.ow-aboutPartnerTitle {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.ow-aboutPartner .ow-topGrid {
+  grid-template-columns: 1fr;
+  max-width: 420px;
+}
+
+.ow-aboutPartner .ow-aggDisclaimer {
+  margin-bottom: 0.85rem;
+}
+
+.ow-aboutSeo h2 {
+  margin: 1.5rem 0 0.65rem;
+  font-size: 1.1rem;
+}
+
+.ow-aboutSeo h2:first-child {
+  margin-top: 0;
+}
+
+.ow-aboutSeo p {
+  margin: 0 0 0.85rem;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}

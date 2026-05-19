@@ -1,0 +1,173 @@
+/* Offerwall slots catalog (finder + grid + toplist) */
+.ow-slotsHero {
+  margin-bottom: 1.5rem;
+}
+
+.ow-slotsHero h1 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.35rem, 3vw, 1.85rem);
+  line-height: 1.25;
+}
+
+.ow-slotsFinder {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) 1fr;
+  gap: 1.25rem 1.5rem;
+  align-items: start;
+  margin-bottom: 2.25rem;
+}
+
+@media (max-width: 900px) {
+  .ow-slotsFinder {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ow-slotsFilters {
+  position: sticky;
+  top: calc(var(--ow-topbar-offset, 4.75rem) + 0.5rem);
+  padding: 1rem;
+  border-radius: 14px;
+  border: 1px solid var(--stroke, rgba(255, 255, 255, 0.12));
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 0.85rem;
+}
+
+.ow-slotsFilters fieldset {
+  border: 0;
+  margin: 0 0 1rem;
+  padding: 0;
+}
+
+.ow-slotsFilters legend {
+  font-weight: 700;
+  margin-bottom: 0.45rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted, rgba(255, 255, 255, 0.72));
+}
+
+.ow-slotsFilters label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.25rem 0;
+  cursor: pointer;
+  color: var(--muted, rgba(255, 255, 255, 0.78));
+}
+
+.ow-slotsFilters input {
+  accent-color: #b14cff;
+}
+
+.ow-slotsHint {
+  margin: 0 0 1rem;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--muted, rgba(255, 255, 255, 0.78));
+}
+
+.ow-slotsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1rem;
+}
+
+.ow-slotsCard {
+  border: 1px solid var(--stroke, rgba(255, 255, 255, 0.12));
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.ow-slotsCard.is-hidden {
+  display: none;
+}
+
+.ow-slotsCardThumb img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+.ow-slotsCardBody {
+  padding: 0.65rem 0.7rem 0.75rem;
+}
+
+.ow-slotsCardTitle {
+  margin: 0 0 0.2rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.ow-slotsCardProvider {
+  margin: 0 0 0.55rem;
+  font-size: 0.75rem;
+  color: var(--muted2, rgba(255, 255, 255, 0.55));
+}
+
+.ow-slotsCardActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.ow-slotsCardActions a {
+  display: inline-block;
+  padding: 0.35rem 0.65rem;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid var(--stroke, rgba(255, 255, 255, 0.14));
+  color: var(--text, #f4f2ff);
+}
+
+.ow-slotsCardActions a.ow-slotsPlay {
+  background: linear-gradient(135deg, #b14cff, #6e2bff);
+  border-color: transparent;
+}
+
+.ow-slotsMoreLoad {
+  display: block;
+  width: 100%;
+  max-width: 280px;
+  margin: 1.25rem auto 0;
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--stroke, rgba(255, 255, 255, 0.18));
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text, #f4f2ff);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ow-slotsMoreLoad:hover {
+  border-color: rgba(177, 76, 255, 0.45);
+}
+
+.ow-slotsToplist {
+  margin: 2.5rem 0;
+}
+
+.ow-slotsToplistTitle {
+  margin: 0 0 1rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.ow-slotsSeo {
+  margin-top: 2rem;
+}
+
+.ow-slotsSeo h2 {
+  margin: 1.75rem 0 0.65rem;
+  font-size: 1.2rem;
+}
+
+.ow-slotsSeo h2:first-child {
+  margin-top: 0;
+}

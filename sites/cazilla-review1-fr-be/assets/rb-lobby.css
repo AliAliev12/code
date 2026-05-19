@@ -1,0 +1,83 @@
+/* Review lobby layout — minimal header, vertical game list */
+.rb-layout { margin: 0; background: var(--cl-bg, #14161c); color: var(--cl-text, #f5f0e8); font-family: system-ui, sans-serif; }
+.rb-app { min-height: 100vh; display: flex; flex-direction: column; max-width: 920px; margin: 0 auto; }
+.rb-header { padding: 12px 18px; background: #0f1115; border-bottom: 2px solid var(--cl-accent, #c9a227); position: relative; z-index: 30; }
+.rb-headerInner { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.rb-brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; font-weight: 800; font-size: 0.95rem; letter-spacing: 0.04em; flex-shrink: 0; }
+.rb-brand img { border-radius: 8px; }
+.rb-nav { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; margin-left: auto; }
+.rb-nav a { color: var(--cl-muted, #a8a29e); text-decoration: none; font-size: 14px; font-weight: 500; }
+.rb-nav a:hover, .rb-nav a[aria-current="page"] { color: var(--cl-text, #f5f0e8); }
+.rb-nav a[aria-current="page"] { font-weight: 700; color: var(--cl-accent, #c9a227); }
+.rb-headerActions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+.btn.icon { display: none; min-width: 40px; padding: 8px 12px; font-size: 18px; line-height: 1; }
+@media (max-width: 720px) {
+  .btn.icon { display: inline-flex; }
+  .rb-headerInner { position: relative; }
+  .rb-nav { display: none; position: absolute; top: 100%; left: -18px; right: -18px; flex-direction: column; align-items: stretch; gap: 4px; margin: 0; padding: 12px 18px 16px; background: #0f1115; border-bottom: 2px solid var(--cl-accent, #c9a227); }
+  .rb-nav[data-open="true"] { display: flex; }
+  .rb-headerActions .btn:not(.icon):not(.primary) { display: none; }
+}
+.rb-main { flex: 1; padding: 18px 18px 32px; }
+.rb-pageTitle { margin: 0 0 16px; font-size: clamp(1.35rem, 3vw, 1.75rem); }
+.rb-promo { text-align: center; padding: 28px 20px; margin-bottom: 22px; border-radius: 14px;
+  background: linear-gradient(135deg, #1b4332 0%, #3d2c1e 50%, #1a1d24 100%);
+  border: 1px solid rgba(201, 162, 39, 0.25); }
+.rb-promoTitle { margin: 0 0 10px; font-size: clamp(1.2rem, 3vw, 1.65rem); color: #fef3c7; }
+.rb-promoLead { margin: 0 0 16px; color: #d6d3d1; font-size: 15px; }
+.rb-section { margin-bottom: 28px; scroll-margin-top: 80px; }
+.rb-sectionTitle { margin: 0 0 14px; font-size: 1.1rem; }
+.rb-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.rb-tag { font-size: 12px; padding: 6px 12px; border-radius: 999px; background: #1e293b; color: inherit; cursor: default; }
+.rb-tag.is-active { background: var(--cl-accent, #c9a227); color: #1a1a1a; font-weight: 700; }
+.rb-gameList { display: flex; flex-direction: column; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.rb-gameRow { display: flex; gap: 14px; align-items: center; padding: 12px; border-radius: 12px;
+  border: 1px solid var(--cl-line, rgba(255,255,255,0.1)); background: var(--cl-panel, #1c1f28); }
+.rb-gameRow--featured { border: 2px solid var(--cl-accent, #c9a227); background: linear-gradient(90deg, rgba(201,162,39,0.08), transparent); }
+.rb-gameRowThumb { flex: 0 0 140px; border-radius: 10px; overflow: hidden; }
+.rb-gameRowThumb img { width: 100%; height: 90px; object-fit: cover; display: block; }
+.rb-gameRowBody { flex: 1; min-width: 0; }
+.rb-gameRowTag { margin: 0 0 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--cl-muted); }
+.rb-gameRowTitle { margin: 0 0 8px; font-size: 1.05rem; }
+.rb-gameRowActions { display: flex; flex-wrap: wrap; gap: 8px; }
+.rb-liveGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+@media (max-width: 640px) { .rb-liveGrid { grid-template-columns: 1fr; } .rb-gameRow { flex-direction: column; align-items: stretch; } .rb-gameRowThumb { flex-basis: auto; } }
+.rb-liveCard { display: block; text-decoration: none; color: inherit; border-radius: 12px; overflow: hidden; border: 1px solid var(--cl-line); background: var(--cl-panel); }
+.rb-liveCard img { width: 100%; height: 120px; object-fit: cover; display: block; }
+.rb-liveCard h3 { margin: 10px 12px 12px; font-size: 15px; }
+.rb-toolbar { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
+.rb-tool { font-size: 13px; color: var(--cl-muted); display: flex; flex-direction: column; gap: 4px; }
+.rb-tool input, .rb-tool select { padding: 8px 10px; border-radius: 8px; border: 1px solid var(--cl-line); background: #0b0f14; color: inherit; min-width: 180px; }
+.rb-more { text-align: center; margin: 20px 0; }
+.rb-bonusGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; margin-bottom: 20px; }
+.rb-bonusCard { padding: 16px; border-radius: 12px; border: 1px solid var(--cl-line); background: var(--cl-panel); }
+.rb-bonusCard h3 { margin: 0 0 8px; font-size: 1rem; }
+.rb-bonusCard p { margin: 0 0 12px; font-size: 14px; color: var(--cl-muted); }
+.rb-bonusCardActions { display: flex; flex-wrap: wrap; gap: 8px; }
+.rb-termsBox, .rb-licenseBox { padding: 16px; border-radius: 12px; border: 1px solid var(--cl-line); background: rgba(255,255,255,0.03); margin-top: 16px; }
+.rb-termsBox ul { margin: 0; padding-left: 1.2rem; color: #cbd5e1; line-height: 1.6; }
+.rb-aboutIntro p { line-height: 1.65; color: #cbd5e1; }
+.rb-aboutGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.rb-aboutCard { padding: 14px; border-radius: 12px; border: 1px solid var(--cl-line); background: var(--cl-panel); }
+.rb-aboutCard h3 { margin: 0 0 8px; font-size: 15px; }
+.rb-seoProse { margin-top: 24px; padding: 18px; border-radius: 12px; border: 1px solid var(--cl-line); background: rgba(45,106,79,0.06); }
+.rb-seoProse p, .rb-seoProse li { line-height: 1.7; color: #cbd5e1; }
+.rb-fineprint { font-size: 13px; color: var(--cl-muted); margin-top: 20px; }
+.rb-footer { padding: 24px 18px; border-top: 1px solid var(--cl-line); background: #0b0f14; margin-top: auto; }
+.rb-footerNav, .rb-footerLegal { display: flex; flex-wrap: wrap; gap: 10px 16px; margin-bottom: 14px; }
+.rb-footerNav a, .rb-footerLegal a { color: var(--cl-muted); font-size: 13px; text-decoration: none; }
+.rb-footerNav a:hover, .rb-footerLegal a:hover { color: var(--cl-text); }
+.rb-footerBlock h3 { margin: 0 0 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--cl-muted); }
+.rb-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.rb-badge { padding: 5px 10px; border-radius: 8px; font-size: 12px; background: #1e293b; border: 1px solid var(--cl-line); }
+.rb-license { font-size: 13px; color: var(--cl-muted); display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.rb-age { display: inline-flex; padding: 4px 10px; border-radius: 6px; font-weight: 800; background: var(--cl-accent); color: #1a1a1a; }
+.rb-copy { font-size: 12px; color: var(--cl-muted); margin: 12px 0 0; }
+.rb-legalHero { margin-bottom: 16px; }
+.rb-lead { color: var(--cl-muted); line-height: 1.6; }
+.rb-policyCard { margin-bottom: 20px; }
+.rb-policyArticle p { line-height: 1.7; color: #cbd5e1; }
+body.rb-layout--legal .rb-main { max-width: 820px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--cl-line); background: #1e293b; color: inherit; text-decoration: none; font-size: 14px; cursor: pointer; font-family: inherit; }
+.btn.primary { background: var(--cl-accent, #c9a227); border-color: transparent; color: #1a1a1a; font-weight: 700; }
+body.rb-layout { --cl-accent: #c9a227; --cl-accent2: #2d6a4f; --cl-bg: #14161c; --cl-panel: #1c1f28; --cl-line: rgba(201,162,39,0.12); --cl-text: #f5f0e8; --cl-muted: #a8a29e; }

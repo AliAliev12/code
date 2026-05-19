@@ -1,6 +1,6 @@
-/* Compliance — spacing + type aligned with shell tokens */
+/* Age gate, cookie banner, under-age blur */
 #siteContent.isBlurred {
-  filter: blur(12px);
+  filter: blur(14px);
   user-select: none;
   pointer-events: none;
 }
@@ -11,9 +11,9 @@
   z-index: 400;
   display: grid;
   place-items: center;
-  padding: var(--s-5, 1.25rem);
-  background: rgba(6, 5, 4, 0.82);
-  backdrop-filter: blur(12px);
+  padding: 20px;
+  background: rgba(6, 5, 12, 0.72);
+  backdrop-filter: blur(8px);
 }
 
 .complianceOverlay[hidden] {
@@ -21,58 +21,54 @@
 }
 
 .complianceDialog {
-  width: min(26rem, 100%);
-  border-radius: var(--r-lg, 20px);
-  border: 1px solid rgba(251, 191, 36, 0.2);
-  background: rgba(28, 24, 20, 0.97);
-  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.58);
-  padding: var(--s-6, 1.5rem) var(--s-6, 1.5rem) var(--s-5, 1.25rem);
+  width: min(440px, 100%);
+  border-radius: var(--r-lg, 22px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(18, 18, 35, 0.92);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+  padding: 22px 22px 18px;
 }
 
 .complianceDialog h2 {
-  margin: 0 0 var(--s-3, 0.75rem);
-  font-family: var(--font-display, Georgia, serif);
-  font-size: clamp(1.125rem, 0.35vw + 1.02rem, 1.3125rem);
-  font-weight: 700;
-  line-height: 1.25;
+  margin: 0 0 10px;
+  font-size: 18px;
   letter-spacing: -0.02em;
+  color: var(--text, rgba(255, 255, 255, 0.94));
 }
 
 .complianceDialog p {
-  margin: 0 0 var(--s-4, 1rem);
-  font-family: var(--font-sans, system-ui, sans-serif);
-  font-size: 0.9375rem;
-  line-height: 1.58;
-  color: var(--muted, rgba(230, 220, 210, 0.76));
-}
-
-.complianceDialog p:last-of-type {
-  margin-bottom: var(--s-2, 0.5rem);
+  margin: 0 0 14px;
+  color: var(--muted, rgba(255, 255, 255, 0.72));
+  font-size: 14px;
+  line-height: 1.55;
 }
 
 .complianceActions {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--s-3, 0.75rem);
-  margin-top: var(--s-4, 1rem);
+  gap: 10px;
+  margin-top: 6px;
 }
 
 .inTextLink {
-  color: #fbbf24;
+  color: var(--link, #c4b5fd);
   text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.15em;
-  text-decoration-color: rgba(251, 191, 36, 0.45);
-  transition: color 0.15s ease;
+  text-decoration-color: rgba(196, 181, 253, 0.45);
+  text-underline-offset: 2px;
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease, text-decoration-color 0.15s ease;
 }
 
 .inTextLink:hover {
-  color: #fde68a;
+  color: var(--link-hover, #e9d5ff);
+  text-decoration-color: rgba(233, 213, 255, 0.65);
+  border-bottom-color: rgba(196, 181, 253, 0.45);
 }
 
 .inTextLink:focus-visible {
-  outline: 2px solid rgba(251, 191, 36, 0.75);
+  outline: 2px solid rgba(139, 92, 246, 0.85);
   outline-offset: 2px;
+  border-bottom-color: transparent;
 }
 
 html.compliance-no-scroll,
