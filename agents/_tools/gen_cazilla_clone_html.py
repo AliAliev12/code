@@ -80,6 +80,7 @@ PAGE_KIND_BY_ID: dict[str, str] = {
     "bonus": "bonus",
     "welcome-bonus": "bonus",
     "bonuses-promo": "promo",
+    "no-deposit": "no_deposit",
 }
 
 
@@ -97,6 +98,8 @@ def infer_page_kind(page_id: str, cluster: str = "") -> str:
     if pid in PAGE_KIND_BY_ID:
         return PAGE_KIND_BY_ID[pid]
     cl = str(cluster or "").lower()
+    if pid == "no-deposit" or "no_deposit" in cl or "no-deposit" in cl:
+        return "no_deposit"
     if "slot" in cl:
         return "slots"
     if "live" in cl:
@@ -175,7 +178,11 @@ def init_site(env: dict[str, str] | None = None) -> None:
     HTML_LANG = LOCALE.replace("_", "-") if "_" in LOCALE else LOCALE
     MIN_AGE = 21 if LC.geo.upper() == "BE" else 18
     slug_lower = SITE_SLUG.lower()
-    if "fr-be" in slug_lower or slug_lower.endswith("-fr-be"):
+    if "clone1-en-be" in slug_lower:
+        THEME_VARIANT = 6
+    elif "clone1-nl-be" in slug_lower:
+        THEME_VARIANT = 5
+    elif "fr-be" in slug_lower or slug_lower.endswith("-fr-be"):
         THEME_VARIANT = 4
     elif "clone3" in slug_lower:
         THEME_VARIANT = 3
@@ -491,7 +498,7 @@ def about_body() -> str:
         </article>
         <article class="cl-aboutCard">
           <h2>Safer play first</h2>
-          <p>18+ only. Use licensed sites and national support if gambling stops being fun.</p>
+          <p>{MIN_AGE}+ only. Use licensed sites and national support if gambling stops being fun.</p>
         </article>
         <article class="cl-aboutCard">
           <h2>Official play</h2>
@@ -515,6 +522,110 @@ def promo_body() -> str:
         <article class="cl-promoCard"><h3>Crypto bonus 150%</h3><p>Deposit with USDT.</p><a class="btn" href="{m}" rel="noopener noreferrer" target="_blank">Deposit</a></article>
         <article class="cl-promoCard"><h3>Tournament week</h3><p>Prize pool €50,000.</p><a class="btn" href="{m}" rel="noopener noreferrer" target="_blank">Join</a></article>
       </div>"""
+
+
+def no_deposit_body() -> str:
+    m = html.escape(MAIN)
+    return f"""
+      <section class="cl-ndHero">
+        <h1 data-a2-field="page_h1">Cazilla Casino — No Deposit Bonus on Registration</h1>
+        <div class="cl-ndMeta">
+          <span>Author: <strong>Stefana Chele</strong></span>
+          <a href="about.html#author">Biography</a>
+          <a href="fair-play.html">Editorial policy</a>
+        </div>
+        <p class="cl-ndLead" data-a2-field="page_lead">Special offer for new players. Get free spins right after account verification on the official Cazilla site.</p>
+        <p class="cl-ndDisclosure">Advertising disclosure: links on this page may generate a commission for us. This does not affect our editorial standards.</p>
+      </section>
+      <section class="cl-ndSection" aria-labelledby="cl-nd-exclusive">
+        <h2 id="cl-nd-exclusive">Exclusive offer</h2>
+        <article class="cl-ndCard">
+          <div class="cl-ndCardHead">
+            <h3>Cazilla Casino</h3>
+            <span class="cl-badge">Exclusive bonus</span>
+          </div>
+          <ul class="cl-ndList">
+            <li><strong>Bonus type:</strong> No deposit bonus on registration</li>
+            <li><strong>Amount:</strong> 40 Free Spins (40FS)</li>
+            <li><strong>Max cashout:</strong> 100 EUR</li>
+            <li><strong>Min deposit:</strong> Not required (0 EUR)</li>
+          </ul>
+          <div class="cl-ndCodeRow">
+            <p><strong>Promo code:</strong> Not required / automatic</p>
+            <a class="btn primary" href="{m}" rel="noopener noreferrer" target="_blank">Go to Cazilla</a>
+          </div>
+        </article>
+      </section>
+      <section class="cl-ndSection" aria-labelledby="cl-nd-terms">
+        <h2 id="cl-nd-terms">Bonus terms</h2>
+        <article class="cl-ndCard">
+          <ul class="cl-ndList">
+            <li><strong>Player type:</strong> New players only</li>
+            <li><strong>Wagering:</strong> Check terms on the official site</li>
+            <li><strong>Eligible games:</strong> Slots</li>
+            <li><strong>Code status:</strong> Active</li>
+          </ul>
+        </article>
+      </section>
+      <section class="cl-ndSection" aria-labelledby="cl-nd-important">
+        <h2 id="cl-nd-important">Important information</h2>
+        <p>To activate 40FS, complete registration and verify your email/phone. Multiple accounts to claim the same bonus are prohibited.</p>
+        <div class="cl-ndPoll">
+          <span>Did the bonus work?</span>
+          <button type="button" class="btn">Yes</button>
+          <button type="button" class="btn">No</button>
+        </div>
+      </section>"""
+
+
+def no_deposit_page_html(page_id: str, rel: str, menu_label: str) -> str:
+    title = f"{menu_label.replace('&amp;', '&')} | {SITE_NAME} — {LC.region_name}"
+    desc = f"{menu_label.replace('&amp;', '&')} — editorial hub for {LC.audience_phrase}."
+    footer_cur = rel if rel != "index.html" else None
+    m = html.escape(MAIN)
+    body = no_deposit_body()
+    return f"""<!doctype html>
+<html lang="{html.escape(HTML_LANG)}" data-site-kind="clone" data-min-gambling-age="{MIN_AGE}">
+  <head>
+{head_block(rel, title, desc)}
+  </head>
+  <body class="{theme_body_class()}">
+{compliance_block()}
+<div id="siteContent" class="cl-app">
+  <header class="cl-topbar">
+    <a class="cl-brand" href="index.html"><span class="cl-logoMark">C</span><span class="cl-logoWord">{html.escape(SITE_NAME.upper())}</span></a>
+    <div class="cl-topActions">
+{actions_html()}
+      <button type="button" class="btn icon cl-menuBtn" id="clMenuBtn" aria-label="Open menu">≡</button>
+    </div>
+  </header>
+  <div class="cl-grid">
+    <aside class="cl-sidebar" id="clSidebar" aria-label="Sidebar">
+      <p class="cl-sideSearch"><label class="visually-hidden" for="siteSearch">Search site</label><input id="siteSearch" type="search" placeholder="Search the site…" /></p>
+      <nav class="cl-sidebarNav" aria-label="Site sections">
+{sidebar_nav(page_id)}
+      </nav>
+      <p class="cl-sideMeta"><span>Language: {html.escape(LOCALE)}</span></p>
+      <p class="cl-sideMeta"><a href="{m}" rel="noopener noreferrer" target="_blank">Support chat on Cazilla</a></p>
+    </aside>
+    <main class="cl-main" id="top">
+{body}
+      <div class="cl-seoProse" data-a2-field="main_seo_html">
+        <p>{html.escape(STUB)}</p>
+      </div>
+      <p class="cl-fineprint" data-a2-field="footer_note">{fineprint_line()}</p>
+    </main>
+  </div>
+  <footer class="cl-footer">
+    <nav class="cl-footerLegal" aria-label="Legal pages">
+{footer_legal(footer_cur)}
+    </nav>
+    <p class="cl-copy">{footer_hub_tagline(html.escape(SITE_NAME), LC)}</p>
+  </footer>
+</div>
+<script src="assets/cl-site.js" defer></script>
+  </body>
+</html>"""
 
 
 BODY_BY_KIND = {
@@ -951,6 +1062,180 @@ body.cl-theme-v4 .cl-hubArrow { color: var(--cl-accent); }
 }
 """
 
+CL_THEME_V5_CSS = """
+body.cl-theme-v5 {
+  --cl-accent: #14b8a6;
+  --cl-accent2: #f43f5e;
+  --cl-bg: #0a0b10;
+  --cl-panel: #12151f;
+  --cl-line: rgba(20, 184, 166, 0.2);
+  --cl-text: #f8fafc;
+  --cl-muted: #94a3b8;
+}
+body.cl-theme-v5 .cl-topbar {
+  background: linear-gradient(100deg, #0f172a 0%, #111827 40%, #1f2937 100%);
+  border-bottom: 2px solid rgba(20, 184, 166, 0.55);
+}
+body.cl-theme-v5 .cl-logoMark {
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, #2dd4bf, #0f766e 65%, #be123c);
+  color: #ecfeff;
+}
+body.cl-theme-v5 .cl-grid {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 1320px;
+}
+body.cl-theme-v5 .cl-sidebar {
+  position: sticky;
+  top: 72px;
+  max-height: calc(100vh - 92px);
+  overflow: auto;
+  border-right: none;
+  border-left: 1px solid var(--cl-line);
+  background: rgba(15, 23, 42, 0.74);
+  backdrop-filter: blur(6px);
+}
+body.cl-theme-v5 .cl-navItem {
+  border: 1px solid transparent;
+  border-radius: 10px;
+}
+body.cl-theme-v5 .cl-navItem.is-active,
+body.cl-theme-v5 .cl-navItem:hover {
+  border-color: rgba(20, 184, 166, 0.45);
+  background: rgba(20, 184, 166, 0.13);
+  color: #99f6e4;
+}
+body.cl-theme-v5 .btn.primary {
+  background: linear-gradient(135deg, #14b8a6, #f43f5e);
+  color: #0b1020;
+}
+body.cl-theme-v5 .cl-promoBanner {
+  border: 1px solid rgba(244, 63, 94, 0.32);
+  background: linear-gradient(130deg, #0f766e 0%, #1e293b 45%, #9f1239 100%);
+}
+body.cl-theme-v5 .cl-gameCard {
+  border-radius: 14px;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+body.cl-theme-v5 .cl-gameCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(244, 63, 94, 0.38);
+}
+body.cl-theme-v5 .cl-hubCard {
+  border-radius: 14px;
+  background: linear-gradient(160deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.8));
+  border: 1px solid rgba(20, 184, 166, 0.26);
+}
+body.cl-theme-v5 .cl-seoProse {
+  border-radius: 14px;
+  border-color: rgba(20, 184, 166, 0.25);
+  background: rgba(15, 23, 42, 0.68);
+}
+@media (min-width: 980px) {
+  body.cl-theme-v5 .cl-grid {
+    grid-template-columns: minmax(0, 1fr) 230px;
+  }
+  body.cl-theme-v5 .cl-main { grid-column: 1; }
+  body.cl-theme-v5 .cl-sidebar { grid-column: 2; }
+}
+@media (max-width: 979px) {
+  body.cl-theme-v5 .cl-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: auto;
+    width: min(300px, 90vw);
+    height: 100vh;
+    max-height: none;
+    transform: translateX(-105%);
+    z-index: 55;
+    border-left: none;
+    border-right: 1px solid var(--cl-line);
+  }
+  body.cl-theme-v5 .cl-sidebar[data-open="true"] { transform: translateX(0); }
+}
+"""
+
+CL_ND_CSS = """
+.cl-ndHero { border: 1px solid var(--cl-line); border-radius: 14px; padding: 18px; background: rgba(99, 102, 241, 0.1); margin-bottom: 18px; }
+.cl-ndHero h1 { margin: 0 0 10px; font-size: clamp(1.3rem, 3vw, 1.85rem); color: #e0e7ff; }
+.cl-ndMeta { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-bottom: 10px; font-size: 13px; color: var(--cl-muted); }
+.cl-ndMeta a { color: var(--cl-accent2); text-decoration: none; }
+.cl-ndMeta a:hover { text-decoration: underline; }
+.cl-ndLead { margin: 0 0 10px; line-height: 1.7; color: #e2e8f0; }
+.cl-ndDisclosure { margin: 0; font-size: 13px; color: var(--cl-muted); }
+.cl-ndSection { margin-bottom: 16px; }
+.cl-ndSection h2 { margin: 0 0 10px; font-size: 1.05rem; color: #c7d2fe; }
+.cl-ndCard { border: 1px solid var(--cl-line); border-radius: 14px; padding: 14px; background: var(--cl-panel); }
+.cl-ndCardHead { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+.cl-ndCardHead h3 { margin: 0; font-size: 1rem; }
+.cl-ndList { margin: 0; padding-left: 1.1rem; line-height: 1.7; color: #e2e8f0; }
+.cl-ndCodeRow { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; }
+.cl-ndCodeRow p { margin: 0; color: #e2e8f0; }
+.cl-ndPoll { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px; }
+.cl-ndPoll span { color: var(--cl-muted); font-size: 13px; margin-right: 4px; }
+.cl-badge { font-size: 11px; padding: 4px 10px; border-radius: 999px; background: rgba(245, 158, 11, 0.2); color: #fde68a; border: 1px solid rgba(245, 158, 11, 0.35); }
+"""
+
+CL_THEME_V6_CSS = """
+body.cl-theme-v6 {
+  --cl-accent: #6366f1;
+  --cl-accent2: #f59e0b;
+  --cl-bg: #080b12;
+  --cl-panel: #111827;
+  --cl-line: rgba(99, 102, 241, 0.22);
+  --cl-text: #f8fafc;
+  --cl-muted: #94a3b8;
+}
+body.cl-theme-v6 .cl-topbar {
+  background: linear-gradient(95deg, #0f172a 0%, #1e1b4b 55%, #312e81 100%);
+  border-bottom: 2px solid rgba(99, 102, 241, 0.5);
+}
+body.cl-theme-v6 .cl-logoMark {
+  border-radius: 10px;
+  background: linear-gradient(135deg, #6366f1, #f59e0b);
+  color: #fff;
+}
+body.cl-theme-v6 .cl-navItem.is-active,
+body.cl-theme-v6 .cl-navItem:hover {
+  background: rgba(99, 102, 241, 0.18);
+  color: #c7d2fe;
+}
+body.cl-theme-v6 .btn.primary {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: #fff;
+}
+body.cl-theme-v6 .cl-promoBanner {
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  background: linear-gradient(120deg, #312e81 0%, #1e293b 50%, #78350f 100%);
+}
+body.cl-theme-v6 .cl-gameCard {
+  border-radius: 12px;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+body.cl-theme-v6 .cl-gameCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(99, 102, 241, 0.45);
+}
+body.cl-theme-v6 .cl-hubCard {
+  border-radius: 12px;
+  border: 1px solid rgba(99, 102, 241, 0.28);
+  background: linear-gradient(160deg, rgba(17, 24, 39, 0.95), rgba(30, 27, 75, 0.75));
+}
+body.cl-theme-v6 .cl-seoProse {
+  border-radius: 12px;
+  border-color: rgba(99, 102, 241, 0.28);
+  background: rgba(17, 24, 39, 0.72);
+}
+body.cl-theme-v6 .cl-bonusPanel {
+  border-color: rgba(245, 158, 11, 0.28);
+}
+body.cl-theme-v6 .cl-ndHero {
+  background: rgba(99, 102, 241, 0.12);
+  border-color: rgba(99, 102, 241, 0.35);
+}
+"""
+
 
 def combined_page_css() -> str:
     css = CL_PAGE_CSS
@@ -960,6 +1245,11 @@ def combined_page_css() -> str:
         css += CL_THEME_V3_CSS
     elif THEME_VARIANT == 4:
         css += CL_THEME_V4_CSS
+    elif THEME_VARIANT == 5:
+        css += CL_THEME_V5_CSS
+    elif THEME_VARIANT == 6:
+        css += CL_THEME_V6_CSS
+    css += CL_ND_CSS
     return css
 
 
@@ -1043,7 +1333,11 @@ def main() -> None:
     init_site()
     SITE.mkdir(parents=True, exist_ok=True)
     for page_id, rel, label, kind in MAIN_PAGES:
-        (SITE / rel).write_text(page_html(page_id, rel, label, kind), encoding="utf-8")
+        if kind == "no_deposit":
+            doc = no_deposit_page_html(page_id, rel, label)
+        else:
+            doc = page_html(page_id, rel, label, kind)
+        (SITE / rel).write_text(doc, encoding="utf-8")
         print("Wrote", rel)
     for slug, rel, title, desc, h1, sub in TECH_SPECS:
         (SITE / rel).write_text(tech_page_html_fixed(rel, title, desc, h1, sub, slug), encoding="utf-8")

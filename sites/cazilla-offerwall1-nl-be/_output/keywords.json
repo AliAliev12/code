@@ -1,0 +1,1257 @@
+{
+  "version": 2,
+  "locale": "nl-BE",
+  "site": "cazilla-offerwall1-nl-be",
+  "pages": [
+    {
+      "id": "home",
+      "path": "/index.html",
+      "menu_label": "Home",
+      "cluster": "cl_home",
+      "notes": "",
+      "keywords": [
+        {
+          "keyword": "beste casino online",
+          "search_volume": 40,
+          "keyword_difficulty": 32.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "casino spel online",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "alle online casinos",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino lijst",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "alle casino online",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "top 10 online casino nederland",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "10 beste online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "10 beste online casinos",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "beste online casino sites",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "lijst online casinos",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "slots",
+      "path": "/slots.html",
+      "menu_label": "Gokkasten",
+      "cluster": "cl_slots",
+      "notes": "Slots",
+      "keywords": [
+        {
+          "keyword": "online casino spel",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "beste online casino games",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "beste online casino spel",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "casino games gratis online",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "casino games online gratis",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "casino online spel",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "juegos de casino online gratis",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "juegos gratis casino online",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "bonus",
+      "path": "/bonus.html",
+      "menu_label": "Bonussen",
+      "cluster": "cl_bonus",
+      "notes": "Bonussen",
+      "keywords": [
+        {
+          "keyword": "gratis speelgeld online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "casino online 10 euro gratis",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "casino online 5 euro gratis",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "casino spel online gratis",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "casino spelletjes online gratis",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "gratis casino online",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "gratis casino spelen online",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino bonus zonder storting",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino met gratis welkomstbonus zonder storting",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "about",
+      "path": "/about.html",
+      "menu_label": "Over ons",
+      "cluster": "cl_about",
+      "notes": "Over ons",
+      "keywords": [
+        {
+          "keyword": "beste nieuwe online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino nieuw",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino nieuws",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "betrouwbaar online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "betrouwbare casino online",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "betrouwbare online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "beste betrouwbare online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "betrouwbare online casino ideal",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "betrouwbare online casino s",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "goede casino online",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    }
+  ],
+  "technical_pages": [
+    {
+      "id": "user-agreement",
+      "path": "user-agreement.html",
+      "menu_label": "Gebruiksvoorwaarden",
+      "cluster": "cl_user_agreement",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "online casino betrouwbaar",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "klacht online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "legale casino online",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "lijst online casinos",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "meest betrouwbare online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "nederland online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "nieuw online casino 2021",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "nieuwe online casino 2021",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "nieuwe online casino ideal",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "nieuwe online casino s",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "nieuwste online casino 2021",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online beste casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online betrouwbaar casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online betrouwbare casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino 10 euro ideal",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino 10 euro storten",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino beginnen",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino beste",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino ervaringen",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "cookie-policy",
+      "path": "cookie-policy.html",
+      "menu_label": "Cookiebeleid",
+      "cluster": "cl_cookie_policy",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "online casino gids",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino ideal",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino games gratis",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino geen registratie",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino gids",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino gokken",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino gratis 10 euro",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino gratis geld",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino gratis speelgeld",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino gratis spelen",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino gratis startgeld",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino ideal 10 euro",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino ideal betalen",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino ideal zonder registratie",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino met creditcard",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino met gratis spins",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino met gratis startgeld",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino met ideal",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino met klarna",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "fair-play",
+      "path": "fair-play.html",
+      "menu_label": "Eerlijk spel",
+      "cluster": "cl_fair_play",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "online casino nederland ideal",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino zonder idin",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino met paypal",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino met paysafecard",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino met vergunning",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino spelen gratis",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino spelen nederland",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino veilig",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino with ideal",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino zonder account",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino zonder licentie",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino zonder vergunning",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino zonder verificatie",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casinos met vergunning",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casinos zonder registratie",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online gokken casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online gratis casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online gratis casino spelen",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "payments-withdrawals",
+      "path": "payments-withdrawals.html",
+      "menu_label": "Betalingen en opnames",
+      "cluster": "cl_payments_withdrawals",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "online ideal casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online legale casinos",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online mobiel casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online nieuwe casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online spel casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "overzicht online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "rechtszaak tegen online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "snelle uitbetaling online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "snelst uitbetalende online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "snelste uitbetaling online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "speel online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "spel online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "veilig online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "veilige casino online",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "veilige online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "ver casino online gratis",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "vergunning online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "versla het online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "welke online casino zijn betrouwbaar",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "privacy-policy",
+      "path": "privacy-policy.html",
+      "menu_label": "Privacybeleid",
+      "cluster": "cl_privacy_policy",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "winkansen online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "zwarte lijst online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "beste casino online 2020",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "beste online casino 2020",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "beste online casinos deutschland",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "casino europa online gratis",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "casino online spelen gratis",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "juego online casino gratis",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "legale online casinos deutschland",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "nieuw online casino 2022",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "nieuwe legale online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "nieuwe online casino 2022",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "nieuwe online casino 2023",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "nieuwe online casino minimum deposit 10 euro",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "nieuwe online casinos 2021",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "nieuwe online casinos 2022",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino ideal 2020",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino ideal 2022",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "responsible-gambling",
+      "path": "responsible-gambling.html",
+      "menu_label": "Verantwoord spelen",
+      "cluster": "cl_responsible_gambling",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "beste online casino bonus",
+          "search_volume": 10,
+          "keyword_difficulty": 38.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino roulette ideal",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino voor nederlanders",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino voordeelcasino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino zonder documenten",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online toernooi casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "svenska spel online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "welches ist das beste online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino welkomstbonus",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "beste bonus online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "casino online gratis bonus",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "gratis bonus online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "gratis online casino bonus",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "hoogste bonus online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino bonussen",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino met bonus",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino met welkomstbonus",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "aml-kyc",
+      "path": "aml-kyc.html",
+      "menu_label": "AML en KYC",
+      "cluster": "cl_aml_kyc",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "online hollands casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino lage storting",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino nederland bonus",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino registratiebonus",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino zonder bonus",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "welkomstbonus online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino bonus zonder storting",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino met gratis welkomstbonus zonder storting",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "nieuwe online casino no deposit",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino 20 euro gratis no deposit bonus",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino bonus zonder storten",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino free spins zonder storting",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino gratis bonus zonder storting",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino gratis speelgeld zonder storting",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino gratis spins zonder storting",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino met welkomstbonus zonder storting",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "online casino welkomstbonus zonder storting",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    }
+  ],
+  "reserve": []
+}

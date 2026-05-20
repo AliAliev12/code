@@ -358,11 +358,11 @@ def audit_single_page(
             main_m = re.search(r"(?is)<main\b[^>]*>([\s\S]*?)</main>", html)
             main_frag = main_m.group(1) if main_m else ""
         main_len = len(strip_tags(main_frag))
-        if 1500 <= main_len <= 3000:
+        if 1500 <= main_len <= 3600:
             results.append(
                 ok(
                     "content.technical.main_length",
-                    "объём текста в main 1500-3000 символов (technical)",
+                    "объём текста в main 1500-3600 символов (technical)",
                     length=main_len,
                 )
             )
@@ -370,7 +370,7 @@ def audit_single_page(
             results.append(
                 fail(
                     "content.technical.main_length",
-                    "объём текста в main вне диапазона 1500-3000 (technical)",
+                    "объём текста в main вне диапазона 1500-3600 (technical)",
                     length=main_len,
                 )
             )

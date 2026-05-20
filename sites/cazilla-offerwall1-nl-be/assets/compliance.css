@@ -1,0 +1,78 @@
+/* Age gate, cookie banner, under-age blur */
+#siteContent.isBlurred {
+  filter: blur(14px);
+  user-select: none;
+  pointer-events: none;
+}
+
+.complianceOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(6, 5, 12, 0.72);
+  backdrop-filter: blur(8px);
+}
+
+.complianceOverlay[hidden] {
+  display: none !important;
+}
+
+.complianceDialog {
+  width: min(440px, 100%);
+  border-radius: var(--r-lg, 22px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(18, 18, 35, 0.92);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+  padding: 22px 22px 18px;
+}
+
+.complianceDialog h2 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  color: var(--text, rgba(255, 255, 255, 0.94));
+}
+
+.complianceDialog p {
+  margin: 0 0 14px;
+  color: var(--muted, rgba(255, 255, 255, 0.72));
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.complianceActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.inTextLink {
+  color: var(--link, #c4b5fd);
+  text-decoration: underline;
+  text-decoration-color: rgba(196, 181, 253, 0.45);
+  text-underline-offset: 2px;
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+.inTextLink:hover {
+  color: var(--link-hover, #e9d5ff);
+  text-decoration-color: rgba(233, 213, 255, 0.65);
+  border-bottom-color: rgba(196, 181, 253, 0.45);
+}
+
+.inTextLink:focus-visible {
+  outline: 2px solid rgba(139, 92, 246, 0.85);
+  outline-offset: 2px;
+  border-bottom-color: transparent;
+}
+
+html.compliance-no-scroll,
+html.compliance-no-scroll body {
+  overflow: hidden;
+  height: 100%;
+}

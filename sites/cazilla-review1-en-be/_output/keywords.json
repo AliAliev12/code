@@ -1,0 +1,925 @@
+{
+  "version": 2,
+  "locale": "en-BE",
+  "site": "cazilla-review1-en-be",
+  "pages": [
+    {
+      "id": "home",
+      "path": "/index.html",
+      "menu_label": "Home",
+      "cluster": "cl_home",
+      "notes": "",
+      "keywords": [
+        {
+          "keyword": "online casino belgium",
+          "search_volume": 5400,
+          "keyword_difficulty": 37.0,
+          "cpc": 133.64,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "casinos online",
+          "search_volume": 3600,
+          "keyword_difficulty": 47.0,
+          "cpc": 111.89,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "best online casino",
+          "search_volume": 880,
+          "keyword_difficulty": 32.0,
+          "cpc": 156.97,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best rated online casino",
+          "search_volume": 880,
+          "keyword_difficulty": 19.0,
+          "cpc": 156.97,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "casino online play real money",
+          "search_volume": 590,
+          "keyword_difficulty": 47.0,
+          "cpc": 139.38,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "casino games online for real money",
+          "search_volume": 590,
+          "keyword_difficulty": 37.0,
+          "cpc": 139.38,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino sites",
+          "search_volume": 320,
+          "keyword_difficulty": 53.0,
+          "cpc": 119.01,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino website",
+          "search_volume": 320,
+          "keyword_difficulty": 37.0,
+          "cpc": 119.01,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best free online casino",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "super online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "super online casinos",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "real cash casino games online",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "real cash online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "real casino online for real money",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "slots",
+      "path": "/slots.html",
+      "menu_label": "Slots",
+      "cluster": "cl_slots",
+      "notes": "Slots",
+      "keywords": [
+        {
+          "keyword": "online casino slots",
+          "search_volume": 590,
+          "keyword_difficulty": 55.0,
+          "cpc": 154.22,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "slot machine online casino",
+          "search_volume": 590,
+          "keyword_difficulty": 53.0,
+          "cpc": 186.29,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "casino online slot machine",
+          "search_volume": 590,
+          "keyword_difficulty": 47.0,
+          "cpc": 154.22,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "casino slots online",
+          "search_volume": 590,
+          "keyword_difficulty": 45.0,
+          "cpc": 154.22,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "slot casino online",
+          "search_volume": 590,
+          "keyword_difficulty": 38.0,
+          "cpc": 154.22,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "slot online casino",
+          "search_volume": 590,
+          "keyword_difficulty": 38.0,
+          "cpc": 154.22,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino slot games",
+          "search_volume": 590,
+          "keyword_difficulty": 37.0,
+          "cpc": 154.22,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best online casino for slots",
+          "search_volume": 140,
+          "keyword_difficulty": 37.0,
+          "cpc": 247.97,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best online casino slot machines",
+          "search_volume": 140,
+          "keyword_difficulty": 22.0,
+          "cpc": 247.97,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best casinos for online slot machines",
+          "search_volume": 140,
+          "keyword_difficulty": 21.0,
+          "cpc": 247.97,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "all slots online casino",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino slot machines",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "best casino for online slots",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "bonus",
+      "path": "/bonus.html",
+      "menu_label": "Bonus",
+      "cluster": "cl_bonus",
+      "notes": "Bonus",
+      "keywords": [
+        {
+          "keyword": "casino bonus online",
+          "search_volume": 390,
+          "keyword_difficulty": 30.0,
+          "cpc": 186.44,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "casino online free spins",
+          "search_volume": 260,
+          "keyword_difficulty": 57.0,
+          "cpc": 20.83,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "no bonus online casino",
+          "search_volume": 260,
+          "keyword_difficulty": 4.0,
+          "cpc": 34.6,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best bonus online casino",
+          "search_volume": 170,
+          "keyword_difficulty": 43.0,
+          "cpc": 18.59,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best online casino bonus",
+          "search_volume": 170,
+          "keyword_difficulty": 43.0,
+          "cpc": 18.59,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best online casino deals",
+          "search_volume": 40,
+          "keyword_difficulty": 38.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "best online casino offers",
+          "search_volume": 30,
+          "keyword_difficulty": 0.0,
+          "cpc": 48.82,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best welcome bonus online casino",
+          "search_volume": 20,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "bonus casino online",
+          "search_volume": 10,
+          "keyword_difficulty": 31.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best online casino free spins",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 32.84,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "best online casino promotions",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best online casino welcome bonus",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 175.23,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best sign up bonus online casino",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 66.41,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "bet online casino bonus",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "casino games online free bonus",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "casino games online free spins",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "free cash online casino",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "free bonus online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "biggest online casino bonus",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "casino online promo",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "free chips online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "free money online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "live",
+      "path": "/live.html",
+      "menu_label": "Live",
+      "cluster": "cl_live",
+      "notes": "Live",
+      "keywords": [
+        {
+          "keyword": "casino online live",
+          "search_volume": 320,
+          "keyword_difficulty": 35.0,
+          "cpc": 212.89,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "live casino online",
+          "search_volume": 320,
+          "keyword_difficulty": 35.0,
+          "cpc": 112.29,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online live casino",
+          "search_volume": 320,
+          "keyword_difficulty": 33.0,
+          "cpc": 112.29,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "live casino roulette online",
+          "search_volume": 70,
+          "keyword_difficulty": 46.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "casino online live roulette",
+          "search_volume": 70,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best online live casino",
+          "search_volume": 50,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "live blackjack online casino",
+          "search_volume": 40,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "live baccarat online casino",
+          "search_volume": 30,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "live casino online free",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "live casino online real money",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online live blackjack casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "live casino games online",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "no-deposit",
+      "path": "/no-deposit.html",
+      "menu_label": "No deposit",
+      "cluster": "cl_no_deposit",
+      "notes": "No deposit",
+      "keywords": [
+        {
+          "keyword": "no deposit online casinos",
+          "search_volume": 260,
+          "keyword_difficulty": 23.0,
+          "cpc": 12.77,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino no deposit bonus",
+          "search_volume": 260,
+          "keyword_difficulty": 7.0,
+          "cpc": 34.6,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino free spins no deposit",
+          "search_volume": 110,
+          "keyword_difficulty": 22.0,
+          "cpc": 10.97,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino with free spins no deposit",
+          "search_volume": 110,
+          "keyword_difficulty": 22.0,
+          "cpc": 10.97,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "free online casino no deposit",
+          "search_volume": 50,
+          "keyword_difficulty": 6.0,
+          "cpc": 14.28,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best casino online no deposit bonus",
+          "search_volume": 20,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best no deposit online casino",
+          "search_volume": 20,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best online casino bonus no deposit",
+          "search_volume": 20,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "new online casino no deposit bonus codes",
+          "search_volume": 10,
+          "keyword_difficulty": 74.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "best new online casinos with no deposit bonuses",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "best online casino free spins no deposit",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best online casino no deposit",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 3.3,
+          "competition": "MEDIUM"
+        }
+      ]
+    },
+    {
+      "id": "about",
+      "path": "/about.html",
+      "menu_label": "About",
+      "cluster": "cl_about",
+      "notes": "About",
+      "keywords": [
+        {
+          "keyword": "vip online casino",
+          "search_volume": 70,
+          "keyword_difficulty": 20.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "what is the best online casino",
+          "search_volume": 30,
+          "keyword_difficulty": 66.0,
+          "cpc": 302.38,
+          "competition": "MEDIUM"
+        },
+        {
+          "keyword": "win real money online casino",
+          "search_volume": 20,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "what is online casino",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "win money online casino",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "win real money online casino for free",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "vip casinos online",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "west casino online",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "win cash online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    }
+  ],
+  "technical_pages": [
+    {
+      "id": "user-agreement",
+      "path": "user-agreement.html",
+      "menu_label": "User agreement",
+      "cluster": "cl_user_agreement",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "site casino online",
+          "search_volume": 320,
+          "keyword_difficulty": 35.0,
+          "cpc": 119.01,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "top 10 casino online",
+          "search_volume": 170,
+          "keyword_difficulty": 22.0,
+          "cpc": 131.09,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "blackjack online casino",
+          "search_volume": 110,
+          "keyword_difficulty": 47.0,
+          "cpc": 44.56,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "top ten online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "casino game online roulette",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "cookie-policy",
+      "path": "cookie-policy.html",
+      "menu_label": "Cookie policy",
+      "cluster": "cl_cookie_policy",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "free online casino",
+          "search_volume": 140,
+          "keyword_difficulty": 59.0,
+          "cpc": 13.05,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino paypal",
+          "search_volume": 140,
+          "keyword_difficulty": 3.0,
+          "cpc": 50.49,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "casino online paypal",
+          "search_volume": 140,
+          "keyword_difficulty": 0.0,
+          "cpc": 50.49,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casinos paypal",
+          "search_volume": 140,
+          "keyword_difficulty": 0.0,
+          "cpc": 50.49,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "casino roulette online",
+          "search_volume": 90,
+          "keyword_difficulty": 44.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        }
+      ]
+    },
+    {
+      "id": "fair-play",
+      "path": "fair-play.html",
+      "menu_label": "Fair play",
+      "cluster": "cl_fair_play",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "online roulette casino game",
+          "search_volume": 90,
+          "keyword_difficulty": 44.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best casino games online",
+          "search_volume": 90,
+          "keyword_difficulty": 37.0,
+          "cpc": 152.48,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best online casino to play",
+          "search_volume": 90,
+          "keyword_difficulty": 37.0,
+          "cpc": 152.48,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "roulette game online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "payments-withdrawals",
+      "path": "payments-withdrawals.html",
+      "menu_label": "Payments & withdrawals",
+      "cluster": "cl_payments_withdrawals",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "free casino games online",
+          "search_volume": 170,
+          "keyword_difficulty": 52.0,
+          "cpc": 32.51,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "casino online paysafecard",
+          "search_volume": 90,
+          "keyword_difficulty": 1.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "casino online blackjack live",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "casino winner online",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        },
+        {
+          "keyword": "free casino play online",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "privacy-policy",
+      "path": "privacy-policy.html",
+      "menu_label": "Privacy policy",
+      "cluster": "cl_privacy_policy",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "highest payout online casino",
+          "search_volume": 260,
+          "keyword_difficulty": 12.0,
+          "cpc": 183.18,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "free online casino games",
+          "search_volume": 170,
+          "keyword_difficulty": 48.0,
+          "cpc": 32.51,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino app",
+          "search_volume": 20,
+          "keyword_difficulty": 0.0,
+          "cpc": 110.64,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "international casino online",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 184.89,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "international online casino",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 94.25,
+          "competition": "MEDIUM"
+        }
+      ]
+    },
+    {
+      "id": "responsible-gambling",
+      "path": "responsible-gambling.html",
+      "menu_label": "Responsible gambling",
+      "cluster": "cl_responsible_gambling",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "play free online casino games",
+          "search_volume": 170,
+          "keyword_difficulty": 46.0,
+          "cpc": 32.51,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "online casino reviews",
+          "search_volume": 170,
+          "keyword_difficulty": 11.0,
+          "cpc": 75.71,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "popular online casino games",
+          "search_volume": 20,
+          "keyword_difficulty": 0.0,
+          "cpc": 104.79,
+          "competition": "HIGH"
+        },
+        {
+          "keyword": "online crypto casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    },
+    {
+      "id": "aml-kyc",
+      "path": "aml-kyc.html",
+      "menu_label": "AML & KYC",
+      "cluster": "cl_aml_kyc",
+      "qa_profile": "technical",
+      "keywords": [
+        {
+          "keyword": "top online casino",
+          "search_volume": 110,
+          "keyword_difficulty": 31.0,
+          "cpc": 135.93,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best online casino games",
+          "search_volume": 90,
+          "keyword_difficulty": 37.0,
+          "cpc": 152.48,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "best online casino games to win money",
+          "search_volume": 10,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": "LOW"
+        },
+        {
+          "keyword": "reviews online casino",
+          "search_volume": 0,
+          "keyword_difficulty": 0.0,
+          "cpc": 0.0,
+          "competition": ""
+        }
+      ]
+    }
+  ],
+  "reserve": []
+}

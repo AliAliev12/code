@@ -1801,11 +1801,14 @@ def apply_content_to_clone_html(html_doc: str, content: Dict[str, Any]) -> str:
 
     lead = str(content.get("page_lead", "")).strip()
     if lead:
-        out = replace_first_submatch(
-            out,
+        for lead_pat in (
             r'(?is)(<p class="cl-lead"[^>]*\bdata-a2-field=["\']page_lead["\'][^>]*>\s*)([\s\S]*?)(\s*</p>)',
-            r"\g<1>\n" + lead + r"\n\g<3>",
-        )
+            r'(?is)(<p class="cl-ndLead"[^>]*\bdata-a2-field=["\']page_lead["\'][^>]*>\s*)([\s\S]*?)(\s*</p>)',
+        ):
+            nxt = replace_first_submatch(out, lead_pat, r"\g<1>\n" + lead + r"\n\g<3>")
+            if nxt != out:
+                out = nxt
+                break
 
     seo = str(content.get("main_seo_html", "")).strip()
     if seo:

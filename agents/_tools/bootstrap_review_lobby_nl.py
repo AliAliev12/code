@@ -86,10 +86,21 @@ def init_site() -> None:
     MAIN = (env.get("MAIN_CASINO_URL") or "https://cazilla.casino").strip().rstrip("/")
     LC = locale_context_from_env(env, strict_keywords_match=False)
     HTML_LANG = LC.locale.replace("_", "-") if "_" in LC.locale else LC.locale
-    SITE_NAME = "Cazilla België"
+    SITE_NAME = "Cazilla Belgium" if LC.lang == "en" else "Cazilla België"
     MIN_AGE = 21 if LC.geo.upper() == "BE" else 18
-    STUB = f"Voorlopige tekst. A2 vervangt dit door geoptimaliseerde inhoud voor {LC.audience_phrase}."
+    if LC.lang == "en":
+        STUB = f"Placeholder copy. A2 will replace this with optimized content for {LC.audience_phrase}."
+    else:
+        STUB = f"Voorlopige tekst. A2 vervangt dit door geoptimaliseerde inhoud voor {LC.audience_phrase}."
     _load_keywords()
+
+
+def _is_en() -> bool:
+    return bool(LC and LC.lang == "en")
+
+
+def _theme_class() -> str:
+    return "rb-theme-enbe" if _is_en() else "rb-theme-nl"
 
 
 def _load_keywords() -> None:
@@ -128,27 +139,47 @@ def _load_keywords() -> None:
 
 
 def compliance_block() -> str:
-    age_body = (
-        f"Deze site bespreekt gereguleerd gokken voor lezers in België. "
-        f"U moet minstens {MIN_AGE} jaar zijn om verder te gaan."
-    )
+    if _is_en():
+        age_body = (
+            f"This site discusses regulated gambling for readers in Belgium. "
+            f"You must be at least {MIN_AGE} years old to continue."
+        )
+        age_title = f"Confirm you are {MIN_AGE}+"
+        age_under = f"I am under {MIN_AGE}"
+        age_ok = f"I am {MIN_AGE}+"
+        cookie_title = "Cookie preferences"
+        cookie_text = 'We use cookies to remember age verification. See <a class="inTextLink" href="cookie-policy.html">cookie policy</a>.'
+        cookie_reject = "Essential only"
+        cookie_accept = "Accept"
+    else:
+        age_body = (
+            f"Deze site bespreekt gereguleerd gokken voor lezers in België. "
+            f"U moet minstens {MIN_AGE} jaar zijn om verder te gaan."
+        )
+        age_title = f"Bevestig dat u {MIN_AGE} jaar of ouder bent"
+        age_under = f"Ik ben jonger dan {MIN_AGE}"
+        age_ok = f"Ik ben {MIN_AGE}+"
+        cookie_title = "Cookievoorkeuren"
+        cookie_text = 'We gebruiken cookies om de leeftijdscontrole te onthouden. Zie <a class="inTextLink" href="cookie-policy.html">cookiebeleid</a>.'
+        cookie_reject = "Alleen essentieel"
+        cookie_accept = "Accepteren"
     return f"""<motion class="complianceOverlay" id="ageGate" role="dialog" aria-modal="true" aria-labelledby="ageTitle">
   <div class="complianceDialog">
-    <h2 id="ageTitle">Bevestig dat u {MIN_AGE} jaar of ouder bent</h2>
+    <h2 id="ageTitle">{age_title}</h2>
     <p>{html.escape(age_body)}</p>
     <div class="complianceActions">
-      <button type="button" class="btn" id="ageUnder">Ik ben jonger dan {MIN_AGE}</button>
-      <button type="button" class="btn primary" id="ageOk">Ik ben {MIN_AGE}+</button>
+      <button type="button" class="btn" id="ageUnder">{age_under}</button>
+      <button type="button" class="btn primary" id="ageOk">{age_ok}</button>
     </div>
   </div>
 </div>
 <div class="complianceOverlay" id="cookieGate" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="cookieTitle">
   <div class="complianceDialog">
-    <h2 id="cookieTitle">Cookievoorkeuren</h2>
-    <p>We gebruiken cookies om de leeftijdscontrole te onthouden. Zie <a class="inTextLink" href="cookie-policy.html">cookiebeleid</a>.</p>
+    <h2 id="cookieTitle">{cookie_title}</h2>
+    <p>{cookie_text}</p>
     <motion class="complianceActions">
-      <button type="button" class="btn" id="cookieReject">Alleen essentieel</button>
-      <button type="button" class="btn primary" id="cookieAccept">Accepteren</button>
+      <button type="button" class="btn" id="cookieReject">{cookie_reject}</button>
+      <button type="button" class="btn primary" id="cookieAccept">{cookie_accept}</button>
     </div>
   </div>
 </motion>""".replace("<motion class=", "<motion class=").replace(
@@ -168,6 +199,7 @@ def _fix_html(s: str) -> str:
 
 def head_block(rel: str, title: str, desc: str) -> str:
     canonical = f"{ORIGIN}/" if rel == "index.html" else f"{ORIGIN}/{rel}"
+    og_locale = "en_BE" if _is_en() else "nl_BE"
     return f"""<meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title data-a2-field="meta_title">{html.escape(title)}</title>
@@ -180,7 +212,7 @@ def head_block(rel: str, title: str, desc: str) -> str:
 <meta property="og:description" content="{html.escape(desc)}" />
 <meta property="og:url" content="{html.escape(canonical)}" />
 <meta property="og:type" content="website" />
-<meta property="og:locale" content="nl_BE" />
+<meta property="og:locale" content="{og_locale}" />
 <meta property="og:image" content="{ORIGIN}/assets/pictures/og-logo.svg" />
 <script type="application/ld+json">{{"@context":"https://schema.org","@type":"WebSite","name":"{html.escape(SITE_NAME)}","url":"{html.escape(ORIGIN)}/"}}</script>
 <link rel="stylesheet" href="assets/rb-shell.css" />
@@ -196,19 +228,23 @@ def site_header(current_rel: str | None = None) -> str:
         nav_lines.append(f'      <a href="{href}"{cur}>{lab}</a>')
     nav = "\n".join(nav_lines)
     m = html.escape(MAIN)
+    nav_label = "Main navigation" if _is_en() else "Hoofdnavigatie"
+    menu_label = "Open menu" if _is_en() else "Menu openen"
+    off_site = "Official site" if _is_en() else "Officiële site"
+    play_label = "Play now" if _is_en() else "Speel"
     return f"""<header class="rb-header">
   <div class="rb-headerInner">
     <a class="rb-brand" href="index.html" aria-label="Home {html.escape(SITE_NAME)}">
       <img src="assets/pictures/og-logo.svg" alt="" width="36" height="36" decoding="async" />
       <span class="rb-brandName">{html.escape(SITE_NAME.upper())}</span>
     </a>
-    <nav class="rb-nav" id="mainNav" aria-label="Hoofdnavigatie">
+    <nav class="rb-nav" id="mainNav" aria-label="{nav_label}">
 {nav}
     </nav>
     <div class="rb-headerActions">
-      <button class="btn icon rb-navToggle" id="navToggle" type="button" aria-label="Menu openen" aria-expanded="false" aria-controls="mainNav">≡</button>
-      <a class="btn" href="{m}" rel="noopener noreferrer" target="_blank">Officiële site</a>
-      <a class="btn primary" href="{m}" rel="noopener noreferrer" target="_blank">Speel</a>
+      <button class="btn icon rb-navToggle" id="navToggle" type="button" aria-label="{menu_label}" aria-expanded="false" aria-controls="mainNav">≡</button>
+      <a class="btn" href="{m}" rel="noopener noreferrer" target="_blank">{off_site}</a>
+      <a class="btn primary" href="{m}" rel="noopener noreferrer" target="_blank">{play_label}</a>
     </div>
   </div>
 </header>"""
@@ -225,37 +261,56 @@ def site_footer(current_rel: str | None = None) -> str:
         if href != "index.html"
     )
     m = html.escape(MAIN)
+    nav_label = "Pages" if _is_en() else "Pagina's"
+    legal_label = "Legal" if _is_en() else "Juridisch"
+    providers_label = "Providers"
+    payments_label = "Payment methods" if _is_en() else "Betaalmethoden"
+    license_text = (
+        f'<p class="rb-license"><span class="rb-age">{MIN_AGE}+</span> Curaçao eGaming — details on <a href="{m}" rel="noopener noreferrer" target="_blank">the official site</a>.</p>'
+        if _is_en()
+        else f'<p class="rb-license"><span class="rb-age">{MIN_AGE}+</span> Curaçao eGaming — details op <a href="{m}" rel="noopener noreferrer" target="_blank">de officiële site</a>.</p>'
+    )
+    copy_text = (
+        f'© <span id="year"></span> {html.escape(SITE_NAME)}. Editorial review platform, not an operator.'
+        if _is_en()
+        else f'© <span id="year"></span> {html.escape(SITE_NAME)}. Redactioneel reviewplatform, geen exploitant.'
+    )
     return f"""<footer class="rb-footer" id="footer">
-  <nav class="rb-footerNav" aria-label="Pagina's">
+  <nav class="rb-footerNav" aria-label="{nav_label}">
     <a href="index.html">Home</a>
 {nav_content}
   </nav>
-  <nav class="rb-footerLegal" aria-label="Juridisch">
+  <nav class="rb-footerLegal" aria-label="{legal_label}">
 {chr(10).join(legal)}
   </nav>
   <div class="rb-footerBlock">
-    <h3>Providers</h3>
+    <h3>{providers_label}</h3>
     <div class="rb-badges">
       <span class="rb-badge">Pragmatic Play</span><span class="rb-badge">NetEnt</span><span class="rb-badge">Evolution</span>
       <span class="rb-badge">Play'n GO</span><span class="rb-badge">Ezugi</span>
     </div>
   </motion>
   <div class="rb-footerBlock">
-    <h3>Betaalmethoden</h3>
+    <h3>{payments_label}</h3>
     <div class="rb-badges">
       <span class="rb-badge">Bancontact</span><span class="rb-badge">iDEAL</span><span class="rb-badge">Visa</span>
       <span class="rb-badge">Mastercard</span><span class="rb-badge">Payconiq</span>
     </div>
   </div>
-  <p class="rb-license"><span class="rb-age">{MIN_AGE}+</span> Curaçao eGaming — details op <a href="{m}" rel="noopener noreferrer" target="_blank">de officiële site</a>.</p>
-  <p class="rb-copy">© <span id="year"></span> {html.escape(SITE_NAME)}. Redactioneel reviewplatform, geen exploitant.</p>
+  {license_text}
+  <p class="rb-copy">{copy_text}</p>
 </footer>""".replace("<motion class=", "<div class=").replace("</motion>", "</div>", 1)
 
 
 def game_row(title: str, img: str, *, featured: bool = False) -> str:
     m = html.escape(MAIN)
     cls = "rb-gameRow rb-gameRow--featured" if featured else "rb-gameRow"
-    tag = "Officieel" if featured else "Populair"
+    if _is_en():
+        tag = "Official" if featured else "Popular"
+        play_label = "Play"
+    else:
+        tag = "Officieel" if featured else "Populair"
+        play_label = "Speel"
     return f"""<article class="{cls}">
   <div class="rb-gameRowThumb">
     <img src="assets/pictures/{html.escape(img)}" alt="{html.escape(title)}" width="280" height="160" loading="lazy" decoding="async" />
@@ -264,7 +319,7 @@ def game_row(title: str, img: str, *, featured: bool = False) -> str:
     <p class="rb-gameRowTag">{tag}</p>
     <h3 class="rb-gameRowTitle">{html.escape(title)}</h3>
     <div class="rb-gameRowActions">
-      <a class="btn primary" href="{m}" rel="noopener noreferrer" target="_blank">Speel</a>
+      <a class="btn primary" href="{m}" rel="noopener noreferrer" target="_blank">{play_label}</a>
       <a class="btn" href="{m}" rel="noopener noreferrer" target="_blank">Demo</a>
     </div>
   </div>
@@ -298,7 +353,7 @@ def live_section(title: str, section_id: str, games: list[tuple[str, str, str]])
 
 def home_body() -> str:
     m = html.escape(MAIN)
-    rows = [game_row("Cazilla — officieel casino", "casino-feature-visual.png", featured=True)]
+    rows = [game_row("Cazilla — official casino" if _is_en() else "Cazilla — officieel casino", "casino-feature-visual.png", featured=True)]
     rows.extend(game_row(n, img) for n, img in HOME_GAMES)
     live_cards = "\n".join(
         f"""<a class="rb-liveCard" href="{m}" rel="noopener noreferrer" target="_blank">
@@ -308,17 +363,17 @@ def home_body() -> str:
         for name, img in LIVE_PREVIEW
     )
     return f"""
-      <section class="rb-promo" aria-label="Promotie">
-        <h2 class="rb-promoTitle">Welkomstbonus 100&nbsp;% + 500 gratis spins</h2>
-        <p class="rb-promoLead">Aanbod op de officiële site — voorwaarden en {MIN_AGE}+ in België.</p>
-        <a class="btn primary" href="{m}" rel="noopener noreferrer" target="_blank">Speel nu</a>
+      <section class="rb-promo" aria-label="Promo">
+        <h2 class="rb-promoTitle">Welcome bonus 100% + 500 free spins</h2>
+        <p class="rb-promoLead">Offer on the official site — terms apply, {MIN_AGE}+ in Belgium.</p>
+        <a class="btn primary" href="{m}" rel="noopener noreferrer" target="_blank">Play now</a>
       </section>
       <section class="rb-section" aria-labelledby="rb-cat-title">
-        <motion class="rb-tags" role="tablist" aria-label="Categorieën">
-          <span class="rb-tag is-active">Populair</span><span class="rb-tag">Nieuw</span>
-          <span class="rb-tag">Gokkasten</span><span class="rb-tag">Tafelspellen</span><span class="rb-tag">Megaways</span>
+        <motion class="rb-tags" role="tablist" aria-label="Categories">
+          <span class="rb-tag is-active">Popular</span><span class="rb-tag">New</span>
+          <span class="rb-tag">Slots</span><span class="rb-tag">Table games</span><span class="rb-tag">Megaways</span>
         </div>
-        <h2 id="rb-cat-title" class="rb-sectionTitle">Populaire spellen</h2>
+        <h2 id="rb-cat-title" class="rb-sectionTitle">Popular games</h2>
         <div class="rb-gameList">
 {chr(10).join(rows)}
         </div>
@@ -336,17 +391,17 @@ def slots_body() -> str:
     cards = "\n".join(game_row(n, img) for n, img in SLOT_GAMES)
     return f"""
       <div class="rb-toolbar">
-        <label class="rb-tool">Zoek spel <input type="search" placeholder="Spelnaam…" /></label>
-        <label class="rb-tool">Provider <select><option>Alle</option></select></label>
+        <label class="rb-tool">Search game <input type="search" placeholder="Game title…" /></label>
+        <label class="rb-tool">Provider <select><option>All</option></select></label>
       </div>
       <div class="rb-tags">
-        <span class="rb-tag is-active">Populair</span><span class="rb-tag">Gokkasten</span>
-        <span class="rb-tag">Jackpot</span><span class="rb-tag">Tafelspellen</span><span class="rb-tag">Megaways</span>
+        <span class="rb-tag is-active">Popular</span><span class="rb-tag">Slots</span>
+        <span class="rb-tag">Jackpot</span><span class="rb-tag">Table games</span><span class="rb-tag">Megaways</span>
       </div>
       <motion class="rb-gameList">
 {cards}
       </div>
-      <p class="rb-more"><a class="btn" href="{m}" rel="noopener noreferrer" target="_blank">Meer tonen</a></p>""".replace(
+      <p class="rb-more"><a class="btn" href="{m}" rel="noopener noreferrer" target="_blank">Show more</a></p>""".replace(
         '<motion class="rb-gameList">', '<div class="rb-gameList">'
     )
 
@@ -354,10 +409,10 @@ def slots_body() -> str:
 def bonus_body() -> str:
     m = html.escape(MAIN)
     cards_data = [
-        ("Eerste storting 100&nbsp;%", "Gokkasten en live casino"),
-        ("Casino cashback 25&nbsp;%", "Op netto dagverliezen"),
-        ("Crypto bonus 20&nbsp;%", "Stortingen in crypto"),
-        ("Vriend uitnodigen", "Beloning per uitgenodigde vriend"),
+        ("First deposit 100%", "Slots and live casino"),
+        ("Casino cashback 25%", "On net daily losses"),
+        ("Crypto bonus 20%", "Crypto deposits"),
+        ("Refer a friend", "Reward per invited friend"),
     ]
     grid = []
     for title, sub in cards_data:
@@ -367,24 +422,24 @@ def bonus_body() -> str:
   <p>{html.escape(sub)}</p>
   <div class="rb-bonusCardActions">
     <a class="btn" href="{m}" rel="noopener noreferrer" target="_blank">Details</a>
-    <a class="btn primary" href="{m}" rel="noopener noreferrer" target="_blank">Speel</a>
+    <a class="btn primary" href="{m}" rel="noopener noreferrer" target="_blank">Play</a>
   </div>
 </article>"""
         )
     return f"""
       <div class="rb-tags">
-        <span class="rb-tag is-active">Alle bonussen</span><span class="rb-tag">Welkomst</span>
-        <span class="rb-tag">Storting</span><span class="rb-tag">Cashback</span><span class="rb-tag">Speciaal</span>
+        <span class="rb-tag is-active">All bonuses</span><span class="rb-tag">Welcome</span>
+        <span class="rb-tag">Deposit</span><span class="rb-tag">Cashback</span><span class="rb-tag">Special</span>
       </div>
       <div class="rb-bonusGrid">
 {chr(10).join(grid)}
       </div>
       <section class="rb-termsBox" aria-labelledby="rb-terms-title">
-        <h2 id="rb-terms-title">Algemene bonusvoorwaarden</h2>
+        <h2 id="rb-terms-title">General bonus terms</h2>
         <ul>
-          <li>Elke bonus kan andere inzetvereisten hebben.</li>
-          <li>Maximaal één actieve bonus per spelersaccount.</li>
-          <li>Lees altijd de regels op de officiële site vóór acceptatie.</li>
+          <li>Each bonus can have different wagering requirements.</li>
+          <li>Only one active bonus per player account.</li>
+          <li>Always check terms on the official site before claiming.</li>
         </ul>
       </section>"""
 
@@ -396,16 +451,70 @@ def about_body() -> str:
         <p>{html.escape(STUB)}</p>
       </section>
       <section class="rb-aboutValues" aria-labelledby="rb-values-title">
-        <h2 id="rb-values-title">Onze waarden</h2>
+        <h2 id="rb-values-title">Our values</h2>
         <div class="rb-aboutGrid">
-          <article class="rb-aboutCard"><h3>Betrouwbaarheid</h3><p>Redactionele tests en transparantie over aanbiedingen.</p></article>
-          <article class="rb-aboutCard"><h3>Klantgericht</h3><p>Duidelijke support en flows voor Belgische spelers.</p></article>
-          <article class="rb-aboutCard"><h3>Eerlijk spel</h3><p>Gelicentieerde providers en gecontroleerde RNG.</p></article>
+          <article class="rb-aboutCard"><h3>Trust</h3><p>Editorial testing and transparent offer coverage.</p></article>
+          <article class="rb-aboutCard"><h3>Player first</h3><p>Clear support and smooth flows for Belgian players.</p></article>
+          <article class="rb-aboutCard"><h3>Fair play</h3><p>Licensed providers and audited RNG standards.</p></article>
         </div>
       </section>
       <section class="rb-licenseBox" aria-labelledby="rb-lic-title">
-        <h2 id="rb-lic-title">Licentie en regelgeving</h2>
-        <p>Informatie over Curaçao-licentie en gegevensbescherming — <a href="{m}" rel="noopener noreferrer" target="_blank">Officiële site</a>.</p>
+        <h2 id="rb-lic-title">Licensing and regulation</h2>
+        <p>Information about licensing and data protection — <a href="{m}" rel="noopener noreferrer" target="_blank">Official site</a>.</p>
+      </section>"""
+
+
+def no_deposit_body() -> str:
+    m = html.escape(MAIN)
+    return f"""
+      <section class="rb-ndHero">
+        <h1 data-a2-field="page_h1">Cazilla Casino — No Deposit Bonus on Registration</h1>
+        <div class="rb-ndMeta">
+          <span>Author: <strong>Stefana Chele</strong></span>
+          <a href="about.html#author">Biography</a>
+          <a href="fair-play.html">Editorial policy</a>
+        </div>
+        <p class="rb-ndLead" data-a2-field="page_lead">Special offer for new players. Get free spins right after account verification on the official Cazilla site.</p>
+        <p class="rb-ndDisclosure">Advertising disclosure: links on this page may generate a commission for us. This does not affect our editorial standards.</p>
+      </section>
+      <section class="rb-ndSection" aria-labelledby="rb-nd-exclusive">
+        <h2 id="rb-nd-exclusive">Exclusive offer</h2>
+        <article class="rb-ndCard">
+          <div class="rb-ndCardHead">
+            <h3>Cazilla Casino</h3>
+            <span class="rb-badge">Exclusive bonus</span>
+          </div>
+          <ul class="rb-ndList">
+            <li><strong>Bonus type:</strong> No deposit bonus on registration</li>
+            <li><strong>Amount:</strong> 40 Free Spins (40FS)</li>
+            <li><strong>Max cashout:</strong> 100 EUR</li>
+            <li><strong>Min deposit:</strong> Not required (0 EUR)</li>
+          </ul>
+          <div class="rb-ndCodeRow">
+            <p><strong>Promo code:</strong> Not required / automatic</p>
+            <a class="btn primary" href="{m}" rel="noopener noreferrer" target="_blank">Go to Cazilla</a>
+          </div>
+        </article>
+      </section>
+      <section class="rb-ndSection" aria-labelledby="rb-nd-terms">
+        <h2 id="rb-nd-terms">Bonus terms</h2>
+        <article class="rb-ndCard">
+          <ul class="rb-ndList">
+            <li><strong>Player type:</strong> New players only</li>
+            <li><strong>Wagering:</strong> Check terms on the official site</li>
+            <li><strong>Eligible games:</strong> Slots</li>
+            <li><strong>Code status:</strong> Active</li>
+          </ul>
+        </article>
+      </section>
+      <section class="rb-ndSection" aria-labelledby="rb-nd-important">
+        <h2 id="rb-nd-important">Important information</h2>
+        <p>To activate 40FS, complete registration and verify your email/phone. Multiple accounts to claim the same bonus are prohibited.</p>
+        <div class="rb-ndPoll">
+          <span>Did the bonus work?</span>
+          <button type="button" class="btn">Yes</button>
+          <button type="button" class="btn">No</button>
+        </div>
       </section>"""
 
 
@@ -413,12 +522,12 @@ def live_casino_body() -> str:
     m = html.escape(MAIN)
     return f"""
       <section class="rb-liveHero" aria-label="Live casino">
-        <h1 data-a2-field="page_h1">Welkom bij het live casino van Cazilla</h1>
-        <p class="rb-liveHeroLead" data-a2-field="page_lead">Welkomstbonus: 100% tot €500 + 200 gratis spins — voorwaarden op de officiële site.</p>
-        <a class="btn primary rb-liveHeroCta" href="{m}" rel="noopener noreferrer" target="_blank">Bonus claimen</a>
+        <h1 data-a2-field="page_h1">Welcome to Cazilla live casino</h1>
+        <p class="rb-liveHeroLead" data-a2-field="page_lead">Welcome bonus: 100% up to €500 + 200 free spins — terms on the official site.</p>
+        <a class="btn primary rb-liveHeroCta" href="{m}" rel="noopener noreferrer" target="_blank">Claim bonus</a>
       </section>
       <div class="rb-tags rb-tags--live" role="tablist" aria-label="Live filters">
-        <span class="rb-tag is-active">Alle spellen</span><span class="rb-tag">Top</span>
+        <span class="rb-tag is-active">All games</span><span class="rb-tag">Top</span>
         <span class="rb-tag">Roulette</span><span class="rb-tag">Blackjack</span>
         <span class="rb-tag">Game shows</span><span class="rb-tag">Baccarat</span>
       </div>
@@ -429,11 +538,11 @@ def live_casino_body() -> str:
         <motion class="rb-seoProse" data-a2-field="main_seo_html">
           <p>{html.escape(STUB)}</p>
           <details class="rb-faqItem">
-            <summary>Hoe begin ik met live casino spelen?</summary>
+            <summary>How do I start playing live casino?</summary>
             <p>{html.escape(STUB)}</p>
           </details>
           <details class="rb-faqItem">
-            <summary>Welke providers zijn beschikbaar bij Cazilla?</summary>
+            <summary>Which providers are available on Cazilla?</summary>
             <p>{html.escape(STUB)}</p>
           </details>
         </div>
@@ -453,14 +562,19 @@ BODY_BY_ID = {
     "home": home_body,
     "slots": slots_body,
     "bonus": bonus_body,
+    "no-deposit": no_deposit_body,
     "about": about_body,
+    "live": live_casino_body,
     "live-casino": live_casino_body,
 }
 
 
 def content_page(page_id: str, rel: str, menu_label: str) -> str:
     title = f"{menu_label} | {SITE_NAME}"
-    desc = f"{menu_label} — casino lobby voor lezers in België ({MIN_AGE}+)."
+    if _is_en():
+        desc = f"{menu_label} — casino lobby guide for readers in Belgium ({MIN_AGE}+)."
+    else:
+        desc = f"{menu_label} — casino lobby voor lezers in België ({MIN_AGE}+)."
     h1 = menu_label.replace("&amp;", "&")
     body_fn = BODY_BY_ID.get(page_id, slots_body)
     body = _fix_html(body_fn())
@@ -476,18 +590,18 @@ def content_page(page_id: str, rel: str, menu_label: str) -> str:
             "<motion", "<motion"
         )
         seo_block = f'\n      <div class="rb-seoProse" data-a2-field="main_seo_html"><p>{html.escape(STUB)}</p></div>'
-    elif page_id == "live-casino":
+    elif page_id in ("live-casino", "live", "no-deposit"):
         seo_block = ""
     title_block = ""
-    if page_id != "live-casino":
+    if page_id not in ("live-casino", "live", "no-deposit"):
         title_block = f'    <h1 class="rb-pageTitle" data-a2-field="page_h1">{html.escape(h1)}</h1>\n'
-    fine = f"{MIN_AGE}+ | Speel verantwoord | België"
+    fine = f"{MIN_AGE}+ | Play responsibly | Belgium" if _is_en() else f"{MIN_AGE}+ | Speel verantwoord | België"
     return f"""<!doctype html>
 <html lang="{html.escape(HTML_LANG)}" data-site-kind="review-lobby" data-min-gambling-age="{MIN_AGE}">
   <head>
 {head_block(rel, title, desc)}
   </head>
-  <body class="rb-layout rb-theme-nl">
+  <body class="rb-layout {_theme_class()}">
 {_fix_html(compliance_block())}
 <div id="siteContent" class="rb-app">
 {site_header(rel)}
@@ -504,10 +618,11 @@ def content_page(page_id: str, rel: str, menu_label: str) -> str:
 
 
 def tech_policy_stub() -> str:
+    back_home = "Back to home" if _is_en() else "Terug naar home"
     return (
         '<article class="rb-policyArticle" data-a2-field="main_seo_html">'
         f"<p>{html.escape(STUB)}</p>"
-        '<p><a href="index.html">Terug naar home</a></p>'
+        f'<p><a href="index.html">{back_home}</a></p>'
         "</article>"
     )
 
@@ -519,7 +634,7 @@ def technical_page(rel: str, title: str, desc: str, h1: str, hero_sub: str, slug
   <head>
 {head_block(rel, title, desc)}
   </head>
-  <body class="rb-layout rb-layout--legal rb-theme-nl">
+  <body class="rb-layout rb-layout--legal {_theme_class()}">
 {_fix_html(compliance_block())}
 <div id="siteContent" class="rb-app">
 {site_header(rel)}
@@ -651,6 +766,24 @@ body.rb-layout--legal .rb-main { max-width: 820px; }
 .btn { display: inline-flex; align-items: center; justify-content: center; padding: 8px 14px; border-radius: 10px; border: 1px solid var(--rb-line); background: #1e293b; color: inherit; text-decoration: none; font-size: 14px; cursor: pointer; font-family: inherit; }
 .btn.primary { background: linear-gradient(135deg, var(--rb-accent2), #f472b6); border-color: transparent; color: #0f172a; font-weight: 700; }
 body.rb-theme-nl { --rb-accent: #22d3ee; --rb-accent2: #38bdf8; --rb-bg: #0b1020; --rb-panel: #151d2e; --rb-line: rgba(56, 189, 248, 0.18); --rb-text: #f1f5f9; --rb-muted: #94a3b8; }
+body.rb-theme-enbe { --rb-accent: #f97316; --rb-accent2: #fb7185; --rb-bg: #111111; --rb-panel: #1c1c1c; --rb-line: rgba(251, 113, 133, 0.24); --rb-text: #f8fafc; --rb-muted: #cbd5e1; }
+.rb-ndHero { border: 1px solid var(--rb-line); border-radius: 14px; padding: 18px; background: rgba(251, 113, 133, 0.08); margin-bottom: 18px; }
+.rb-ndHero h1 { margin: 0 0 10px; font-size: clamp(1.3rem, 3vw, 1.8rem); color: #ffe4e6; }
+.rb-ndMeta { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-bottom: 10px; font-size: 13px; color: var(--rb-muted); }
+.rb-ndMeta a { color: var(--rb-accent2); text-decoration: none; }
+.rb-ndMeta a:hover { text-decoration: underline; }
+.rb-ndLead { margin: 0 0 10px; line-height: 1.7; color: #ffe4e6; }
+.rb-ndDisclosure { margin: 0; font-size: 13px; color: var(--rb-muted); }
+.rb-ndSection { margin-bottom: 16px; }
+.rb-ndSection h2 { margin: 0 0 10px; font-size: 1.05rem; color: #ffd6dd; }
+.rb-ndCard { border: 1px solid var(--rb-line); border-radius: 14px; padding: 14px; background: var(--rb-panel); }
+.rb-ndCardHead { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+.rb-ndCardHead h3 { margin: 0; font-size: 1rem; }
+.rb-ndList { margin: 0; padding-left: 1.1rem; line-height: 1.7; color: #e2e8f0; }
+.rb-ndCodeRow { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; }
+.rb-ndCodeRow p { margin: 0; color: #e2e8f0; }
+.rb-ndPoll { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px; }
+.rb-ndPoll span { color: var(--rb-muted); font-size: 13px; margin-right: 4px; }
 """
 
 RB_COMPLIANCE_CSS = """
@@ -668,8 +801,8 @@ html.complianceNoScroll, html.complianceNoScroll body { overflow: hidden; height
 RB_SITE_JS = """
 (function () {
   "use strict";
-  var AGE = "cazilla_review1_nl_be_age_ok";
-  var COOKIE = "cazilla_review1_nl_be_cookie";
+  var AGE = "cazilla_review_lobby_age_ok";
+  var COOKIE = "cazilla_review_lobby_cookie";
   function getCookie(n) {
     var m = document.cookie.match(new RegExp("(?:^|; )" + n.replace(/([.$?*|{}()[\\]\\\\/+^])/g, "\\\\$1") + "=([^;]*)"));
     return m ? decodeURIComponent(m[1]) : "";
@@ -709,14 +842,14 @@ RB_SITE_JS = """
       var open = mainNav.dataset.open === "true";
       mainNav.dataset.open = open ? "false" : "true";
       navToggle.setAttribute("aria-expanded", open ? "false" : "true");
-      navToggle.setAttribute("aria-label", open ? "Menu openen" : "Menu sluiten");
+      navToggle.setAttribute("aria-label", open ? "Open menu" : "Close menu");
     });
     document.addEventListener("click", function (ev) {
       if (mainNav.dataset.open !== "true") return;
       if (mainNav.contains(ev.target) || navToggle.contains(ev.target)) return;
       mainNav.dataset.open = "false";
       navToggle.setAttribute("aria-expanded", "false");
-      navToggle.setAttribute("aria-label", "Menu openen");
+      navToggle.setAttribute("aria-label", "Open menu");
     });
   }
 })();

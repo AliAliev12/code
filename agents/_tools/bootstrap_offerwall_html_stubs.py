@@ -88,11 +88,6 @@ def _min_age(lc: LocaleContext) -> int:
 
 
 def _site_display_name(site_dir: Path, lc: LocaleContext) -> str:
-    slug = site_dir.name.lower()
-    if lc.lang == "fr" and "fr-be" in slug:
-        return "Cazilla Belgique"
-    if lc.lang == "fr":
-        return "Cazilla"
     return "Cazilla"
 
 
@@ -130,6 +125,19 @@ class OwUi:
                 brand_aria=f"Accueil {site_name}",
                 cookie_policy_href=cookie_policy_rel,
             )
+        if lc.lang == "nl":
+            return OwUi(
+                lang=_html_lang(lc),
+                min_age=ma,
+                site_name=site_name,
+                cta_label="Speel bij Cazilla",
+                title_suffix=" — Cazilla review",
+                menu_label="Menu",
+                drawer_title="Pagina's",
+                agg_aria="Top vijf selecties",
+                brand_aria=f"Home {site_name}",
+                cookie_policy_href=cookie_policy_rel,
+            )
         return OwUi(
             lang=_html_lang(lc),
             min_age=ma,
@@ -146,6 +154,32 @@ class OwUi:
 
 def _compliance_block(ui: OwUi, *, cookie_href: str) -> str:
     ch = html_lib.escape(cookie_href)
+    if ui.lang.startswith("nl"):
+        age_body = (
+            f"Deze site bespreekt gereguleerd gokken voor lezers in België. "
+            f"U moet minstens {ui.min_age} jaar zijn om verder te gaan."
+        )
+        return f"""    <div class="complianceOverlay" id="ageGate" role="dialog" aria-modal="true" aria-labelledby="ageTitle">
+  <div class="complianceDialog">
+    <h2 id="ageTitle">Bevestig dat u {ui.min_age} jaar of ouder bent</h2>
+    <p>{age_body}</p>
+    <div class="complianceActions">
+      <button type="button" class="btn" id="ageUnder">Ik ben jonger dan {ui.min_age}</button>
+      <button type="button" class="btn primary" id="ageOk">Ik ben {ui.min_age}+</button>
+    </div>
+  </div>
+</div>
+    <div class="complianceOverlay" id="cookieGate" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="cookieTitle">
+  <div class="complianceDialog">
+    <h2 id="cookieTitle">Cookievoorkeuren</h2>
+    <p>We gebruiken cookies om de leeftijdscontrole te onthouden. Zie <a class="inTextLink" href="{ch}">cookiebeleid</a>.</p>
+    <div class="complianceActions">
+      <button type="button" class="btn" id="cookieReject">Alleen essentieel</button>
+      <button type="button" class="btn primary" id="cookieAccept">Accepteren</button>
+    </div>
+  </div>
+</div>
+"""
     if ui.lang.startswith("fr"):
         if ui.min_age >= 21:
             age_body = (
@@ -217,6 +251,11 @@ def _desc_from_kw(kw: str, lc: LocaleContext, ui: OwUi) -> str:
             f"Avis éditorial Cazilla pour {lc.region_name} : {kw}. "
             f"Bonus, jeux, paiements — {ui.min_age}+."
         )
+    elif lc.lang == "nl":
+        s = (
+            f"Redactionele Cazilla-review voor {lc.region_name}: {kw}. "
+            f"Bonussen, spellen, betalingen — {ui.min_age}+."
+        )
     else:
         s = (
             f"Editorial Cazilla review for {lc.region_name}: {kw}. "
@@ -230,6 +269,8 @@ def _placeholder_lead(lc: LocaleContext, ui: OwUi, cta_html: str) -> str:
         return (
             f"Notes éditoriales pour {lc.audience_phrase} ({ui.min_age}+). {cta_html}"
         )
+    if lc.lang == "nl":
+        return f"Redactionele notities voor {lc.audience_phrase} ({ui.min_age}+). {cta_html}"
     return f"Editorial notes for {lc.audience_phrase} ({ui.min_age}+). {cta_html}"
 
 
@@ -238,6 +279,11 @@ def _short_footer(lc: LocaleContext, ui: OwUi) -> str:
         return (
             f"{ui.site_name} publie des comparatifs éditoriaux pour {lc.audience_phrase}. "
             f"Nous n'exploitons pas de casino. Jeu responsable — {ui.min_age}+."
+        )
+    if lc.lang == "nl":
+        return (
+            f"{ui.site_name} publiceert onafhankelijke redactionele vergelijkingen voor {lc.audience_phrase}. "
+            f"Wij exploiteren geen casino. Speel verantwoord — {ui.min_age}+."
         )
     return (
         f"{ui.site_name} publishes independent editorial comparisons for {lc.audience_phrase}. "
@@ -251,6 +297,12 @@ def _hub_prose_placeholder(lc: LocaleContext) -> str:
             ("Cazilla, toujours à la recherche du meilleur choix", "Texte éditorial à compléter (A2)."),
             ("Comment nous évaluons les casinos en ligne", "Méthode de comparaison à compléter (A2)."),
             ("Pas de casino parfait, mais de meilleures options", "Jeux et lobby à compléter (A2)."),
+        ]
+    elif lc.lang == "nl":
+        blocks = [
+            ("Cazilla — de beste keuze vinden", "Redactionele tekst — A2 vult aan."),
+            ("Hoe wij online casino's beoordelen", "Vergelijkingsmethode — A2 vult aan."),
+            ("Geen perfect casino, wel betere opties", "Spellen en lobby — A2 vult aan."),
         ]
     else:
         blocks = [
@@ -308,8 +360,12 @@ def _slots_demo_cards() -> list[tuple[str, str, str]]:
 
 
 def _slots_grid_html(*, ap: str, casino_url: str, lc: LocaleContext, hidden_from: int = 6) -> str:
-    play = "Jouer" if lc.lang == "fr" else "Play"
-    demo = "Démo" if lc.lang == "fr" else "Demo"
+    if lc.lang == "fr":
+        play, demo = "Jouer", "Démo"
+    elif lc.lang == "nl":
+        play, demo = "Speel", "Demo"
+    else:
+        play, demo = "Play", "Demo"
     esc_casino = html_lib.escape(casino_url, quote=True)
     lines: list[str] = []
     for i, (src, title, provider) in enumerate(_slots_demo_cards()):
@@ -336,6 +392,15 @@ def _slots_filters_html(lc: LocaleContext) -> str:
             ("Fonctions", ["Free spins", "Buy bonus", "Multiplicateurs", "Sticky wilds"]),
             ("Volatilité", ["Élevée", "Moyenne", "Faible"]),
             ("RTP", ["> 96 %", "> 97 %", "> 98 %"]),
+        ]
+    elif lc.lang == "nl":
+        groups = [
+            ("Slottype", ["Fruit", "Video", "Megaways", "Klassiek"]),
+            ("Provider", ["NetEnt", "Pragmatic Play", "Play'n GO", "Nolimit City"]),
+            ("Thema", ["Avontuur", "Egypte", "Muziek", "Dieren"]),
+            ("Features", ["Free spins", "Buy bonus", "Multipliers", "Sticky wilds"]),
+            ("Volatiliteit", ["Hoog", "Gemiddeld", "Laag"]),
+            ("RTP", ["> 96%", "> 97%", "> 98%"]),
         ]
     else:
         groups = [
@@ -1120,6 +1185,30 @@ def _hub_faq_stub(lc: LocaleContext) -> str:
                 "Ressources listées dans notre page Jeu responsable.",
             ),
         ]
+    elif lc.lang == "nl":
+        title = "Veelgestelde vragen"
+        items = [
+            (
+                "Is Cazilla gelicentieerd in mijn regio?",
+                "Deze pagina is redactioneel: Cazilla is partner #1; rangen #2–#5 zijn fictief. Controleer altijd de voorwaarden op de officiële site.",
+            ),
+            (
+                "Kan ik in demomodus spelen?",
+                "Veel titels bieden een demo; beschikbaarheid hangt af van het spel en account. Bekijk de Cazilla-lobby.",
+            ),
+            (
+                "Welke betaalmethoden zijn gebruikelijk?",
+                "Kaarten, e-wallets en overschrijving afhankelijk van de operator. Lees de pagina Betalingen vóór storten.",
+            ),
+            (
+                "Hoe vergelijk ik bonussen?",
+                "Kijk naar bedrag, wagering, geschikte spellen en looptijd. Een grote bonus is niet altijd de beste deal.",
+            ),
+            (
+                "Verantwoord spelen in België",
+                "Stel limieten, neem pauzes en zoek hulp als gokken geen plezier meer is. Zie onze pagina Verantwoord spelen.",
+            ),
+        ]
     else:
         title = "FAQ"
         items = [
@@ -1436,6 +1525,28 @@ def _collect_legal_footer(data: dict) -> list[tuple[str, str]]:
     return items
 
 
+OFFERWALL_THEME_NL_CSS = """
+/* nl-BE offerwall theme — cyan / rose (distinct from fr-BE purple/gold) */
+:root {
+  --bg: #0a0f18;
+  --bg2: #0f172a;
+  --purple: #22d3ee;
+  --purple2: #0891b2;
+  --gold: #f472b6;
+  --gold2: #ec4899;
+  --link: #67e8f9;
+  --link-hover: #a5f3fc;
+}
+body.lv-body {
+  background-color: var(--bg);
+  background: radial-gradient(1200px 700px at 28% 10%, rgba(34, 211, 238, 0.22), transparent 60%),
+    radial-gradient(900px 500px at 88% 82%, rgba(244, 114, 182, 0.16), transparent 55%), var(--bg);
+}
+.ow-headerCta, .btn.primary { background: linear-gradient(135deg, var(--purple), var(--gold)); }
+.ow-topCard--featured { border-color: var(--purple); }
+"""
+
+
 def copy_assets(site_dir: Path, site_slug: str) -> None:
     dest = site_dir / "assets"
     if dest.exists():
@@ -1448,6 +1559,10 @@ def copy_assets(site_dir: Path, site_slug: str) -> None:
         js = js.replace("cazilla_ow2_ie_age_ok", f"{prefix}_age_ok")
         js = js.replace("cazilla_ow2_ie_cookie", f"{prefix}_cookie")
         (dest / "site.js").write_text(js, encoding="utf-8")
+    if "nl-be" in site_slug.lower():
+        shell = dest / "shell.css"
+        if shell.is_file():
+            shell.write_text(shell.read_text(encoding="utf-8") + "\n" + OFFERWALL_THEME_NL_CSS.strip() + "\n", encoding="utf-8")
 
 
 def write_robots_sitemap(site_dir: Path, site_origin: str, data: dict, hreflang: str) -> None:
@@ -1581,7 +1696,12 @@ def main() -> int:
                 lc=lc,
             )
         elif _is_about_trust(site_slug, rel):
-            about_h1 = "À propos de Cazilla" if lc.lang == "fr" else "About Cazilla"
+            if lc.lang == "fr":
+                about_h1 = "À propos de Cazilla"
+            elif lc.lang == "nl":
+                about_h1 = "Over Cazilla"
+            else:
+                about_h1 = "About Cazilla"
             doc = _shell_about_trust(
                 rel=rel,
                 site_origin=site_origin,
@@ -1682,6 +1802,9 @@ def main() -> int:
         if lc.lang == "fr":
             desc = f"{h1} — informations pour {lc.audience_phrase} ({min_age}+)."[:135]
             lead = f"Informations de référence pour {lc.audience_phrase}. {cta}"
+        elif lc.lang == "nl":
+            desc = f"{h1} — informatie voor {lc.audience_phrase} ({min_age}+)."[:135]
+            lead = f"Referentie-informatie voor {lc.audience_phrase}. {cta}"
         else:
             desc = f"{h1} information for {lc.audience_phrase} ({min_age}+)."[:135]
             lead = f"Reference information for {lc.audience_phrase}. {cta}"

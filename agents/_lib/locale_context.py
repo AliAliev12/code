@@ -106,23 +106,24 @@ def legal_tone_line_for(language_name: str, audience_phrase: str) -> str:
 
 
 def age_gate_body(lc: LocaleContext) -> str:
+    min_age = 21 if lc.geo.upper() == "BE" else 18
     if lc.lang == "fr":
         return (
-            f"Vous devez avoir 18 ans ou plus pour continuer. "
+            f"Vous devez avoir {min_age} ans ou plus pour continuer. "
             f"Ce site traite des jeux d'argent réglementés pour {lc.audience_phrase}."
         )
     if lc.lang == "nl":
         return (
-            f"U moet 18 jaar of ouder zijn om verder te gaan. "
+            f"U moet {min_age} jaar of ouder zijn om verder te gaan. "
             f"Deze site bespreekt gereguleerd gokken voor {lc.audience_phrase}."
         )
     if lc.lang == "de":
         return (
-            f"Sie müssen mindestens 18 Jahre alt sein, um fortzufahren. "
+            f"Sie müssen mindestens {min_age} Jahre alt sein, um fortzufahren. "
             f"Diese Website behandelt reguliertes Glücksspiel für {lc.audience_phrase}."
         )
     return (
-        f"You must be 18+ to continue. "
+        f"You must be {min_age}+ to continue. "
         f"This site discusses regulated gambling for {lc.audience_phrase}."
     )
 
