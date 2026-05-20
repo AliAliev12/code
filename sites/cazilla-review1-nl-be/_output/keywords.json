@@ -354,7 +354,7 @@
     {
       "id": "user-agreement",
       "path": "user-agreement.html",
-      "menu_label": "Conditions d'utilisation",
+      "menu_label": "Gebruiksvoorwaarden",
       "cluster": "cl_user_agreement",
       "qa_profile": "technical",
       "keywords": [
@@ -496,7 +496,7 @@
     {
       "id": "cookie-policy",
       "path": "cookie-policy.html",
-      "menu_label": "Politique de cookies",
+      "menu_label": "Cookiebeleid",
       "cluster": "cl_cookie_policy",
       "qa_profile": "technical",
       "keywords": [
@@ -638,7 +638,7 @@
     {
       "id": "fair-play",
       "path": "fair-play.html",
-      "menu_label": "Jeu équitable",
+      "menu_label": "Eerlijk spel",
       "cluster": "cl_fair_play",
       "qa_profile": "technical",
       "keywords": [
@@ -773,7 +773,7 @@
     {
       "id": "payments-withdrawals",
       "path": "payments-withdrawals.html",
-      "menu_label": "Paiements et retraits",
+      "menu_label": "Betalingen en opnames",
       "cluster": "cl_payments_withdrawals",
       "qa_profile": "technical",
       "keywords": [
@@ -915,7 +915,7 @@
     {
       "id": "privacy-policy",
       "path": "privacy-policy.html",
-      "menu_label": "Politique de confidentialité",
+      "menu_label": "Privacybeleid",
       "cluster": "cl_privacy_policy",
       "qa_profile": "technical",
       "keywords": [
@@ -1050,7 +1050,7 @@
     {
       "id": "responsible-gambling",
       "path": "responsible-gambling.html",
-      "menu_label": "Jeu responsable",
+      "menu_label": "Verantwoord spelen",
       "cluster": "cl_responsible_gambling",
       "qa_profile": "technical",
       "keywords": [
@@ -1178,7 +1178,7 @@
     {
       "id": "aml-kyc",
       "path": "aml-kyc.html",
-      "menu_label": "AML et KYC",
+      "menu_label": "AML en KYC",
       "cluster": "cl_aml_kyc",
       "qa_profile": "technical",
       "keywords": [

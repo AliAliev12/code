@@ -374,11 +374,11 @@
       ]
     },
     {
-      "id": "live",
-      "path": "/live.html",
-      "menu_label": "Live",
+      "id": "live-casino",
+      "path": "/live-casino.html",
+      "menu_label": "Live Casino",
       "cluster": "cl_live",
-      "notes": "Live",
+      "notes": "Live Casino",
       "keywords": [
         {
           "keyword": "casino online live",

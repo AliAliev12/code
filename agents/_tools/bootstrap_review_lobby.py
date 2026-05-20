@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bootstrap: review lobby site (fr-BE) — minimal header, vertical game list, 4 content + 7 technical pages."""
+"""Bootstrap: review lobby site (fr-BE) — landing template on 4 main pages + 7 technical pages."""
 from __future__ import annotations
 
 import html
@@ -34,26 +34,52 @@ CONTENT_PAGES: list[tuple[str, str, str]] = []
 FOOTER_LEGAL: list[tuple[str, str]] = []
 TECH_SPECS: list[tuple[str, str, str, str, str, str]] = []
 
-HOME_GAMES = [
-    ("Sweet Bonanza", "bonus-promo-artwork.webp"),
-    ("Gates of Olympus", "fruit-classic-slot.png"),
-    ("Big Bass Bonanza", "big-bass-bonanza-review.avif"),
-    ("Aviator", "rocket-crash-game.png"),
-    ("Sugar Rush", "crazy-time-bonus.jpg"),
-    ("Book of Dead", "money-train-4-thumbnail.png"),
-]
+# Three images per main page (landing wireframe positions 3, 6, 11)
+LANDING_IMAGES: dict[str, tuple[str, str, str]] = {
+    "home": (
+        "casino-feature-visual.png",
+        "slots-showcase.png",
+        "live-tables.jpg",
+    ),
+    "slots": (
+        "slots-showcase.png",
+        "fruit-classic-slot.png",
+        "big-bass-bonanza-review.avif",
+    ),
+    "bonus": (
+        "bonus-promo-artwork.webp",
+        "baccarat-bonus-terms.webp",
+        "crazy-time-bonus.jpg",
+    ),
+    "about": (
+        "casino-feature-visual.png",
+        "og-logo.svg",
+        "blackjack-green-table.jpg",
+    ),
+}
 
-SLOT_GAMES = HOME_GAMES + [
-    ("Money Train 4", "money-train-4-thumbnail.png"),
-    ("Fruit Classic", "fruit-classic-slot.png"),
-    ("Rocket Crash", "rocket-crash-game.png"),
-]
-
-LIVE_PREVIEW = [
-    ("Roulette", "baccarat-live-table.webp"),
-    ("Blackjack", "blackjack-green-table.jpg"),
-    ("Baccarat", "live-tables.jpg"),
-]
+LANDING_IMG_ALT: dict[str, tuple[str, str, str]] = {
+    "home": (
+        "Lobby Cazilla — casino en ligne Belgique",
+        "Catalogue machines à sous",
+        "Tables casino en direct",
+    ),
+    "slots": (
+        "Machines à sous populaires",
+        "Machine à sous classique",
+        "Big Bass Bonanza — aperçu",
+    ),
+    "bonus": (
+        "Offres bonus Cazilla",
+        "Bonus baccarat — conditions",
+        "Promotion Crazy Time",
+    ),
+    "about": (
+        "Cazilla Belgique — hub éditorial",
+        "Logo Cazilla",
+        "Blackjack en direct",
+    ),
+}
 
 
 def init_site() -> None:
@@ -216,168 +242,80 @@ def site_footer(current_rel: str | None = None) -> str:
 </footer>"""
 
 
-def game_row(name: str, img: str, *, featured: bool = False) -> str:
+def _landing_cta() -> str:
     m = html.escape(MAIN)
-    cls = "rb-gameRow rb-gameRow--featured" if featured else "rb-gameRow"
-    tag = "Site officiel" if featured else "Machine à sous"
-    return f"""<article class="{cls}">
-  <div class="rb-gameRowThumb"><img src="assets/pictures/{html.escape(img)}" alt="{html.escape(name)}" width="160" height="100" loading="lazy" decoding="async" /></div>
-  <div class="rb-gameRowBody">
-    <p class="rb-gameRowTag">{tag}</p>
-    <h3 class="rb-gameRowTitle">{html.escape(name)}</h3>
-    <div class="rb-gameRowActions">
-      <a class="btn primary" href="{m}" rel="noopener noreferrer" target="_blank">Jouer</a>
-      <a class="btn" href="{m}" rel="noopener noreferrer" target="_blank">Démo</a>
-    </div>
-  </div>
-</article>"""
-
-
-def home_body() -> str:
-    m = html.escape(MAIN)
-    rows = [
-        game_row(
-            "Cazilla — lobby officiel",
-            "casino-feature-visual.png",
-            featured=True,
-        )
-    ]
-    rows.extend(game_row(n, img) for n, img in HOME_GAMES)
-    live_cards = "\n".join(
-        f"""<a class="rb-liveCard" href="{m}" rel="noopener noreferrer" target="_blank">
-  <img src="assets/pictures/{html.escape(img)}" alt="{html.escape(name)}" width="400" height="200" loading="lazy" decoding="async" />
-  <h3>{html.escape(name)}</h3>
-</a>"""
-        for name, img in LIVE_PREVIEW
-    )
-    return f"""
-      <section class="rb-promo" aria-label="Promotion">
-        <h2 class="rb-promoTitle">Bonus de bienvenue 100&nbsp;% + 500 tours gratuits</h2>
-        <p class="rb-promoLead">Offre sur le site officiel — conditions et éligibilité 21+ en Belgique.</p>
-        <a class="btn primary" href="{m}" rel="noopener noreferrer" target="_blank">Jouer maintenant</a>
-      </section>
-      <section class="rb-section" aria-labelledby="rb-cat-title">
-        <div class="rb-tags" role="tablist" aria-label="Catégories">
-          <span class="rb-tag is-active">Populaires</span><span class="rb-tag">Nouveaux</span>
-          <span class="rb-tag">Machines à sous</span><span class="rb-tag">Jeux de table</span><span class="rb-tag">Megaways</span>
-        </div>
-        <h2 id="rb-cat-title" class="rb-sectionTitle">Jeux populaires</h2>
-        <div class="rb-gameList">
-{chr(10).join(rows)}
-        </div>
-      </section>
-      <section class="rb-section" aria-labelledby="rb-live-title">
-        <h2 id="rb-live-title" class="rb-sectionTitle">Casino en direct</h2>
-        <motion class="rb-liveGrid">
-{live_cards}
-        </div>
-      </section>""".replace('<motion class="rb-liveGrid">', '<div class="rb-liveGrid">').replace(
-        "</motion>", "</div>", 1
+    return (
+        f'<p class="rb-ctaBar"><a class="btn primary" href="{m}" rel="noopener noreferrer" '
+        f'target="_blank">Jouer sur Cazilla</a></p>'
     )
 
 
-def slots_body() -> str:
-    m = html.escape(MAIN)
-    cards = "\n".join(game_row(n, img) for n, img in SLOT_GAMES)
+def _landing_figure(page_id: str, index: int) -> str:
+    imgs = LANDING_IMAGES.get(page_id, LANDING_IMAGES["home"])
+    alts = LANDING_IMG_ALT.get(page_id, LANDING_IMG_ALT["home"])
+    i = min(max(index, 0), 2)
+    src = html.escape(imgs[i])
+    alt = html.escape(alts[i])
+    return (
+        f'<figure class="rb-landingMedia"><img src="assets/pictures/{src}" alt="{alt}" '
+        f'width="720" loading="lazy" decoding="async" /></figure>'
+    )
+
+
+def landing_stub(page_id: str) -> str:
+    """Stub inside article[data-a2-field=main_seo_html]; A2 replaces the whole article body."""
+    return f"""<p>{html.escape(STUB)}</p>
+{_landing_cta()}
+{_landing_figure(page_id, 0)}
+<h2>Points clés</h2>
+<p>{html.escape(STUB)}</p>
+<ul>
+  <li>Point éditorial provisoire un</li>
+  <li>Point éditorial provisoire deux</li>
+  <li>Point éditorial provisoire trois</li>
+</ul>
+{_landing_cta()}
+{_landing_figure(page_id, 1)}
+<h2>Étapes recommandées</h2>
+<p>{html.escape(STUB)}</p>
+<ol>
+  <li>Étape provisoire un</li>
+  <li>Étape provisoire deux</li>
+  <li>Étape provisoire trois</li>
+</ol>
+{_landing_cta()}
+<h2>Comparatif rapide</h2>
+<p>{html.escape(STUB)}</p>
+<table class="rb-dataTable">
+  <thead><tr><th>Critère</th><th>Cazilla</th><th>À vérifier</th></tr></thead>
+  <tbody>
+    <tr><td>Bonus</td><td>Sur le site officiel</td><td>Conditions de mise</td></tr>
+    <tr><td>Paiements</td><td>Cartes &amp; e-wallets</td><td>Délais de retrait</td></tr>
+    <tr><td>Mobile</td><td>Navigateur</td><td>Stabilité</td></tr>
+  </tbody>
+</table>
+{_landing_cta()}
+{_landing_figure(page_id, 2)}
+<section class="rb-faq" aria-labelledby="rb-faq-title">
+  <h2 id="rb-faq-title">Questions fréquentes</h2>
+  <details open><summary>Question provisoire 1 ?</summary><p>{html.escape(STUB)}</p></details>
+  <details open><summary>Question provisoire 2 ?</summary><p>{html.escape(STUB)}</p></details>
+  <details open><summary>Question provisoire 3 ?</summary><p>{html.escape(STUB)}</p></details>
+</section>"""
+
+
+def landing_body(page_id: str) -> str:
     return f"""
-      <div class="rb-toolbar">
-        <label class="rb-tool">Rechercher un jeu <input type="search" placeholder="Nom du jeu…" /></label>
-        <label class="rb-tool">Fournisseur <select><option>Tous</option></select></label>
-      </div>
-      <div class="rb-tags">
-        <span class="rb-tag is-active">Populaires</span><span class="rb-tag">Machines à sous</span>
-        <span class="rb-tag">Jackpot</span><span class="rb-tag">Jeux de table</span><span class="rb-tag">Megaways</span>
-      </motion>
-      <div class="rb-gameList">
-{cards}
-      </div>
-      <p class="rb-more"><a class="btn" href="{m}" rel="noopener noreferrer" target="_blank">Afficher plus</a></p>""".replace(
-        "</motion>", "</div>", 1
-    ).replace('<motion class="rb-tags">', '<div class="rb-tags">')
-
-
-def bonus_body() -> str:
-    m = html.escape(MAIN)
-    cards = [
-        ("Bonus premier dépôt 100&nbsp;%", "Machines à sous et casino en direct"),
-        ("Cashback casino 25&nbsp;%", "Sur les pertes nettes quotidiennes"),
-        ("Bonus crypto 20&nbsp;% sans mise", "Dépôts en cryptomonnaie"),
-        ("Parrainage", "Récompense par ami invité"),
-    ]
-    grid = []
-    for title, sub in cards:
-        grid.append(
-            f"""<article class="rb-bonusCard">
-  <h3>{title}</h3>
-  <p>{html.escape(sub)}</p>
-  <div class="rb-bonusCardActions">
-    <a class="btn" href="{m}" rel="noopener noreferrer" target="_blank">Détails</a>
-    <a class="btn primary" href="{m}" rel="noopener noreferrer" target="_blank">Obtenir le bonus</a>
-  </div>
-</article>"""
-        )
-    return f"""
-      <motion class="rb-tags">
-        <span class="rb-tag is-active">Tous les bonus</span><span class="rb-tag">Bienvenue</span>
-        <span class="rb-tag">Dépôt</span><span class="rb-tag">Cashback</span><span class="rb-tag">Offres spéciales</span>
-      </div>
-      <div class="rb-bonusGrid">
-{chr(10).join(grid)}
-      </div>
-      <section class="rb-termsBox" aria-labelledby="rb-terms-title">
-        <h2 id="rb-terms-title">Conditions générales des bonus</h2>
-        <ul>
-          <li>Chaque bonus peut avoir des conditions de mise différentes.</li>
-          <li>Un seul bonus actif à la fois sur le compte joueur.</li>
-          <li>Consultez toujours les règles sur le site officiel avant d'accepter une offre.</li>
-        </ul>
-      </section>""".replace('<motion class="rb-tags">', '<div class="rb-tags">')
-
-
-def about_body() -> str:
-    m = html.escape(MAIN)
-    return f"""
-      <section class="rb-aboutIntro" data-a2-field="page_lead">
-        <p>{html.escape(STUB)}</p>
-      </section>
-      <section class="rb-aboutValues" aria-labelledby="rb-values-title">
-        <h2 id="rb-values-title">Nos valeurs</h2>
-        <div class="rb-aboutGrid">
-          <article class="rb-aboutCard"><h3>Fiabilité</h3><p>Tests éditoriaux et transparence sur les offres.</p></article>
-          <article class="rb-aboutCard"><h3>Orientation client</h3><p>Support et parcours clairs pour les joueurs belges.</p></article>
-          <article class="rb-aboutCard"><h3>Jeu équitable</h3><p>Fournisseurs agréés et mécanismes RNG vérifiés.</p></article>
-        </div>
-      </section>
-      <section class="rb-licenseBox" aria-labelledby="rb-lic-title">
-        <h2 id="rb-lic-title">Licence et régulation</h2>
-        <p>Informations sur la licence Curaçao et la protection des données — détails sur <a href="{m}" rel="noopener noreferrer" target="_blank">Cazilla</a>.</p>
-      </section>"""
-
-
-BODY_BY_ID = {
-    "home": home_body,
-    "slots": slots_body,
-    "bonus": bonus_body,
-    "about": about_body,
-}
+    <article class="rb-landing" data-a2-field="main_seo_html">
+{landing_stub(page_id)}
+    </article>"""
 
 
 def content_page(page_id: str, rel: str, menu_label: str) -> str:
     title = f"{menu_label} | {SITE_NAME}"
-    desc = f"{menu_label} — lobby casino pour lecteurs en Belgique (21+)."
+    desc = f"{menu_label} — avis éditorial Cazilla pour lecteurs en Belgique (21+)."
     h1 = menu_label.replace("&amp;", "&")
-    body_fn = BODY_BY_ID.get(page_id, slots_body)
-    body = body_fn()
-    seo_block = ""
-    if page_id == "home":
-        seo_block = f"""
-      <div class="rb-seoProse" data-a2-field="main_seo_html">
-        <p>{html.escape(STUB)}</p>
-      </div>"""
-    elif page_id in ("slots", "bonus", "about"):
-        seo_block = f"""
-      <div class="rb-seoProse" data-a2-field="main_seo_html"><p>{html.escape(STUB)}</p></div>"""
-    h1_field = ' data-a2-field="page_h1"' if page_id != "about" else ' data-a2-field="page_h1"'
+    landing = landing_body(page_id)
     return f"""<!doctype html>
 <html lang="{html.escape(HTML_LANG)}" data-site-kind="review-lobby" data-min-gambling-age="{MIN_AGE}">
   <head>
@@ -388,9 +326,8 @@ def content_page(page_id: str, rel: str, menu_label: str) -> str:
 <div id="siteContent" class="rb-app">
 {site_header(rel)}
   <main class="rb-main" id="top">
-    <h1 class="rb-pageTitle"{h1_field}>{html.escape(h1)}</h1>
-{body}
-{seo_block}
+    <h1 class="rb-pageTitle" data-a2-field="page_h1">{html.escape(h1)}</h1>
+{landing}
     <p class="rb-fineprint" data-a2-field="footer_note">21+ | Jeu responsable | Belgique</p>
   </main>
 {site_footer(rel)}
@@ -519,6 +456,30 @@ RB_LOBBY_CSS = """
 body.rb-layout--legal .rb-main { max-width: 820px; }
 .btn { display: inline-flex; align-items: center; justify-content: center; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--cl-line); background: #1e293b; color: inherit; text-decoration: none; font-size: 14px; cursor: pointer; font-family: inherit; }
 .btn.primary { background: var(--cl-accent, #c9a227); border-color: transparent; color: #1a1a1a; font-weight: 700; }
+
+/* Landing wireframe (4 main pages) */
+.rb-landing { margin-top: 8px; }
+.rb-landing h2 { margin: 1.4rem 0 0.6rem; font-size: 1.15rem; color: #fef3c7; }
+.rb-landing p, .rb-landing li { line-height: 1.7; color: #cbd5e1; }
+.rb-landing ul, .rb-landing ol { margin: 0.5rem 0 1rem; padding-left: 1.25rem; }
+.rb-ctaBar { display: flex; justify-content: center; align-items: center; margin: 1.25rem 0; }
+.rb-landingMedia { margin: 1rem 0; border-radius: 12px; border: 1px solid var(--cl-line); background: var(--cl-panel, #1c1f28); display: flex; justify-content: center; align-items: center; padding: 10px 14px; }
+.rb-landingMedia img { width: auto; max-width: min(100%, 520px); height: auto; max-height: 220px; object-fit: contain; object-position: center; display: block; margin: 0 auto; }
+@media (max-width: 640px) {
+  .rb-landingMedia { padding: 8px 10px; }
+  .rb-landingMedia img { max-width: 100%; max-height: 180px; }
+}
+
+.rb-dataTable { width: 100%; border-collapse: collapse; margin: 0.75rem 0 1rem; font-size: 14px; }
+.rb-dataTable th, .rb-dataTable td { border: 1px solid var(--cl-line); padding: 10px 12px; text-align: left; }
+.rb-dataTable th { background: rgba(201,162,39,0.12); color: #fef3c7; }
+.rb-faq { margin-top: 1.5rem; padding-top: 0.5rem; border-top: 1px solid var(--cl-line); }
+.rb-faq details { margin-bottom: 12px; border: 1px solid var(--cl-line); border-radius: 10px; padding: 12px 14px; background: var(--cl-panel); }
+.rb-faq details[open] { padding-bottom: 14px; }
+.rb-faq summary { cursor: default; font-weight: 600; padding: 0 0 8px; list-style: none; pointer-events: none; }
+.rb-faq summary::-webkit-details-marker { display: none; }
+.rb-faq summary::marker { content: ""; }
+.rb-faq details > p { margin: 0; padding: 0; }
 body.rb-layout { --cl-accent: #c9a227; --cl-accent2: #2d6a4f; --cl-bg: #14161c; --cl-panel: #1c1f28; --cl-line: rgba(201,162,39,0.12); --cl-text: #f5f0e8; --cl-muted: #a8a29e; }
 """
 
@@ -571,6 +532,23 @@ RB_SITE_JS = """
   } else { show(ageGate); hide(cookieGate); lock(true); }
   var y = document.getElementById("year");
   if (y) y.textContent = String(new Date().getFullYear());
+  var navToggle = document.getElementById("navToggle");
+  var mainNav = document.getElementById("mainNav");
+  if (navToggle && mainNav) {
+    navToggle.addEventListener("click", function () {
+      var open = mainNav.dataset.open === "true";
+      mainNav.dataset.open = open ? "false" : "true";
+      navToggle.setAttribute("aria-expanded", open ? "false" : "true");
+      navToggle.setAttribute("aria-label", open ? "Ouvrir le menu" : "Fermer le menu");
+    });
+    document.addEventListener("click", function (ev) {
+      if (mainNav.dataset.open !== "true") return;
+      if (mainNav.contains(ev.target) || navToggle.contains(ev.target)) return;
+      mainNav.dataset.open = "false";
+      navToggle.setAttribute("aria-expanded", "false");
+      navToggle.setAttribute("aria-label", "Ouvrir le menu");
+    });
+  }
 })();
 """
 
@@ -597,6 +575,44 @@ def write_assets() -> None:
             p.unlink()
 
 
+
+
+def write_robots_sitemap() -> None:
+    kw_path = SITE / "_output" / "keywords.json"
+    data = json.loads(kw_path.read_text(encoding="utf-8"))
+    origin = ORIGIN.rstrip("/")
+    hreflang = HTML_LANG
+    (SITE / "robots.txt").write_text(
+        f"User-agent: *\nAllow: /\n\nSitemap: {origin}/sitemap.xml\n",
+        encoding="utf-8",
+    )
+    urls: list[str] = []
+    for _pid, rel, _lab in CONTENT_PAGES:
+        urls.append(origin + ("/" if rel == "index.html" else f"/{rel}"))
+    for _slug, rel, *_rest in TECH_SPECS:
+        urls.append(f"{origin}/{rel}")
+    entries = []
+    for loc in urls:
+        pri = "1.0" if loc.rstrip("/").endswith("cazilla.cfd") or loc.endswith("index.html") else "0.85"
+        if loc.endswith("/index.html"):
+            pri = "1.0"
+        elif loc.endswith(".html"):
+            pri = "0.85"
+        entries.append(
+            f'  <url>\n    <loc>{html.escape(loc)}</loc>\n'
+            f'    <xhtml:link rel="alternate" hreflang="{html.escape(hreflang)}" href="{html.escape(loc)}"/>\n'
+            f'    <xhtml:link rel="alternate" hreflang="x-default" href="{html.escape(loc)}"/>\n'
+            f"    <lastmod>2026-05-20</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>{pri}</priority>\n  </url>"
+        )
+    xml = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n'
+        '        xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
+        + "\n".join(entries)
+        + "\n</urlset>\n"
+    )
+    (SITE / "sitemap.xml").write_text(xml, encoding="utf-8")
+
 def write_htaccess() -> None:
     (SITE / ".htaccess").write_text(
         "RewriteEngine On\nRewriteCond %{HTTPS} off\nRewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]\n",
@@ -618,6 +634,7 @@ def main() -> int:
         out.write_text(technical_page(rel, title, desc, h1, sub, slug), encoding="utf-8")
         print("Wrote", rel)
     write_htaccess()
+    write_robots_sitemap()
     print("Bootstrap complete ->", SITE)
     return 0
 

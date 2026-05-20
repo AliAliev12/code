@@ -1,9 +1,29 @@
 #siteContent.isBlurred { filter: blur(12px); user-select: none; pointer-events: none; }
-.complianceOverlay { position: fixed; inset: 0; z-index: 500; display: grid; place-items: center; padding: 20px; background: rgba(4, 8, 18, 0.82); backdrop-filter: blur(6px); }
+.complianceOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(18, 21, 26, 0.88);
+  backdrop-filter: blur(8px);
+}
 .complianceOverlay[hidden] { display: none !important; }
-.complianceDialog { width: min(420px,100%); border-radius: 14px; border: 1px solid rgba(56, 189, 248, 0.4); background: #151d2e; color: #f1f5f9; padding: 22px; box-shadow: 0 24px 60px rgba(0,0,0,0.55); }
-.complianceDialog h2 { margin: 0 0 10px; font-size: 18px; }
-.complianceDialog p { margin: 0 0 14px; color: #cbd5e1; font-size: 14px; line-height: 1.55; }
+.complianceDialog {
+  width: min(420px, 100%);
+  border-radius: 20px;
+  border: 1px solid rgba(234, 88, 12, 0.45);
+  border-top: 4px solid #059669;
+  background: #1c2329;
+  color: #faf8f5;
+  padding: 24px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
+}
+.complianceDialog h2 { margin: 0 0 10px; font-size: 18px; color: #fef3c7; }
+.complianceDialog p { margin: 0 0 14px; color: #d6d3d1; font-size: 14px; line-height: 1.55; }
 .complianceActions { display: flex; flex-wrap: wrap; gap: 10px; }
-.inTextLink { color: #7dd3fc; }
-html.complianceNoScroll, html.complianceNoScroll body { overflow: hidden; height: 100%; }
+.complianceDialog .btn.primary { background: #ea580c; color: #fff; }
+.inTextLink { color: #6ee7b7; text-decoration: underline; }
+html.complianceNoScroll,
+html.complianceNoScroll body { overflow: hidden; height: 100%; }

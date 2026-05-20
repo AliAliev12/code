@@ -75,6 +75,50 @@ LIVE_SHOWS = [
     ("VIP Blackjack", "blackjack-green-table.jpg", "Pragmatic Play"),
 ]
 
+LANDING_IMAGES: dict[str, tuple[str, str, str]] = {
+    "home": ("casino-feature-visual.png", "slots-showcase.png", "live-tables.jpg"),
+    "slots": ("slots-showcase.png", "fruit-classic-slot.png", "big-bass-bonanza-review.avif"),
+    "bonus": ("bonus-promo-artwork.webp", "baccarat-bonus-terms.webp", "crazy-time-bonus.jpg"),
+    "about": ("casino-feature-visual.png", "og-logo.svg", "blackjack-green-table.jpg"),
+    "live-casino": ("live-tables.jpg", "baccarat-live-table.webp", "blackjack-green-table.jpg"),
+}
+
+LANDING_IMG_ALT_NL: dict[str, tuple[str, str, str]] = {
+    "home": (
+        "Cazilla lobby — online casino België",
+        "Gokkasten catalogus",
+        "Live casinotafels",
+    ),
+    "slots": (
+        "Populaire online gokkasten",
+        "Klassieke fruitautomaat",
+        "Big Bass Bonanza — preview",
+    ),
+    "bonus": (
+        "Cazilla bonusaanbiedingen",
+        "Baccarat bonus — voorwaarden",
+        "Crazy Time promotie",
+    ),
+    "about": (
+        "Cazilla België — redactioneel platform",
+        "Cazilla logo",
+        "Live blackjack",
+    ),
+    "live-casino": (
+        "Live casino tafels",
+        "Live roulette",
+        "Live blackjack",
+    ),
+}
+
+LANDING_IMG_ALT_EN: dict[str, tuple[str, str, str]] = {
+    "home": ("Cazilla lobby — online casino Belgium", "Slots catalogue", "Live casino tables"),
+    "slots": ("Popular online slots", "Classic fruit slot", "Big Bass Bonanza preview"),
+    "bonus": ("Cazilla bonus offers", "Baccarat bonus terms", "Crazy Time promotion"),
+    "about": ("Cazilla Belgium editorial hub", "Cazilla logo", "Live blackjack"),
+    "live-casino": ("Live casino tables", "Live roulette", "Live blackjack"),
+}
+
 
 def init_site() -> None:
     global SITE, ORIGIN, MAIN, SITE_SLUG, SITE_NAME, HTML_LANG, LC, STUB, MIN_AGE
@@ -302,300 +346,103 @@ def site_footer(current_rel: str | None = None) -> str:
 </footer>""".replace("<motion class=", "<div class=").replace("</motion>", "</div>", 1)
 
 
-def game_row(title: str, img: str, *, featured: bool = False) -> str:
+
+def _landing_cta_label() -> str:
+    return "Play at Cazilla" if _is_en() else "Speel bij Cazilla"
+
+
+def _landing_cta() -> str:
     m = html.escape(MAIN)
-    cls = "rb-gameRow rb-gameRow--featured" if featured else "rb-gameRow"
+    label = html.escape(_landing_cta_label())
+    return (
+        f'<p class="rb-ctaBar"><a class="btn primary" href="{m}" rel="noopener noreferrer" '
+        f'target="_blank">{label}</a></p>'
+    )
+
+
+def _landing_figure(page_id: str, index: int) -> str:
+    imgs = LANDING_IMAGES.get(page_id, LANDING_IMAGES["home"])
+    alts_map = LANDING_IMG_ALT_EN if _is_en() else LANDING_IMG_ALT_NL
+    alts = alts_map.get(page_id, alts_map["home"])
+    i = min(max(index, 0), 2)
+    src = html.escape(imgs[i])
+    alt = html.escape(alts[i])
+    return (
+        f'<figure class="rb-landingMedia"><img src="assets/pictures/{src}" alt="{alt}" '
+        f'width="720" loading="lazy" decoding="async" /></figure>'
+    )
+
+
+def landing_stub(page_id: str) -> str:
     if _is_en():
-        tag = "Official" if featured else "Popular"
-        play_label = "Play"
+        h2_points, h2_steps, h2_table, faq_title = "Key points", "Recommended steps", "Quick comparison", "Frequently asked questions"
+        li_points = ("Editorial point one (placeholder)", "Editorial point two (placeholder)", "Editorial point three (placeholder)")
+        li_steps = ("Step one (placeholder)", "Step two (placeholder)", "Step three (placeholder)")
+        th_crit, th_caz, th_check = "Criterion", "Cazilla", "Check"
+        tr_bonus, tr_pay, tr_mob = ("Bonus", "On official site", "Wagering terms"), ("Payments", "Cards & e-wallets", "Withdrawal times"), ("Mobile", "Browser", "Stability")
+        q1, q2, q3 = "Placeholder question 1?", "Placeholder question 2?", "Placeholder question 3?"
     else:
-        tag = "Officieel" if featured else "Populair"
-        play_label = "Speel"
-    return f"""<article class="{cls}">
-  <div class="rb-gameRowThumb">
-    <img src="assets/pictures/{html.escape(img)}" alt="{html.escape(title)}" width="280" height="160" loading="lazy" decoding="async" />
-  </div>
-  <div class="rb-gameRowBody">
-    <p class="rb-gameRowTag">{tag}</p>
-    <h3 class="rb-gameRowTitle">{html.escape(title)}</h3>
-    <div class="rb-gameRowActions">
-      <a class="btn primary" href="{m}" rel="noopener noreferrer" target="_blank">{play_label}</a>
-      <a class="btn" href="{m}" rel="noopener noreferrer" target="_blank">Demo</a>
-    </div>
-  </div>
-</article>"""
-
-
-def live_tile(name: str, img: str, provider: str) -> str:
-    m = html.escape(MAIN)
-    return f"""<a class="rb-liveTile" href="{m}" rel="noopener noreferrer" target="_blank">
-  <img src="assets/pictures/{html.escape(img)}" alt="{html.escape(name)}" width="280" height="160" loading="lazy" decoding="async" />
-  <div class="rb-liveTileBody">
-    <h3>{html.escape(name)}</h3>
-    <p>{html.escape(provider)}</p>
-  </div>
-</a>"""
-
-
-def live_section(title: str, section_id: str, games: list[tuple[str, str, str]]) -> str:
-    tiles = "\n".join(live_tile(n, i, p) for n, i, p in games)
-    m = html.escape(MAIN)
-    return f"""<section class="rb-liveSection" aria-labelledby="{section_id}">
-  <div class="rb-sectionHead">
-    <h2 id="{section_id}">{html.escape(title)}</h2>
-    <a class="rb-viewAll" href="{m}" rel="noopener noreferrer" target="_blank">Alles bekijken ›</a>
-  </div>
-  <div class="rb-liveTileGrid">
-{tiles}
-  </div>
+        h2_points, h2_steps, h2_table, faq_title = "Belangrijkste punten", "Aanbevolen stappen", "Snelle vergelijking", "Veelgestelde vragen"
+        li_points = ("Redactioneel punt één (voorlopig)", "Redactioneel punt twee (voorlopig)", "Redactioneel punt drie (voorlopig)")
+        li_steps = ("Stap één (voorlopig)", "Stap twee (voorlopig)", "Stap drie (voorlopig)")
+        th_crit, th_caz, th_check = "Criterium", "Cazilla", "Te controleren"
+        tr_bonus, tr_pay, tr_mob = ("Bonus", "Op officiële site", "Inzetvoorwaarden"), ("Betalingen", "Kaarten & e-wallets", "Uitbetalingstermijn"), ("Mobiel", "Browser", "Stabiliteit")
+        q1, q2, q3 = "Voorlopige vraag 1?", "Voorlopige vraag 2?", "Voorlopige vraag 3?"
+    ul = "\n".join(f"  <li>{html.escape(x)}</li>" for x in li_points)
+    ol = "\n".join(f"  <li>{html.escape(x)}</li>" for x in li_steps)
+    return f"""<p>{html.escape(STUB)}</p>
+{_landing_cta()}
+{_landing_figure(page_id, 0)}
+<h2>{html.escape(h2_points)}</h2>
+<p>{html.escape(STUB)}</p>
+<ul>
+{ul}
+</ul>
+{_landing_cta()}
+{_landing_figure(page_id, 1)}
+<h2>{html.escape(h2_steps)}</h2>
+<p>{html.escape(STUB)}</p>
+<ol>
+{ol}
+</ol>
+{_landing_cta()}
+<h2>{html.escape(h2_table)}</h2>
+<p>{html.escape(STUB)}</p>
+<table class="rb-dataTable">
+  <thead><tr><th>{html.escape(th_crit)}</th><th>{html.escape(th_caz)}</th><th>{html.escape(th_check)}</th></tr></thead>
+  <tbody>
+    <tr><td>{html.escape(tr_bonus[0])}</td><td>{html.escape(tr_bonus[1])}</td><td>{html.escape(tr_bonus[2])}</td></tr>
+    <tr><td>{html.escape(tr_pay[0])}</td><td>{html.escape(tr_pay[1])}</td><td>{html.escape(tr_pay[2])}</td></tr>
+    <tr><td>{html.escape(tr_mob[0])}</td><td>{html.escape(tr_mob[1])}</td><td>{html.escape(tr_mob[2])}</td></tr>
+  </tbody>
+</table>
+{_landing_cta()}
+{_landing_figure(page_id, 2)}
+<section class="rb-faq" aria-labelledby="rb-faq-title">
+  <h2 id="rb-faq-title">{html.escape(faq_title)}</h2>
+  <details open><summary>{html.escape(q1)}</summary><p>{html.escape(STUB)}</p></details>
+  <details open><summary>{html.escape(q2)}</summary><p>{html.escape(STUB)}</p></details>
+  <details open><summary>{html.escape(q3)}</summary><p>{html.escape(STUB)}</p></details>
 </section>"""
 
 
-def home_body() -> str:
-    m = html.escape(MAIN)
-    rows = [game_row("Cazilla — official casino" if _is_en() else "Cazilla — officieel casino", "casino-feature-visual.png", featured=True)]
-    rows.extend(game_row(n, img) for n, img in HOME_GAMES)
-    live_cards = "\n".join(
-        f"""<a class="rb-liveCard" href="{m}" rel="noopener noreferrer" target="_blank">
-  <img src="assets/pictures/{html.escape(img)}" alt="{html.escape(name)}" width="400" height="200" loading="lazy" decoding="async" />
-  <h3>{html.escape(name)}</h3>
-</a>"""
-        for name, img in LIVE_PREVIEW
-    )
+def landing_body(page_id: str) -> str:
     return f"""
-      <section class="rb-promo" aria-label="Promo">
-        <h2 class="rb-promoTitle">Welcome bonus 100% + 500 free spins</h2>
-        <p class="rb-promoLead">Offer on the official site — terms apply, {MIN_AGE}+ in Belgium.</p>
-        <a class="btn primary" href="{m}" rel="noopener noreferrer" target="_blank">Play now</a>
-      </section>
-      <section class="rb-section" aria-labelledby="rb-cat-title">
-        <motion class="rb-tags" role="tablist" aria-label="Categories">
-          <span class="rb-tag is-active">Popular</span><span class="rb-tag">New</span>
-          <span class="rb-tag">Slots</span><span class="rb-tag">Table games</span><span class="rb-tag">Megaways</span>
-        </div>
-        <h2 id="rb-cat-title" class="rb-sectionTitle">Popular games</h2>
-        <div class="rb-gameList">
-{chr(10).join(rows)}
-        </div>
-      </section>
-      <section class="rb-section" aria-labelledby="rb-live-title">
-        <h2 id="rb-live-title" class="rb-sectionTitle">Live casino</h2>
-        <div class="rb-liveGrid">
-{live_cards}
-        </div>
-      </section>""".replace('<motion class="rb-tags"', '<div class="rb-tags"')
-
-
-def slots_body() -> str:
-    m = html.escape(MAIN)
-    cards = "\n".join(game_row(n, img) for n, img in SLOT_GAMES)
-    return f"""
-      <div class="rb-toolbar">
-        <label class="rb-tool">Search game <input type="search" placeholder="Game title…" /></label>
-        <label class="rb-tool">Provider <select><option>All</option></select></label>
-      </div>
-      <div class="rb-tags">
-        <span class="rb-tag is-active">Popular</span><span class="rb-tag">Slots</span>
-        <span class="rb-tag">Jackpot</span><span class="rb-tag">Table games</span><span class="rb-tag">Megaways</span>
-      </div>
-      <motion class="rb-gameList">
-{cards}
-      </div>
-      <p class="rb-more"><a class="btn" href="{m}" rel="noopener noreferrer" target="_blank">Show more</a></p>""".replace(
-        '<motion class="rb-gameList">', '<div class="rb-gameList">'
-    )
-
-
-def bonus_body() -> str:
-    m = html.escape(MAIN)
-    cards_data = [
-        ("First deposit 100%", "Slots and live casino"),
-        ("Casino cashback 25%", "On net daily losses"),
-        ("Crypto bonus 20%", "Crypto deposits"),
-        ("Refer a friend", "Reward per invited friend"),
-    ]
-    grid = []
-    for title, sub in cards_data:
-        grid.append(
-            f"""<article class="rb-bonusCard">
-  <h3>{title}</h3>
-  <p>{html.escape(sub)}</p>
-  <div class="rb-bonusCardActions">
-    <a class="btn" href="{m}" rel="noopener noreferrer" target="_blank">Details</a>
-    <a class="btn primary" href="{m}" rel="noopener noreferrer" target="_blank">Play</a>
-  </div>
-</article>"""
-        )
-    return f"""
-      <div class="rb-tags">
-        <span class="rb-tag is-active">All bonuses</span><span class="rb-tag">Welcome</span>
-        <span class="rb-tag">Deposit</span><span class="rb-tag">Cashback</span><span class="rb-tag">Special</span>
-      </div>
-      <div class="rb-bonusGrid">
-{chr(10).join(grid)}
-      </div>
-      <section class="rb-termsBox" aria-labelledby="rb-terms-title">
-        <h2 id="rb-terms-title">General bonus terms</h2>
-        <ul>
-          <li>Each bonus can have different wagering requirements.</li>
-          <li>Only one active bonus per player account.</li>
-          <li>Always check terms on the official site before claiming.</li>
-        </ul>
-      </section>"""
-
-
-def about_body() -> str:
-    m = html.escape(MAIN)
-    return f"""
-      <section class="rb-aboutIntro" data-a2-field="page_lead">
-        <p>{html.escape(STUB)}</p>
-      </section>
-      <section class="rb-aboutValues" aria-labelledby="rb-values-title">
-        <h2 id="rb-values-title">Our values</h2>
-        <div class="rb-aboutGrid">
-          <article class="rb-aboutCard"><h3>Trust</h3><p>Editorial testing and transparent offer coverage.</p></article>
-          <article class="rb-aboutCard"><h3>Player first</h3><p>Clear support and smooth flows for Belgian players.</p></article>
-          <article class="rb-aboutCard"><h3>Fair play</h3><p>Licensed providers and audited RNG standards.</p></article>
-        </div>
-      </section>
-      <section class="rb-licenseBox" aria-labelledby="rb-lic-title">
-        <h2 id="rb-lic-title">Licensing and regulation</h2>
-        <p>Information about licensing and data protection — <a href="{m}" rel="noopener noreferrer" target="_blank">Official site</a>.</p>
-      </section>"""
-
-
-def no_deposit_body() -> str:
-    m = html.escape(MAIN)
-    return f"""
-      <section class="rb-ndHero">
-        <h1 data-a2-field="page_h1">Cazilla Casino — No Deposit Bonus on Registration</h1>
-        <div class="rb-ndMeta">
-          <span>Author: <strong>Stefana Chele</strong></span>
-          <a href="about.html#author">Biography</a>
-          <a href="fair-play.html">Editorial policy</a>
-        </div>
-        <p class="rb-ndLead" data-a2-field="page_lead">Special offer for new players. Get free spins right after account verification on the official Cazilla site.</p>
-        <p class="rb-ndDisclosure">Advertising disclosure: links on this page may generate a commission for us. This does not affect our editorial standards.</p>
-      </section>
-      <section class="rb-ndSection" aria-labelledby="rb-nd-exclusive">
-        <h2 id="rb-nd-exclusive">Exclusive offer</h2>
-        <article class="rb-ndCard">
-          <div class="rb-ndCardHead">
-            <h3>Cazilla Casino</h3>
-            <span class="rb-badge">Exclusive bonus</span>
-          </div>
-          <ul class="rb-ndList">
-            <li><strong>Bonus type:</strong> No deposit bonus on registration</li>
-            <li><strong>Amount:</strong> 40 Free Spins (40FS)</li>
-            <li><strong>Max cashout:</strong> 100 EUR</li>
-            <li><strong>Min deposit:</strong> Not required (0 EUR)</li>
-          </ul>
-          <div class="rb-ndCodeRow">
-            <p><strong>Promo code:</strong> Not required / automatic</p>
-            <a class="btn primary" href="{m}" rel="noopener noreferrer" target="_blank">Go to Cazilla</a>
-          </div>
-        </article>
-      </section>
-      <section class="rb-ndSection" aria-labelledby="rb-nd-terms">
-        <h2 id="rb-nd-terms">Bonus terms</h2>
-        <article class="rb-ndCard">
-          <ul class="rb-ndList">
-            <li><strong>Player type:</strong> New players only</li>
-            <li><strong>Wagering:</strong> Check terms on the official site</li>
-            <li><strong>Eligible games:</strong> Slots</li>
-            <li><strong>Code status:</strong> Active</li>
-          </ul>
-        </article>
-      </section>
-      <section class="rb-ndSection" aria-labelledby="rb-nd-important">
-        <h2 id="rb-nd-important">Important information</h2>
-        <p>To activate 40FS, complete registration and verify your email/phone. Multiple accounts to claim the same bonus are prohibited.</p>
-        <div class="rb-ndPoll">
-          <span>Did the bonus work?</span>
-          <button type="button" class="btn">Yes</button>
-          <button type="button" class="btn">No</button>
-        </div>
-      </section>"""
-
-
-def live_casino_body() -> str:
-    m = html.escape(MAIN)
-    return f"""
-      <section class="rb-liveHero" aria-label="Live casino">
-        <h1 data-a2-field="page_h1">Welcome to Cazilla live casino</h1>
-        <p class="rb-liveHeroLead" data-a2-field="page_lead">Welcome bonus: 100% up to €500 + 200 free spins — terms on the official site.</p>
-        <a class="btn primary rb-liveHeroCta" href="{m}" rel="noopener noreferrer" target="_blank">Claim bonus</a>
-      </section>
-      <div class="rb-tags rb-tags--live" role="tablist" aria-label="Live filters">
-        <span class="rb-tag is-active">All games</span><span class="rb-tag">Top</span>
-        <span class="rb-tag">Roulette</span><span class="rb-tag">Blackjack</span>
-        <span class="rb-tag">Game shows</span><span class="rb-tag">Baccarat</span>
-      </div>
-{live_section("Top live casino", "rb-live-top", LIVE_TOP)}
-{live_section("Live roulette", "rb-live-roulette", LIVE_ROULETTE)}
-{live_section("Game shows &amp; blackjack", "rb-live-shows", LIVE_SHOWS)}
-      <section class="rb-liveSeo" aria-label="Informatie">
-        <motion class="rb-seoProse" data-a2-field="main_seo_html">
-          <p>{html.escape(STUB)}</p>
-          <details class="rb-faqItem">
-            <summary>How do I start playing live casino?</summary>
-            <p>{html.escape(STUB)}</p>
-          </details>
-          <details class="rb-faqItem">
-            <summary>Which providers are available on Cazilla?</summary>
-            <p>{html.escape(STUB)}</p>
-          </details>
-        </div>
-      </section>
-      <section class="rb-providerStrip" aria-label="Live providers">
-        <h2 class="rb-providerStripTitle">Live providers</h2>
-        <div class="rb-badges">
-          <span class="rb-badge">Pragmatic Live</span><span class="rb-badge">Evolution</span>
-          <span class="rb-badge">Ezugi</span><span class="rb-badge">Live88</span><span class="rb-badge">Playtech</span>
-        </div>
-      </section>""".replace('<motion class="rb-seoProse"', '<motion class="rb-seoProse"').replace(
-        '<motion class="rb-seoProse"', '<div class="rb-seoProse"', 1
-    )
-
-
-BODY_BY_ID = {
-    "home": home_body,
-    "slots": slots_body,
-    "bonus": bonus_body,
-    "no-deposit": no_deposit_body,
-    "about": about_body,
-    "live": live_casino_body,
-    "live-casino": live_casino_body,
-}
+    <article class="rb-landing" data-a2-field="main_seo_html">
+{landing_stub(page_id)}
+    </article>"""
 
 
 def content_page(page_id: str, rel: str, menu_label: str) -> str:
     title = f"{menu_label} | {SITE_NAME}"
     if _is_en():
-        desc = f"{menu_label} — casino lobby guide for readers in Belgium ({MIN_AGE}+)."
+        desc = f"{menu_label} — editorial Cazilla review for readers in Belgium ({MIN_AGE}+)."
+        fine = f"{MIN_AGE}+ | Play responsibly | Belgium"
     else:
-        desc = f"{menu_label} — casino lobby voor lezers in België ({MIN_AGE}+)."
+        desc = f"{menu_label} — redactioneel Cazilla-overzicht voor lezers in België ({MIN_AGE}+)."
+        fine = f"{MIN_AGE}+ | Speel verantwoord | België"
     h1 = menu_label.replace("&amp;", "&")
-    body_fn = BODY_BY_ID.get(page_id, slots_body)
-    body = _fix_html(body_fn())
-    seo_block = ""
-    if page_id == "home":
-        seo_block = f"""
-      <div class="rb-seoProse" data-a2-field="main_seo_html">
-        <p>{html.escape(STUB)}</p>
-      </div>"""
-    elif page_id in ("slots", "bonus", "about"):
-        seo_block = f"""
-      <motion class="rb-seoProse" data-a2-field="main_seo_html"><p>{html.escape(STUB)}</p></motion>""".replace(
-            "<motion", "<motion"
-        )
-        seo_block = f'\n      <div class="rb-seoProse" data-a2-field="main_seo_html"><p>{html.escape(STUB)}</p></div>'
-    elif page_id in ("live-casino", "live", "no-deposit"):
-        seo_block = ""
-    title_block = ""
-    if page_id not in ("live-casino", "live", "no-deposit"):
-        title_block = f'    <h1 class="rb-pageTitle" data-a2-field="page_h1">{html.escape(h1)}</h1>\n'
-    fine = f"{MIN_AGE}+ | Play responsibly | Belgium" if _is_en() else f"{MIN_AGE}+ | Speel verantwoord | België"
+    landing = landing_body(page_id)
     return f"""<!doctype html>
 <html lang="{html.escape(HTML_LANG)}" data-site-kind="review-lobby" data-min-gambling-age="{MIN_AGE}">
   <head>
@@ -606,8 +453,8 @@ def content_page(page_id: str, rel: str, menu_label: str) -> str:
 <div id="siteContent" class="rb-app">
 {site_header(rel)}
   <main class="rb-main" id="top">
-{title_block}{body}
-{seo_block}
+    <h1 class="rb-pageTitle" data-a2-field="page_h1">{html.escape(h1)}</h1>
+{landing}
     <p class="rb-fineprint" data-a2-field="footer_note">{html.escape(fine)}</p>
   </main>
 {_fix_html(site_footer(rel))}
@@ -646,7 +493,7 @@ def technical_page(rel: str, title: str, desc: str, h1: str, hero_sub: str, slug
     <div class="rb-policyCard">{body}</div>
   </main>
 {_fix_html(site_footer(rel))}
-</motion>
+</div>
 <script src="assets/rb-site.js" defer></script>
   </body>
 </html>""".replace("</motion>\n<script", "</motion>\n<script").replace(
@@ -655,147 +502,498 @@ def technical_page(rel: str, title: str, desc: str, h1: str, hero_sub: str, slug
 
 
 RB_LOBBY_CSS = """
-/* Review lobby nl-BE — teal / coral theme (distinct from fr-BE gold) */
-.rb-layout { margin: 0; background: var(--rb-bg); color: var(--rb-text); font-family: "Segoe UI", system-ui, sans-serif; }
-.rb-app { min-height: 100vh; display: flex; flex-direction: column; max-width: 960px; margin: 0 auto; }
-.rb-header { padding: 12px 18px; background: linear-gradient(180deg, #0c1222 0%, #111827 100%); border-bottom: 3px solid var(--rb-accent); position: relative; z-index: 30; }
+/* Review lobby nl-BE — warm amber + emerald (distinct from fr-BE gold bar) */
+body.rb-theme-nl {
+  --rb-accent: #ea580c;
+  --rb-accent2: #059669;
+  --rb-bg: #12151a;
+  --rb-panel: #1c2329;
+  --rb-line: rgba(234, 88, 12, 0.22);
+  --rb-text: #faf8f5;
+  --rb-muted: #a8a29e;
+  --rb-radius: 12px;
+  --rb-radius-lg: 20px;
+}
+
+.rb-layout {
+  margin: 0;
+  background: var(--rb-bg);
+  background-image: radial-gradient(ellipse 120% 80% at 100% -20%, rgba(5, 150, 105, 0.12), transparent 50%),
+    radial-gradient(ellipse 90% 60% at 0% 100%, rgba(234, 88, 12, 0.08), transparent 45%);
+  color: var(--rb-text);
+  font-family: "Inter", "Nunito Sans", "Helvetica Neue", system-ui, sans-serif;
+}
+
+.rb-app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 12px;
+}
+
+.rb-header {
+  padding: 14px 16px;
+  margin: 12px 0 0;
+  background: var(--rb-panel);
+  border: 1px solid var(--rb-line);
+  border-left: 4px solid var(--rb-accent);
+  border-radius: var(--rb-radius-lg);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  position: sticky;
+  top: 10px;
+  z-index: 30;
+}
+
 .rb-headerInner { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-.rb-brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; font-weight: 800; font-size: 0.92rem; letter-spacing: 0.05em; flex-shrink: 0; }
-.rb-brand img { border-radius: 10px; box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.35); }
-.rb-nav { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; margin-left: auto; }
-.rb-nav a { color: var(--rb-muted); text-decoration: none; font-size: 14px; font-weight: 500; }
-.rb-nav a:hover, .rb-nav a[aria-current="page"] { color: var(--rb-text); }
-.rb-nav a[aria-current="page"] { font-weight: 700; color: var(--rb-accent2); }
+
+.rb-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+  font-weight: 800;
+  font-size: 0.88rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.rb-brand img {
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--rb-accent2);
+}
+
+.rb-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-left: auto;
+}
+
+.rb-nav a {
+  color: var(--rb-muted);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 999px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.rb-nav a:hover { color: var(--rb-text); background: rgba(255, 255, 255, 0.06); }
+
+.rb-nav a[aria-current="page"] {
+  font-weight: 700;
+  color: #0f1419;
+  background: var(--rb-accent);
+}
+
 .rb-headerActions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
-.btn.icon { display: none; min-width: 40px; padding: 8px 12px; font-size: 18px; line-height: 1; }
+
+.btn.icon {
+  display: none;
+  min-width: 40px;
+  padding: 8px 12px;
+  font-size: 18px;
+  line-height: 1;
+  border-radius: var(--rb-radius);
+}
+
 @media (max-width: 720px) {
   .btn.icon { display: inline-flex; }
   .rb-headerInner { position: relative; }
-  .rb-nav { display: none; position: absolute; top: 100%; left: -18px; right: -18px; flex-direction: column; align-items: stretch; gap: 4px; margin: 0; padding: 12px 18px 16px; background: #111827; border-bottom: 3px solid var(--rb-accent); }
+  .rb-nav {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    margin: 0;
+    padding: 12px;
+    background: var(--rb-panel);
+    border: 1px solid var(--rb-line);
+    border-radius: var(--rb-radius);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  }
   .rb-nav[data-open="true"] { display: flex; }
   .rb-headerActions .btn:not(.icon):not(.primary) { display: none; }
 }
-.rb-main { flex: 1; padding: 18px 18px 32px; }
-.rb-pageTitle { margin: 0 0 16px; font-size: clamp(1.35rem, 3vw, 1.75rem); color: #e0f2fe; }
-.rb-promo { text-align: center; padding: 28px 20px; margin-bottom: 22px; border-radius: 16px;
-  background: linear-gradient(135deg, #0e7490 0%, #7c3aed 45%, #0f172a 100%);
-  border: 1px solid rgba(56, 189, 248, 0.35); box-shadow: 0 12px 40px rgba(14, 116, 144, 0.25); }
-.rb-promoTitle { margin: 0 0 10px; font-size: clamp(1.2rem, 3vw, 1.65rem); color: #f0f9ff; }
-.rb-promoLead { margin: 0 0 16px; color: #bae6fd; font-size: 15px; }
-.rb-section { margin-bottom: 28px; scroll-margin-top: 88px; }
-.rb-sectionTitle { margin: 0 0 14px; font-size: 1.1rem; color: #e0f2fe; }
-.rb-sectionHead { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
-.rb-sectionHead h2 { margin: 0; font-size: 1.1rem; color: #e0f2fe; }
-.rb-viewAll { font-size: 14px; color: var(--rb-accent2); text-decoration: none; }
-.rb-viewAll:hover { text-decoration: underline; }
-.rb-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
-.rb-tags--live { margin-top: 4px; }
-.rb-tag { font-size: 12px; padding: 6px 12px; border-radius: 999px; background: #1e293b; color: inherit; cursor: default; border: 1px solid rgba(148, 163, 184, 0.2); }
-.rb-tag.is-active { background: var(--rb-accent); color: #0f172a; font-weight: 700; border-color: transparent; }
-.rb-gameList { display: flex; flex-direction: column; gap: 12px; }
-.rb-gameRow { display: flex; gap: 14px; align-items: center; padding: 12px; border-radius: 14px;
-  border: 1px solid var(--rb-line); background: var(--rb-panel); }
-.rb-gameRow--featured { border: 2px solid var(--rb-accent2); background: linear-gradient(90deg, rgba(56,189,248,0.12), transparent); }
-.rb-gameRowThumb { flex: 0 0 140px; border-radius: 10px; overflow: hidden; }
-.rb-gameRowThumb img { width: 100%; height: 90px; object-fit: cover; display: block; }
-.rb-gameRowBody { flex: 1; min-width: 0; }
-.rb-gameRowTag { margin: 0 0 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--rb-muted); }
-.rb-gameRowTitle { margin: 0 0 8px; font-size: 1.05rem; }
-.rb-gameRowActions { display: flex; flex-wrap: wrap; gap: 8px; }
-.rb-liveGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.rb-liveTileGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-@media (max-width: 900px) { .rb-liveTileGrid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 640px) {
-  .rb-liveGrid { grid-template-columns: 1fr; }
-  .rb-liveTileGrid { grid-template-columns: 1fr; }
-  .rb-gameRow { flex-direction: column; align-items: stretch; }
-  .rb-gameRowThumb { flex-basis: auto; }
+
+.rb-main { flex: 1; padding: 20px 6px 36px; }
+
+.rb-pageTitle {
+  margin: 0 0 20px;
+  padding: 0 0 0 14px;
+  border-left: 4px solid var(--rb-accent2);
+  font-size: clamp(1.4rem, 3.2vw, 1.85rem);
+  font-weight: 800;
+  color: var(--rb-text);
+  letter-spacing: -0.02em;
 }
-.rb-liveCard, .rb-liveTile { display: block; text-decoration: none; color: inherit; border-radius: 14px; overflow: hidden; border: 1px solid var(--rb-line); background: var(--rb-panel); transition: border-color 0.15s, transform 0.15s; }
-.rb-liveCard:hover, .rb-liveTile:hover { border-color: var(--rb-accent2); transform: translateY(-2px); }
-.rb-liveCard img, .rb-liveTile > img { width: 100%; height: 120px; object-fit: cover; display: block; }
-.rb-liveCard h3 { margin: 10px 12px 12px; font-size: 15px; }
-.rb-liveTileBody { padding: 10px 12px 12px; }
-.rb-liveTileBody h3 { margin: 0 0 4px; font-size: 15px; }
-.rb-liveTileBody p { margin: 0; font-size: 12px; color: var(--rb-muted); }
-.rb-liveSection { margin-bottom: 26px; }
-.rb-liveHero { text-align: center; padding: 32px 22px; margin-bottom: 18px; border-radius: 16px;
-  background: linear-gradient(135deg, #164e63 0%, #4c1d95 50%, #0f172a 100%);
-  border: 1px solid rgba(244, 114, 182, 0.35); }
-.rb-liveHero h1 { margin: 0 0 12px; font-size: clamp(1.35rem, 3.5vw, 1.85rem); color: #fdf2f8; }
-.rb-liveHeroLead { margin: 0 0 18px; color: #e9d5ff; font-size: 15px; max-width: 36em; margin-left: auto; margin-right: auto; }
-.rb-liveHeroCta { font-size: 15px; padding: 10px 22px; }
-.rb-liveSeo { margin-top: 8px; }
-.rb-faqItem { margin-top: 10px; border: 1px solid var(--rb-line); border-radius: 10px; padding: 10px 14px; background: rgba(15, 23, 42, 0.5); }
-.rb-faqItem summary { cursor: pointer; font-weight: 600; color: #e0f2fe; }
-.rb-providerStrip { margin: 20px 0 8px; padding: 16px; border-radius: 12px; border: 1px dashed var(--rb-line); }
-.rb-providerStripTitle { margin: 0 0 10px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--rb-muted); }
-.rb-toolbar { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
-.rb-tool { font-size: 13px; color: var(--rb-muted); display: flex; flex-direction: column; gap: 4px; }
-.rb-tool input, .rb-tool select { padding: 8px 10px; border-radius: 8px; border: 1px solid var(--rb-line); background: #0b1220; color: inherit; min-width: 180px; }
-.rb-more { text-align: center; margin: 20px 0; }
-.rb-bonusGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; margin-bottom: 20px; }
-.rb-bonusCard { padding: 16px; border-radius: 14px; border: 1px solid var(--rb-line); background: var(--rb-panel); }
-.rb-bonusCard h3 { margin: 0 0 8px; font-size: 1rem; }
-.rb-bonusCard p { margin: 0 0 12px; font-size: 14px; color: var(--rb-muted); }
-.rb-bonusCardActions { display: flex; flex-wrap: wrap; gap: 8px; }
-.rb-termsBox, .rb-licenseBox { padding: 16px; border-radius: 14px; border: 1px solid var(--rb-line); background: rgba(56, 189, 248, 0.05); margin-top: 16px; }
-.rb-termsBox ul { margin: 0; padding-left: 1.2rem; color: #cbd5e1; line-height: 1.6; }
-.rb-aboutIntro p { line-height: 1.65; color: #cbd5e1; }
-.rb-aboutGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
-.rb-aboutCard { padding: 14px; border-radius: 14px; border: 1px solid var(--rb-line); background: var(--rb-panel); }
-.rb-aboutCard h3 { margin:  0 0 8px; font-size: 15px; }
-.rb-seoProse { margin-top: 24px; padding: 18px; border-radius: 14px; border: 1px solid var(--rb-line); background: rgba(14, 116, 144, 0.08); }
-.rb-seoProse p, .rb-seoProse li { line-height: 1.7; color: #cbd5e1; }
-.rb-fineprint { font-size: 13px; color: var(--rb-muted); margin-top: 20px; }
-.rb-footer { padding: 24px 18px; border-top: 1px solid var(--rb-line); background: #0a0f1a; margin-top: auto; }
-.rb-footerNav, .rb-footerLegal { display: flex; flex-wrap: wrap; gap: 10px 16px; margin-bottom: 14px; }
-.rb-footerNav a, .rb-footerLegal a { color: var(--rb-muted); font-size: 13px; text-decoration: none; }
-.rb-footerNav a:hover, .rb-footerLegal a:hover { color: var(--rb-text); }
-.rb-footerBlock h3 { margin: 0 0 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--rb-muted); }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 16px;
+  border-radius: var(--rb-radius);
+  border: 1px solid var(--rb-line);
+  background: #252d36;
+  color: inherit;
+  text-decoration: none;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.btn:hover { border-color: var(--rb-accent2); }
+
+.btn.primary {
+  background: var(--rb-accent);
+  border-color: transparent;
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
+}
+
+.btn.primary:hover {
+  background: #c2410c;
+  box-shadow: 0 6px 20px rgba(234, 88, 12, 0.45);
+}
+
+/* Landing */
+.rb-landing {
+  margin-top: 4px;
+  padding: 22px 20px 28px;
+  border-radius: var(--rb-radius-lg);
+  border: 1px solid var(--rb-line);
+  background: var(--rb-panel);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.rb-landing h2 {
+  margin: 1.5rem 0 0.65rem;
+  padding-bottom: 6px;
+  font-size: 1.12rem;
+  font-weight: 700;
+  color: #fef3c7;
+  border-bottom: 2px solid var(--rb-accent2);
+  display: inline-block;
+}
+
+.rb-landing p,
+.rb-landing li { line-height: 1.75; color: #d6d3d1; }
+
+.rb-landing ul,
+.rb-landing ol { margin: 0.5rem 0 1rem; padding-left: 1.35rem; }
+
+.rb-ctaBar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1.5rem 0;
+}
+
+.rb-ctaBar .btn.primary {
+  padding: 12px 28px;
+  border-radius: 999px;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+}
+
+.rb-landingMedia {
+  margin: 1.25rem 0;
+  border-radius: var(--rb-radius);
+  border: 2px dashed rgba(5, 150, 105, 0.45);
+  background: rgba(5, 150, 105, 0.06);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 14px 16px;
+}
+
+.rb-landingMedia img {
+  width: auto;
+  max-width: min(100%, 520px);
+  height: auto;
+  max-height: 220px;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+  margin: 0 auto;
+  border-radius: 8px;
+}
+
+@media (max-width: 640px) {
+  .rb-landingMedia { padding: 10px 12px; }
+  .rb-landingMedia img { max-width: 100%; max-height: 180px; }
+}
+
+.rb-dataTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 0.75rem 0 1rem;
+  font-size: 14px;
+  border-radius: var(--rb-radius);
+  overflow: hidden;
+  border: 1px solid var(--rb-line);
+}
+
+.rb-dataTable th,
+.rb-dataTable td {
+  border: none;
+  border-bottom: 1px solid var(--rb-line);
+  padding: 11px 14px;
+  text-align: left;
+}
+
+.rb-dataTable tr:last-child td { border-bottom: none; }
+
+.rb-dataTable th {
+  background: rgba(5, 150, 105, 0.2);
+  color: #ecfdf5;
+  font-weight: 600;
+}
+
+.rb-dataTable tr:nth-child(even) td { background: rgba(0, 0, 0, 0.15); }
+
+.rb-faq {
+  margin-top: 1.75rem;
+  padding-top: 1rem;
+  border-top: 2px solid var(--rb-line);
+}
+
+.rb-faq details {
+  margin-bottom: 10px;
+  border: none;
+  border-left: 3px solid var(--rb-accent2);
+  border-radius: 0 var(--rb-radius) var(--rb-radius) 0;
+  padding: 12px 14px 12px 16px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.rb-faq details[open] { padding-bottom: 14px; background: rgba(5, 150, 105, 0.08); }
+
+.rb-faq summary {
+  cursor: default;
+  font-weight: 600;
+  color: #fef3c7;
+  padding: 0 0 8px;
+  list-style: none;
+  pointer-events: none;
+}
+
+.rb-faq summary::-webkit-details-marker { display: none; }
+.rb-faq summary::marker { content: ""; }
+.rb-faq details > p { margin: 0; padding: 0; color: #d6d3d1; }
+
+.rb-fineprint {
+  font-size: 13px;
+  color: var(--rb-muted);
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--rb-line);
+  text-align: center;
+}
+
+/* Footer */
+.rb-footer {
+  padding: 28px 16px 24px;
+  margin: 0 -12px;
+  border-top: none;
+  background: #0d1014;
+  margin-top: auto;
+  position: relative;
+}
+
+.rb-footer::before {
+  content: "";
+  display: block;
+  height: 3px;
+  margin: 0 16px 20px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--rb-accent2), var(--rb-accent), var(--rb-accent2));
+}
+
+.rb-footerNav,
+.rb-footerLegal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin-bottom: 14px;
+}
+
+.rb-footerNav a,
+.rb-footerLegal a {
+  color: var(--rb-muted);
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.rb-footerNav a:hover,
+.rb-footerLegal a:hover { color: var(--rb-accent); }
+
+.rb-footerBlock h3 {
+  margin: 0 0 8px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--rb-accent2);
+}
+
 .rb-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
-.rb-badge { padding: 5px 10px; border-radius: 8px; font-size: 12px; background: #1e293b; border: 1px solid var(--rb-line); }
-.rb-license { font-size: 13px; color: var(--rb-muted); display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
-.rb-age { display: inline-flex; padding: 4px 10px; border-radius: 6px; font-weight: 800; background: var(--rb-accent2); color: #0f172a; }
+
+.rb-badge {
+  padding: 5px 11px;
+  border-radius: 6px;
+  font-size: 12px;
+  background: #252d36;
+  border: 1px solid var(--rb-line);
+}
+
+.rb-license {
+  font-size: 13px;
+  color: var(--rb-muted);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.rb-age {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 800;
+  background: var(--rb-accent);
+  color: #fff;
+}
+
 .rb-copy { font-size: 12px; color: var(--rb-muted); margin: 12px 0 0; }
-.rb-legalHero { margin-bottom: 16px; }
-.rb-lead { color: var(--rb-muted); line-height: 1.6; }
-.rb-policyCard { margin-bottom: 20px; }
-.rb-policyArticle p { line-height: 1.7; color: #cbd5e1; }
+
+/* Legal pages */
+.rb-legalHero {
+  margin-bottom: 20px;
+  padding: 18px 20px;
+  border-radius: var(--rb-radius);
+  border-left: 4px solid var(--rb-accent2);
+  background: rgba(5, 150, 105, 0.1);
+}
+
+.rb-legalHero h1 { margin: 0 0 8px; font-size: clamp(1.25rem, 3vw, 1.6rem); }
+
+.rb-lead { color: var(--rb-muted); line-height: 1.65; margin: 0; }
+
+.rb-policyCard {
+  margin-bottom: 20px;
+  padding: 4px 0;
+  border-radius: var(--rb-radius);
+}
+
+.rb-policyArticle p { line-height: 1.75; color: #d6d3d1; }
+
 body.rb-layout--legal .rb-main { max-width: 820px; }
-.btn { display: inline-flex; align-items: center; justify-content: center; padding: 8px 14px; border-radius: 10px; border: 1px solid var(--rb-line); background: #1e293b; color: inherit; text-decoration: none; font-size: 14px; cursor: pointer; font-family: inherit; }
-.btn.primary { background: linear-gradient(135deg, var(--rb-accent2), #f472b6); border-color: transparent; color: #0f172a; font-weight: 700; }
-body.rb-theme-nl { --rb-accent: #22d3ee; --rb-accent2: #38bdf8; --rb-bg: #0b1020; --rb-panel: #151d2e; --rb-line: rgba(56, 189, 248, 0.18); --rb-text: #f1f5f9; --rb-muted: #94a3b8; }
-body.rb-theme-enbe { --rb-accent: #f97316; --rb-accent2: #fb7185; --rb-bg: #111111; --rb-panel: #1c1c1c; --rb-line: rgba(251, 113, 133, 0.24); --rb-text: #f8fafc; --rb-muted: #cbd5e1; }
-.rb-ndHero { border: 1px solid var(--rb-line); border-radius: 14px; padding: 18px; background: rgba(251, 113, 133, 0.08); margin-bottom: 18px; }
-.rb-ndHero h1 { margin: 0 0 10px; font-size: clamp(1.3rem, 3vw, 1.8rem); color: #ffe4e6; }
-.rb-ndMeta { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-bottom: 10px; font-size: 13px; color: var(--rb-muted); }
-.rb-ndMeta a { color: var(--rb-accent2); text-decoration: none; }
-.rb-ndMeta a:hover { text-decoration: underline; }
-.rb-ndLead { margin: 0 0 10px; line-height: 1.7; color: #ffe4e6; }
-.rb-ndDisclosure { margin: 0; font-size: 13px; color: var(--rb-muted); }
-.rb-ndSection { margin-bottom: 16px; }
-.rb-ndSection h2 { margin: 0 0 10px; font-size: 1.05rem; color: #ffd6dd; }
-.rb-ndCard { border: 1px solid var(--rb-line); border-radius: 14px; padding: 14px; background: var(--rb-panel); }
-.rb-ndCardHead { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
-.rb-ndCardHead h3 { margin: 0; font-size: 1rem; }
-.rb-ndList { margin: 0; padding-left: 1.1rem; line-height: 1.7; color: #e2e8f0; }
-.rb-ndCodeRow { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; }
-.rb-ndCodeRow p { margin: 0; color: #e2e8f0; }
-.rb-ndPoll { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px; }
-.rb-ndPoll span { color: var(--rb-muted); font-size: 13px; margin-right: 4px; }
+
+body.rb-layout--legal .rb-header { position: relative; top: auto; }
+
+.policyCta {
+  text-align: center;
+  margin: 24px 0 8px;
+}
+
+.policyCta a {
+  display: inline-flex;
+  padding: 12px 26px;
+  border-radius: 999px;
+  background: var(--rb-accent);
+  color: #fff !important;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
+}
+
+.policyCta a:hover { background: #c2410c; }
+
+/* Legacy lobby blocks (if any remain in HTML) */
+.rb-promo,
+.rb-liveHero {
+  text-align: center;
+  padding: 28px 20px;
+  margin-bottom: 22px;
+  border-radius: var(--rb-radius-lg);
+  background: linear-gradient(145deg, rgba(5, 150, 105, 0.25) 0%, rgba(234, 88, 12, 0.15) 100%);
+  border: 1px solid var(--rb-line);
+}
+
+.rb-gameRow,
+.rb-bonusCard,
+.rb-aboutCard {
+  border-radius: var(--rb-radius);
+  border: 1px solid var(--rb-line);
+  background: var(--rb-panel);
+}
+
+.rb-seoProse {
+  margin-top: 24px;
+  padding: 18px;
+  border-radius: var(--rb-radius);
+  border: 1px solid var(--rb-line);
+  background: rgba(5, 150, 105, 0.06);
+}
+
+.rb-seoProse p,
+.rb-seoProse li { line-height: 1.7; color: #d6d3d1; }
+
+body.rb-theme-enbe {
+  --rb-accent: #f97316;
+  --rb-accent2: #fb7185;
+  --rb-bg: #111111;
+  --rb-panel: #1c1c1c;
+  --rb-line: rgba(251, 113, 133, 0.24);
+  --rb-text: #f8fafc;
+  --rb-muted: #cbd5e1;
+}
 """
 
 RB_COMPLIANCE_CSS = """
 #siteContent.isBlurred { filter: blur(12px); user-select: none; pointer-events: none; }
-.complianceOverlay { position: fixed; inset: 0; z-index: 500; display: grid; place-items: center; padding: 20px; background: rgba(4, 8, 18, 0.82); backdrop-filter: blur(6px); }
+.complianceOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(18, 21, 26, 0.88);
+  backdrop-filter: blur(8px);
+}
 .complianceOverlay[hidden] { display: none !important; }
-.complianceDialog { width: min(420px,100%); border-radius: 14px; border: 1px solid rgba(56, 189, 248, 0.4); background: #151d2e; color: #f1f5f9; padding: 22px; box-shadow: 0 24px 60px rgba(0,0,0,0.55); }
-.complianceDialog h2 { margin: 0 0 10px; font-size: 18px; }
-.complianceDialog p { margin: 0 0 14px; color: #cbd5e1; font-size: 14px; line-height: 1.55; }
+.complianceDialog {
+  width: min(420px, 100%);
+  border-radius: 20px;
+  border: 1px solid rgba(234, 88, 12, 0.45);
+  border-top: 4px solid #059669;
+  background: #1c2329;
+  color: #faf8f5;
+  padding: 24px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
+}
+.complianceDialog h2 { margin: 0 0 10px; font-size: 18px; color: #fef3c7; }
+.complianceDialog p { margin: 0 0 14px; color: #d6d3d1; font-size: 14px; line-height: 1.55; }
 .complianceActions { display: flex; flex-wrap: wrap; gap: 10px; }
-.inTextLink { color: #7dd3fc; }
-html.complianceNoScroll, html.complianceNoScroll body { overflow: hidden; height: 100%; }
+.complianceDialog .btn.primary { background: #ea580c; color: #fff; }
+.inTextLink { color: #6ee7b7; text-decoration: underline; }
+html.complianceNoScroll,
+html.complianceNoScroll body { overflow: hidden; height: 100%; }
 """
 
 RB_SITE_JS = """
@@ -874,6 +1072,37 @@ def write_assets() -> None:
     (assets / "rb-site.js").write_text(RB_SITE_JS.strip() + "\n", encoding="utf-8")
 
 
+def write_robots_sitemap() -> None:
+    origin = ORIGIN.rstrip("/")
+    hreflang = HTML_LANG
+    (SITE / "robots.txt").write_text(
+        f"User-agent: *\nAllow: /\n\nSitemap: {origin}/sitemap.xml\n",
+        encoding="utf-8",
+    )
+    urls: list[str] = []
+    for _pid, rel, _lab in CONTENT_PAGES:
+        urls.append(origin + ("/" if rel == "index.html" else f"/{rel}"))
+    for _slug, rel, *_rest in TECH_SPECS:
+        urls.append(f"{origin}/{rel}")
+    entries = []
+    for loc in urls:
+        pri = "1.0" if loc.endswith("index.html") or loc.rstrip("/") == origin else "0.85"
+        entries.append(
+            f'  <url>\n    <loc>{html.escape(loc)}</loc>\n'
+            f'    <xhtml:link rel="alternate" hreflang="{html.escape(hreflang)}" href="{html.escape(loc)}"/>\n'
+            f'    <xhtml:link rel="alternate" hreflang="x-default" href="{html.escape(loc)}"/>\n'
+            f"    <lastmod>2026-05-20</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>{pri}</priority>\n  </url>"
+        )
+    xml = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n'
+        '        xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
+        + "\n".join(entries)
+        + "\n</urlset>\n"
+    )
+    (SITE / "sitemap.xml").write_text(xml, encoding="utf-8")
+
+
 def write_htaccess() -> None:
     (SITE / ".htaccess").write_text(
         "RewriteEngine On\nRewriteCond %{HTTPS} off\nRewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]\n",
@@ -894,6 +1123,7 @@ def main() -> int:
         out.write_text(technical_page(rel, title, desc, h1, sub, slug), encoding="utf-8")
         print("Wrote", rel)
     write_htaccess()
+    write_robots_sitemap()
     print("Bootstrap complete ->", SITE)
     return 0
 

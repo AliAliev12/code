@@ -1,0 +1,29 @@
+#siteContent.isBlurred { filter: blur(12px); user-select: none; pointer-events: none; }
+.complianceOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(7, 16, 24, 0.9);
+  backdrop-filter: blur(8px);
+}
+.complianceOverlay[hidden] { display: none !important; }
+.complianceDialog {
+  width: min(420px, 100%);
+  border-radius: 18px;
+  border: 1px solid rgba(45, 212, 191, 0.45);
+  border-bottom: 4px solid #fb7185;
+  background: #0f1c28;
+  color: #e8f4f8;
+  padding: 24px;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.55);
+}
+.complianceDialog h2 { margin: 0 0 10px; font-size: 18px; color: #ccfbf1; }
+.complianceDialog p { margin: 0 0 14px; color: #d4d4d8; font-size: 14px; line-height: 1.55; }
+.complianceActions { display: flex; flex-wrap: wrap; gap: 10px; }
+.complianceDialog .btn.primary { background: linear-gradient(135deg, #fb7185, #e11d48); color: #fff; }
+.inTextLink { color: #5eead4; }
+html.complianceNoScroll,
+html.complianceNoScroll body { overflow: hidden; height: 100%; }

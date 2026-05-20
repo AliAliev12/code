@@ -554,6 +554,7 @@ def clone_page_focus(page_id: str, lc: LocaleContext) -> str:
             "min deposit, how to claim on licensed sites"
         ),
         "bonuses-promo": "promotions hub — welcome packages, reload, cashback, tournaments, VIP",
+        "no-deposit": f"no deposit casino bonus for {aud} — free spins, registration offers, terms",
     }
     return templates.get(page_id, page_id.replace("-", " "))
 
@@ -605,6 +606,352 @@ Return ONLY valid JSON (no markdown fences):
 Main keyword: "{main_kw}"
 Keywords (for lead only): {kw_lines}
 """.strip()
+
+
+
+REVIEW_LOBBY_LANDING_IMAGES: Dict[str, Tuple[str, str, str]] = {
+    "home": ("casino-feature-visual.png", "slots-showcase.png", "live-tables.jpg"),
+    "slots": ("slots-showcase.png", "fruit-classic-slot.png", "big-bass-bonanza-review.avif"),
+    "casino-games": ("slots-showcase.png", "fruit-classic-slot.png", "money-train-4-thumbnail.png"),
+    "bonus": ("bonus-promo-artwork.webp", "baccarat-bonus-terms.webp", "crazy-time-bonus.jpg"),
+    "bonuses": ("bonus-promo-artwork.webp", "baccarat-bonus-terms.webp", "crazy-time-bonus.jpg"),
+    "about": ("casino-feature-visual.png", "og-logo.svg", "blackjack-green-table.jpg"),
+    "live-casino": ("live-tables.jpg", "baccarat-live-table.webp", "blackjack-green-table.jpg"),
+    "live-roulette": ("live-tables.jpg", "baccarat-live-table.webp", "blackjack-green-table.jpg"),
+    "no-deposit": ("bonus-promo-artwork.webp", "fruit-classic-slot.png", "rocket-crash-game.png"),
+}
+
+REVIEW_LOBBY_FAQ_DEFAULTS: Dict[str, Tuple[str, List[Tuple[str, str]]]] = {
+    "en": (
+        "Frequently asked questions",
+        [
+            ("Is Cazilla available to players in Belgium?", "Yes. Cazilla welcomes Belgian players aged 21 and over. Always verify terms on the official site before registering."),
+            ("Can I play on mobile?", "Yes. Cazilla runs in the mobile browser on phones and tablets — no app download is required for most devices."),
+            ("Are winnings paid as real money?", "Yes. Cazilla is a real-money casino: verified withdrawals are paid to your chosen payment method subject to KYC checks."),
+            ("How do I contact customer support?", "Use live chat or email from the operator site. Response times vary by channel and time of day."),
+            ("Which payment methods work in Belgium?", "Common options include cards, bank transfer, and e-wallets where supported. Check the cashier on the official site for current methods."),
+        ],
+    ),
+    "fr": (
+        "Questions fréquentes",
+        [
+            ("Cazilla est-il accessible aux joueurs belges ?", "Oui. L'accès est réservé aux personnes de 21 ans et plus. Vérifiez les conditions sur le site officiel."),
+            ("Puis-je jouer sur mobile ?", "Oui. La plateforme fonctionne dans le navigateur mobile — aucun téléchargement n'est en principe nécessaire."),
+            ("Les gains sont-ils en argent réel ?", "Oui. Les retraits validés sont versés selon la méthode choisie, sous réserve des contrôles KYC."),
+            ("Comment contacter le support ?", "Via le chat en direct ou par e-mail depuis le site opérateur."),
+            ("Quels moyens de paiement sont acceptés ?", "Cartes, virements et portefeuilles électroniques selon disponibilité — consultez la caisse sur le site officiel."),
+        ],
+    ),
+    "nl": (
+        "Veelgestelde vragen",
+        [
+            ("Is Cazilla beschikbaar voor spelers in België?", "Ja. Toegang is voor spelers van 21 jaar en ouder. Controleer de voorwaarden op de officiële site."),
+            ("Kan ik op mobiel spelen?", "Ja. Cazilla werkt in de mobiele browser — meestal geen aparte app nodig."),
+            ("Worden winsten als echt geld uitbetaald?", "Ja. Na verificatie worden opnames uitgekeerd volgens de gekozen betaalmethode."),
+            ("Hoe bereik ik de klantenservice?", "Via live chat of e-mail op de site van de operator."),
+            ("Welke betaalmethoden zijn er?", "Kaarten, overschrijving en e-wallets waar beschikbaar — check de kassa op de officiële site."),
+        ],
+    ),
+}
+
+
+def _review_lobby_landing_cta(lc: LocaleContext, casino: str) -> str:
+    if lc.lang == "nl":
+        label = "Speel bij Cazilla"
+    elif lc.lang == "en":
+        label = "Play at Cazilla"
+    else:
+        label = "Jouer sur Cazilla"
+    return (
+        f'<p class="rb-ctaBar"><a class="btn primary" href="{casino}" '
+        f'rel="noopener noreferrer" target="_blank">{label}</a></p>'
+    )
+
+
+def _review_lobby_landing_figure(page_id: str, index: int) -> str:
+    imgs = REVIEW_LOBBY_LANDING_IMAGES.get(page_id, REVIEW_LOBBY_LANDING_IMAGES["home"])
+    src = imgs[min(index, len(imgs) - 1)]
+    return (
+        f'<figure class="rb-landingMedia"><img src="assets/pictures/{src}" alt="" '
+        f'width="720" loading="lazy" decoding="async" /></figure>'
+    )
+
+
+def _review_lobby_faq_html(lc: LocaleContext) -> str:
+    heading, pairs = REVIEW_LOBBY_FAQ_DEFAULTS.get(lc.lang, REVIEW_LOBBY_FAQ_DEFAULTS["en"])
+    items = "".join(
+        f"<details open><summary>{html.escape(q)}</summary><p>{html.escape(a)}</p></details>"
+        for q, a in pairs
+    )
+    return (
+        f'<section class="rb-faq" aria-labelledby="rb-faq-title">'
+        f'<h2 id="rb-faq-title">{html.escape(heading)}</h2>{items}</section>'
+    )
+
+
+def ensure_review_lobby_landing_html(
+    html_body: str, *, page_id: str, lc: LocaleContext, main_casino_url: str
+) -> str:
+    body = (html_body or "").strip()
+    casino = (main_casino_url or "https://cazilla.casino").strip().rstrip("/")
+    cta = _review_lobby_landing_cta(lc, casino)
+
+    faq_marker = '<section class="rb-faq"'
+    idx = body.lower().find(faq_marker)
+    if idx >= 0:
+        tail = body[idx:]
+        ok = len(re.findall(r"(?is)<details\b", tail)) >= 5 and "</section>" in tail.lower()
+        if not ok:
+            body = body[:idx].rstrip()
+
+    imgs = REVIEW_LOBBY_LANDING_IMAGES.get(page_id, REVIEW_LOBBY_LANDING_IMAGES["home"])
+    for i, img in enumerate(imgs):
+        if f"assets/pictures/{img}" not in body:
+            body += _review_lobby_landing_figure(page_id, i)
+
+    if "rb-dataTable" not in body and "<table" not in body.lower():
+        body += (
+            "<h2>Quick comparison</h2><p>Key features at a glance — check terms on the official site ({lc.min_age if hasattr(lc, 'min_age') else '18'}+).</p>"
+            '<table class="rb-dataTable"><thead><tr><th>Feature</th><th>Cazilla</th>'
+            "<th>Check</th></tr></thead><tbody>"
+            "<tr><td>Games</td><td>Slots &amp; live tables</td><td>Lobby on official site</td></tr>"
+            "<tr><td>Mobile</td><td>Browser play</td><td>Device compatibility</td></tr>"
+            "<tr><td>Payments</td><td>Common BE methods</td><td>Withdrawal times</td></tr>"
+            "</tbody></table>"
+        )
+
+    while body.count("rb-ctaBar") < 4:
+        body += cta
+
+    details_n = len(re.findall(r"(?is)<details\b", body))
+    if faq_marker not in body.lower() or details_n < 5:
+        if body and not body.endswith(cta):
+            body += _review_lobby_landing_figure(page_id, 2)
+        body += _review_lobby_faq_html(lc)
+
+    return body
+
+
+def build_review_lobby_landing_seo_prompt(
+    *,
+    page_id: str,
+    menu_label: str,
+    rows: List[Dict[str, Any]],
+    lc: LocaleContext,
+    main_casino_url: str,
+    include_site_factory_spec: bool = False,
+    site_voice: str = "",
+) -> str:
+    main_kw, kw_lines, _ = _clone_kw_lines(rows)
+    focus = clone_page_focus(page_id, lc)
+    spec = site_factory_spec_block(enabled=include_site_factory_spec)
+    voice = site_voice or f"Cazilla Review — avis éditorial pour {lc.region_name}"
+    imgs = REVIEW_LOBBY_LANDING_IMAGES.get(page_id, REVIEW_LOBBY_LANDING_IMAGES["home"])
+    casino = (main_casino_url or "https://cazilla.casino").strip().rstrip("/")
+    fig = lambda i: (
+        f'<figure class="rb-landingMedia"><img src="assets/pictures/{imgs[i]}" alt="" '
+        f'width="720" loading="lazy" decoding="async" /></figure>'
+    )
+    age_note = "21+ responsible play for Belgium (never 18+ for BE online gambling)" if lc.geo.upper() == "BE" else "18+ responsible play"
+    if lc.lang == "nl":
+        cta_text = "Speel bij Cazilla"
+        faq_heading = "Veelgestelde vragen"
+        lang_note = "Dutch (nl-BE) for Belgian readers"
+    elif lc.lang == "en":
+        cta_text = "Play at Cazilla"
+        faq_heading = "Frequently asked questions"
+        lang_note = "English (en-BE) for Belgian readers"
+    else:
+        cta_text = "Jouer sur Cazilla"
+        faq_heading = "Questions fréquentes"
+        lang_note = "French for fr-BE" if lc.lang == "fr" else f"language {lc.lang} for {lc.region_name}"
+    cta = (
+        f'<p class="rb-ctaBar"><a class="btn primary" href="{casino}" '
+        f'rel="noopener noreferrer" target="_blank">{cta_text}</a></p>'
+    )
+    return f"""
+You are an SEO copywriter for locale {lc.locale} (language: {lc.lang}).
+Site voice: {voice}
+{spec}
+Page: {menu_label} ({page_id}). Focus: {focus}.
+
+Return ONLY valid JSON (no markdown fences):
+{{"main_seo_html": "..."}}
+
+main_seo_html MUST follow this EXACT block order (no <h1>; {lang_note}):
+1. Intro: 2-3 <p> paragraphs (optional one <h2>).
+2. {cta}
+3. {fig(0)}
+4. <h2> + <p> + <ul> with 4-6 <li>
+5. {cta}
+6. {fig(1)}
+7. <h2> + <p> + <ol> with 4-6 <li>
+8. {cta}
+9. <h2> + <p> + <table class="rb-dataTable"> with <thead> and 3-4 body rows
+10. {cta}
+11. {fig(2)}
+12. <section class="rb-faq" aria-labelledby="rb-faq-title"><h2 id="rb-faq-title">{faq_heading}</h2> then 5-6 <details open><summary>question</summary><p>answer 80-180 chars</p></details></section>
+
+Rules:
+- 2200-3400 visible characters total (FAQ block 12 must be complete).
+- Include EVERY keyword below at least once (exact wording). First occurrence of each in <strong>...</strong>.
+- At least one full sentence between keyword mentions. {lc.player_context_phrase}. {age_note}. No false licence claims.
+- Keep class names rb-ctaBar, rb-landingMedia, rb-dataTable, rb-faq exactly as shown.
+- CTA link text must be exactly: {cta_text}
+- Do NOT skip blocks 9–12 (table, CTA, third image, FAQ). Do NOT replace FAQ with a keyword list.
+
+Main keyword: "{main_kw}"
+
+Keyword list:
+{kw_lines}
+""".strip()
+
+
+def _validate_review_lobby_landing_structure(content: Dict[str, Any]) -> None:
+    seo = str(content.get("main_seo_html", "")).strip()
+    if "rb-faq" not in seo:
+        raise RuntimeError("main_seo_html missing rb-faq section")
+    if "rb-dataTable" not in seo and "<table" not in seo.lower():
+        raise RuntimeError("main_seo_html missing rb-dataTable")
+    if seo.count("rb-landingMedia") < 3:
+        raise RuntimeError("main_seo_html must include 3 rb-landingMedia figures")
+    if seo.count("rb-ctaBar") < 4:
+        raise RuntimeError("main_seo_html must include 4 rb-ctaBar blocks")
+    details_n = len(re.findall(r"(?is)<details\b", seo))
+    if details_n < 5:
+        raise RuntimeError(f"main_seo_html FAQ must include at least 5 details (found {details_n})")
+    if "</section>" not in seo.lower():
+        raise RuntimeError("main_seo_html FAQ section must end with </section>")
+
+
+def normalize_review_lobby_landing_content(
+    content: Dict[str, Any],
+    rows: List[Dict[str, Any]],
+    lc: LocaleContext,
+    *,
+    page_id: str,
+    main_casino_url: str,
+) -> None:
+    content["meta_title"] = fit_technical_meta_title(str(content.get("meta_title", "")), rows, lc)
+    content["meta_description"] = fit_technical_meta_description(
+        str(content.get("meta_description", "")), rows, str(content.get("meta_title", "")), lc
+    )
+    seo = str(content.get("main_seo_html", "")).strip()
+    seo = ensure_review_lobby_landing_html(
+        seo, page_id=page_id, lc=lc, main_casino_url=main_casino_url
+    )
+    lobby_max = CLONE_SEO_MAX_CHARS + 1200
+    if visible_text_len(seo) > lobby_max:
+        marker = '<section class="rb-faq"'
+        if marker in seo:
+            head, tail = seo.split(marker, 1)
+            head = fit_clone_seo_html(head)
+            seo = head.rstrip() + marker + tail
+        else:
+            seo = fit_clone_seo_html(seo)
+    content["main_seo_html"] = _inject_keywords_review_lobby(seo, rows, lc)
+
+
+def _inject_keywords_review_lobby(html_body: str, rows: List[Dict[str, Any]], lc: LocaleContext) -> str:
+    body = (html_body or "").strip()
+    seo_lower = strip_tags(body).lower()
+    missing = [
+        str(r.get("keyword", "")).strip()
+        for r in rows
+        if str(r.get("keyword", "")).strip() and str(r.get("keyword", "")).strip().lower() not in seo_lower
+    ]
+    if not missing:
+        return body
+    bits = [f"<strong>{html.escape(kw)}</strong>" for kw in missing]
+    extra = "<p>" + ", ".join(bits) + f" — noted for {lc.audience_phrase}.</p>"
+    marker = '<section class="rb-faq"'
+    if marker in body:
+        return body.replace(marker, extra + marker, 1)
+    return body + extra
+
+
+def generate_review_lobby_landing_content(
+    *,
+    api_key: str,
+    page_id: str,
+    menu_label: str,
+    rows: List[Dict[str, Any]],
+    lc: LocaleContext,
+    include_site_factory_spec: bool,
+    site_voice: str,
+    env: Dict[str, str],
+) -> Dict[str, Any]:
+    meta = call_anthropic(
+        api_key=api_key,
+        prompt=build_clone_meta_prompt(
+            page_id=page_id,
+            menu_label=menu_label,
+            rows=rows,
+            lc=lc,
+            site_voice=site_voice,
+        ),
+        max_tokens=2048,
+        env=env,
+    )
+    seo = call_anthropic(
+        api_key=api_key,
+        prompt=build_review_lobby_landing_seo_prompt(
+            page_id=page_id,
+            menu_label=menu_label,
+            rows=rows,
+            lc=lc,
+            main_casino_url=str(env.get("MAIN_CASINO_URL", "")),
+            include_site_factory_spec=include_site_factory_spec,
+            site_voice=site_voice,
+        ),
+        max_tokens=16384,
+        env=env,
+    )
+    content: Dict[str, Any] = {}
+    for k in ("meta_title", "meta_description", "page_h1", "page_lead", "footer_note"):
+        content[k] = meta.get(k, "")
+    content["main_seo_html"] = seo.get("main_seo_html", "")
+    return content
+
+
+def generate_review_lobby_landing_content_with_retry(
+    *,
+    api_key: str,
+    page_id: str,
+    menu_label: str,
+    rows: List[Dict[str, Any]],
+    lc: LocaleContext,
+    include_site_factory_spec: bool,
+    site_voice: str,
+    env: Dict[str, str],
+) -> Dict[str, Any]:
+    last_err: Optional[Exception] = None
+    for attempt in range(1, 4):
+        try:
+            content = generate_review_lobby_landing_content(
+                api_key=api_key,
+                page_id=page_id,
+                menu_label=menu_label,
+                rows=rows,
+                lc=lc,
+                include_site_factory_spec=include_site_factory_spec,
+                site_voice=site_voice,
+                env=env,
+            )
+            normalize_review_lobby_landing_content(
+                content,
+                rows,
+                lc,
+                page_id=page_id,
+                main_casino_url=str(env.get("MAIN_CASINO_URL", "")),
+            )
+            validate_clone_content(content, rows, lc, review_lobby_landing=True)
+            return content
+        except Exception as e:
+            last_err = e
+            time.sleep(1.5 * attempt)
+            print(f"  landing attempt {attempt} failed: {e}")
+    raise RuntimeError(f"review lobby landing failed after retries: {last_err}")
 
 
 def build_clone_seo_prompt(
@@ -1645,7 +1992,7 @@ def apply_content_to_response_html(html_doc: str, content: Dict[str, Any]) -> st
             if not q or not a:
                 continue
             blocks.append(
-                f"<details><summary>{html.escape(q)}</summary><p class=\"rs-body\">{a}</p></details>"
+                f"<details open><summary>{html.escape(q)}</summary><p class=\"rs-body\">{a}</p></details>"
             )
         if blocks:
             out = replace_first_submatch(
@@ -1729,8 +2076,17 @@ def normalize_clone_content(content: Dict[str, Any], rows: List[Dict[str, Any]],
     content["main_seo_html"] = inject_missing_clone_keywords(seo, rows, lc)
 
 
-def validate_clone_content(content: Dict[str, Any], rows: List[Dict[str, Any]], lc: LocaleContext) -> None:
-    normalize_clone_content(content, rows, lc)
+def validate_clone_content(
+    content: Dict[str, Any],
+    rows: List[Dict[str, Any]],
+    lc: LocaleContext,
+    *,
+    review_lobby_landing: bool = False,
+) -> None:
+    if review_lobby_landing:
+        _validate_review_lobby_landing_structure(content)
+    else:
+        normalize_clone_content(content, rows, lc)
     missing = missing_clone_fields(content)
     if missing:
         raise RuntimeError("Missing clone fields: " + ", ".join(missing))
@@ -1747,7 +2103,7 @@ def validate_clone_content(content: Dict[str, Any], rows: List[Dict[str, Any]], 
 
     seo = str(content.get("main_seo_html", "")).strip()
     slen = visible_text_len(seo)
-    seo_max = CLONE_SEO_MAX_CHARS + 600
+    seo_max = CLONE_SEO_MAX_CHARS + (1200 if review_lobby_landing else 600)
     if slen < CLONE_SEO_MIN_CHARS or slen > seo_max:
         raise RuntimeError(
             f"main_seo_html visible length {slen} outside {CLONE_SEO_MIN_CHARS}-{seo_max}"
@@ -1880,11 +2236,15 @@ def apply_content_to_review_lobby_html(html_doc: str, content: Dict[str, Any]) -
 
     seo = str(content.get("main_seo_html", "")).strip()
     if seo:
-        out = replace_first_submatch(
-            out,
-            r'(?is)(<div class="rb-seoProse"[^>]*\bdata-a2-field=["\']main_seo_html["\'][^>]*>)([\s\S]*?)(</div>)',
-            r"\g<1>\n" + seo + r"\n\g<3>",
-        )
+        for pat in (
+            r'(?is)(<article class="rb-landing"[^>]*\bdata-a2-field=["\'"]main_seo_html["\'"][^>]*>)([\s\S]*?)(</article>)',
+            r'(?is)(<div class="rb-seoProse"[^>]*\bdata-a2-field=["\'"]main_seo_html["\'"][^>]*>)([\s\S]*?)(</div>)',
+        ):
+            nxt = replace_first_submatch(out, pat, r"\g<1>\n" + seo + r"\n\g<3>")
+            if nxt != out:
+                out = nxt
+                break
+
 
     foot = str(content.get("footer_note", "")).strip()
     if foot:
@@ -2492,7 +2852,7 @@ def _render_offerwall_faq_html(
     details = []
     for row in items:
         details.append(
-            f"          <details><summary>{html.escape(row['question'])}</summary>"
+            f"          <details open><summary>{html.escape(row['question'])}</summary>"
             f"<p>{html.escape(row['answer'])}</p></details>"
         )
     return (
@@ -3025,17 +3385,32 @@ def run_generate(
                     pages_out[t.page_id] = page_obj
                     continue
                 if review_lobby_page:
-                    content = generate_clone_page_content(
-                        api_key=api_key,
-                        page_id=t.page_id,
-                        menu_label=page_menu_label(bundle, t.page_id),
-                        rows=rows,
-                        lc=lc,
-                        include_site_factory_spec=include_site_factory_spec,
-                        site_voice=technical_site_voice(site_dir, lc),
-                        env=env,
+                    hp_text = hp.read_text(encoding="utf-8", errors="replace")
+                    if "rb-landing" in hp_text:
+                        content = generate_review_lobby_landing_content_with_retry(
+                            api_key=api_key,
+                            page_id=t.page_id,
+                            menu_label=page_menu_label(bundle, t.page_id),
+                            rows=rows,
+                            lc=lc,
+                            include_site_factory_spec=include_site_factory_spec,
+                            site_voice=technical_site_voice(site_dir, lc),
+                            env=env,
+                        )
+                    else:
+                        content = generate_clone_page_content(
+                            api_key=api_key,
+                            page_id=t.page_id,
+                            menu_label=page_menu_label(bundle, t.page_id),
+                            rows=rows,
+                            lc=lc,
+                            include_site_factory_spec=include_site_factory_spec,
+                            site_voice=technical_site_voice(site_dir, lc),
+                            env=env,
+                        )
+                    validate_clone_content(
+                        content, rows, lc, review_lobby_landing="rb-landing" in hp_text
                     )
-                    validate_clone_content(content, rows, lc)
                     print(f"  meta_title len: {len(content['meta_title'])}")
                     print(f"  main_seo_html len: {visible_text_len(str(content['main_seo_html']))}")
                     page_obj = {k: content[k] for k in REVIEW_LOBBY_CONTENT_KEYS}

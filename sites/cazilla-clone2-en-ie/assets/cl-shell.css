@@ -451,7 +451,51 @@ body.cl-theme-v2 .cl-promoBanner { background: linear-gradient(125deg, #1e3a8a 0
 body.cl-theme-v2 .cl-gameCard { border-radius: 16px; }
 body.cl-theme-v2 .cl-topbar { background: linear-gradient(90deg, #0f172a, #1e1b4b); }
 body.cl-theme-v2 .cl-hubCard { border-radius: 14px; }
-@media (max-width: 900px) {
-  body.cl-theme-v2 .cl-main,
-  body.cl-theme-v2 .cl-sidebar { grid-column: auto; }
+@media (min-width: 980px) {
+  body.cl-theme-v2 .cl-grid {
+    grid-template-columns: minmax(0, 1fr) min(196px, 24vw);
+    grid-template-areas: "main sidebar";
+  }
+  body.cl-theme-v2 .cl-main {
+    grid-area: main;
+    grid-row: 1;
+  }
+  body.cl-theme-v2 .cl-sidebar {
+    grid-area: sidebar;
+    grid-row: 1;
+    position: sticky;
+    top: 56px;
+    align-self: start;
+    max-height: calc(100vh - 64px);
+    overflow: auto;
+  }
+}
+@media (max-width: 979px) {
+  body.cl-theme-v2 .cl-menuBtn {
+    display: inline-flex !important;
+  }
+  body.cl-theme-v2 .cl-grid {
+    display: block;
+    max-width: 100%;
+  }
+  body.cl-theme-v2 .cl-main {
+    width: 100%;
+  }
+  body.cl-theme-v2 .cl-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: auto;
+    width: min(280px, 88vw);
+    height: 100vh;
+    max-height: none;
+    transform: translateX(-105%);
+    z-index: 50;
+    border-left: none;
+    border-right: 1px solid var(--cl-line);
+    transition: transform 0.2s ease;
+  }
+  body.cl-theme-v2 .cl-sidebar[data-open="true"] {
+    transform: translateX(0);
+  }
 }

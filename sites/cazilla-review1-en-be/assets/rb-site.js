@@ -1,7 +1,7 @@
 (function () {
   "use strict";
-  var AGE = "cazilla_review_lobby_age_ok";
-  var COOKIE = "cazilla_review_lobby_cookie";
+  var AGE = "cazilla_review1_en_be_age_ok";
+  var COOKIE = "cazilla_review1_en_be_cookie";
   function getCookie(n) {
     var m = document.cookie.match(new RegExp("(?:^|; )" + n.replace(/([.$?*|{}()[\]\\/+^])/g, "\\$1") + "=([^;]*)"));
     return m ? decodeURIComponent(m[1]) : "";

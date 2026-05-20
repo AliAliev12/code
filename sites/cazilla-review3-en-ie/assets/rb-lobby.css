@@ -1,0 +1,415 @@
+/* Review lobby en-IE — teal + rose (rb-theme-ie3) (distinct from fr gold, nl amber/emerald) */
+body.rb-theme-ie3 {
+  --rb-accent: #2dd4bf;
+  --rb-accent2: #fb7185;
+  --rb-bg: #071018;
+  --rb-panel: #0f1c28;
+  --rb-line: rgba(45, 212, 191, 0.22);
+  --rb-text: #e8f4f8;
+  --rb-muted: #a1a1aa;
+}
+
+.rb-layout {
+  margin: 0;
+  background: var(--rb-bg);
+  background-image:
+    linear-gradient(160deg, rgba(45, 212, 191, 0.07) 0%, transparent 42%),
+    linear-gradient(220deg, rgba(217, 119, 6, 0.06) 0%, transparent 38%);
+  color: var(--rb-text);
+  font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+}
+
+.rb-app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 0 14px;
+}
+
+.rb-header {
+  margin-top: 14px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  position: relative;
+  z-index: 30;
+}
+
+.rb-headerInner {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  flex-wrap: wrap;
+  background: var(--rb-panel);
+  border-radius: 16px;
+  border: 1px solid var(--rb-line);
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.rb-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+  font-weight: 800;
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, rgba(45, 212, 191, 0.2), rgba(217, 119, 6, 0.12));
+  border-right: 1px solid var(--rb-line);
+}
+
+.rb-brand img {
+  border-radius: 6px;
+  box-shadow: 0 0 0 2px var(--rb-accent2);
+}
+
+.rb-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  margin-left: auto;
+  padding: 10px 12px;
+}
+
+.rb-nav a {
+  color: var(--rb-muted);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 11px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+}
+
+.rb-nav a:hover {
+  color: var(--rb-text);
+  border-color: var(--rb-line);
+}
+
+.rb-nav a[aria-current="page"] {
+  font-weight: 700;
+  color: #1a1028;
+  background: var(--rb-accent);
+  border-color: transparent;
+}
+
+.rb-headerActions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 10px 12px;
+  border-left: 1px solid var(--rb-line);
+}
+
+.btn.icon {
+  display: none;
+  min-width: 40px;
+  padding: 8px 12px;
+  font-size: 18px;
+  line-height: 1;
+}
+
+@media (max-width: 720px) {
+  .btn.icon { display: inline-flex; }
+  .rb-headerInner { position: relative; flex-direction: column; align-items: stretch; }
+  .rb-brand { border-right: none; border-bottom: 1px solid var(--rb-line); }
+  .rb-nav {
+    display: none;
+    margin: 0;
+    padding: 12px;
+    flex-direction: column;
+    align-items: stretch;
+    border-top: 1px solid var(--rb-line);
+  }
+  .rb-nav[data-open="true"] { display: flex; }
+  .rb-headerActions {
+    border-left: none;
+    border-top: 1px solid var(--rb-line);
+    justify-content: flex-end;
+  }
+  .rb-headerActions .btn:not(.icon):not(.primary) { display: none; }
+}
+
+.rb-main { flex: 1; padding: 22px 4px 40px; }
+
+.rb-pageTitle {
+  margin: 0 0 18px;
+  font-size: clamp(1.45rem, 3.5vw, 1.9rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  background: linear-gradient(90deg, #e8f4f8 0%, #5eead4 55%, #fda4af 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--rb-line);
+  background: #252030;
+  color: inherit;
+  text-decoration: none;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.btn.primary {
+  background: linear-gradient(135deg, var(--rb-accent2), #e11d48);
+  border-color: transparent;
+  color: #fff;
+  font-weight: 700;
+}
+
+/* Landing */
+.rb-landing {
+  margin-top: 6px;
+  padding: 24px 22px 30px;
+  border-radius: 18px;
+  border: 1px solid var(--rb-line);
+  background: var(--rb-panel);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.rb-landing h2 {
+  margin: 1.5rem 0 0.65rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ccfbf1;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.82rem;
+}
+
+.rb-landing p,
+.rb-landing li { line-height: 1.75; color: #d4d4d8; }
+
+.rb-landing ul,
+.rb-landing ol { margin: 0.5rem 0 1rem; padding-left: 1.3rem; }
+
+.rb-ctaBar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1.4rem 0;
+}
+
+.rb-ctaBar .btn.primary {
+  padding: 12px 30px;
+  border-radius: 8px;
+  box-shadow: 0 6px 24px rgba(217, 119, 6, 0.35);
+}
+
+.rb-landingMedia {
+  margin: 1.2rem 0;
+  border-radius: 14px;
+  border: 1px solid var(--rb-line);
+  background: rgba(45, 212, 191, 0.06);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 16px;
+  position: relative;
+}
+
+.rb-landingMedia::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border-top: 3px solid var(--rb-accent);
+  pointer-events: none;
+}
+
+.rb-landingMedia img {
+  width: auto;
+  max-width: min(100%, 520px);
+  height: auto;
+  max-height: 220px;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+  margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+  .rb-landingMedia { padding: 10px 12px; }
+  .rb-landingMedia img { max-width: 100%; max-height: 180px; }
+}
+
+.rb-dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.75rem 0 1rem;
+  font-size: 14px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--rb-line);
+}
+
+.rb-dataTable th,
+.rb-dataTable td {
+  border: 1px solid var(--rb-line);
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.rb-dataTable th {
+  background: rgba(45, 212, 191, 0.18);
+  color: #ede9fe;
+}
+
+.rb-faq {
+  margin-top: 1.6rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--rb-line);
+}
+
+.rb-faq details {
+  margin-bottom: 10px;
+  border-radius: 10px;
+  padding: 12px 14px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--rb-line);
+}
+
+.rb-faq details[open] { padding-bottom: 14px; }
+
+.rb-faq summary {
+  cursor: default;
+  font-weight: 600;
+  color: #fda4af;
+  padding: 0 0 8px;
+  list-style: none;
+  pointer-events: none;
+}
+
+.rb-faq summary::-webkit-details-marker { display: none; }
+.rb-faq summary::marker { content: ""; }
+.rb-faq details > p { margin: 0; padding: 0; }
+
+.rb-fineprint {
+  font-size: 13px;
+  color: var(--rb-muted);
+  margin-top: 22px;
+  text-align: center;
+}
+
+.rb-footer {
+  padding: 26px 16px 22px;
+  margin: 0 -14px;
+  background: #08060c;
+  margin-top: auto;
+  border-top: 3px solid transparent;
+  border-image: linear-gradient(90deg, var(--rb-accent), var(--rb-accent2)) 1;
+}
+
+.rb-footerNav,
+.rb-footerLegal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin-bottom: 14px;
+}
+
+.rb-footerNav a,
+.rb-footerLegal a {
+  color: var(--rb-muted);
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.rb-footerNav a:hover,
+.rb-footerLegal a:hover { color: var(--rb-accent); }
+
+.rb-footerBlock h3 {
+  margin: 0 0 8px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--rb-accent2);
+}
+
+.rb-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+
+.rb-badge {
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  background: #252030;
+  border: 1px solid var(--rb-line);
+}
+
+.rb-license {
+  font-size: 13px;
+  color: var(--rb-muted);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.rb-age {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 800;
+  background: var(--rb-accent2);
+  color: #fff;
+}
+
+.rb-copy { font-size: 12px; color: var(--rb-muted); margin: 12px 0 0; }
+
+.rb-legalHero {
+  margin-bottom: 18px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: rgba(45, 212, 191, 0.1);
+  border: 1px solid var(--rb-line);
+}
+
+.rb-legalHero h1 { margin: 0 0 8px; }
+
+.rb-lead { color: var(--rb-muted); line-height: 1.65; margin: 0; }
+
+.rb-policyCard { margin-bottom: 20px; }
+
+.rb-policyArticle p { line-height: 1.75; color: #d4d4d8; }
+
+body.rb-layout--legal .rb-main { max-width: 820px; }
+
+.policyCta { text-align: center; margin: 22px 0 8px; }
+
+.policyCta a {
+  display: inline-flex;
+  padding: 11px 24px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--rb-accent2), #e11d48);
+  color: #fff !important;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.rb-seoProse {
+  margin-top: 24px;
+  padding: 18px;
+  border-radius: 12px;
+  border: 1px solid var(--rb-line);
+  background: rgba(45, 212, 191, 0.06);
+}
+
+.rb-seoProse p,
+.rb-seoProse li { line-height: 1.7; color: #d4d4d8; }

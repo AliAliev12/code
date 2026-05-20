@@ -80,4 +80,28 @@
 body.rb-layout--legal .rb-main { max-width: 820px; }
 .btn { display: inline-flex; align-items: center; justify-content: center; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--cl-line); background: #1e293b; color: inherit; text-decoration: none; font-size: 14px; cursor: pointer; font-family: inherit; }
 .btn.primary { background: var(--cl-accent, #c9a227); border-color: transparent; color: #1a1a1a; font-weight: 700; }
+
+/* Landing wireframe (4 main pages) */
+.rb-landing { margin-top: 8px; }
+.rb-landing h2 { margin: 1.4rem 0 0.6rem; font-size: 1.15rem; color: #fef3c7; }
+.rb-landing p, .rb-landing li { line-height: 1.7; color: #cbd5e1; }
+.rb-landing ul, .rb-landing ol { margin: 0.5rem 0 1rem; padding-left: 1.25rem; }
+.rb-ctaBar { display: flex; justify-content: center; align-items: center; margin: 1.25rem 0; }
+.rb-landingMedia { margin: 1rem 0; border-radius: 12px; border: 1px solid var(--cl-line); background: var(--cl-panel, #1c1f28); display: flex; justify-content: center; align-items: center; padding: 10px 14px; }
+.rb-landingMedia img { width: auto; max-width: min(100%, 520px); height: auto; max-height: 220px; object-fit: contain; object-position: center; display: block; margin: 0 auto; }
+@media (max-width: 640px) {
+  .rb-landingMedia { padding: 8px 10px; }
+  .rb-landingMedia img { max-width: 100%; max-height: 180px; }
+}
+
+.rb-dataTable { width: 100%; border-collapse: collapse; margin: 0.75rem 0 1rem; font-size: 14px; }
+.rb-dataTable th, .rb-dataTable td { border: 1px solid var(--cl-line); padding: 10px 12px; text-align: left; }
+.rb-dataTable th { background: rgba(201,162,39,0.12); color: #fef3c7; }
+.rb-faq { margin-top: 1.5rem; padding-top: 0.5rem; border-top: 1px solid var(--cl-line); }
+.rb-faq details { margin-bottom: 12px; border: 1px solid var(--cl-line); border-radius: 10px; padding: 12px 14px; background: var(--cl-panel); }
+.rb-faq details[open] { padding-bottom: 14px; }
+.rb-faq summary { cursor: default; font-weight: 600; padding: 0 0 8px; list-style: none; pointer-events: none; }
+.rb-faq summary::-webkit-details-marker { display: none; }
+.rb-faq summary::marker { content: ""; }
+.rb-faq details > p { margin: 0; padding: 0; }
 body.rb-layout { --cl-accent: #c9a227; --cl-accent2: #2d6a4f; --cl-bg: #14161c; --cl-panel: #1c1f28; --cl-line: rgba(201,162,39,0.12); --cl-text: #f5f0e8; --cl-muted: #a8a29e; }

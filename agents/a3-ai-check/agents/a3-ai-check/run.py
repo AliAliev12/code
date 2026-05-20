@@ -824,6 +824,19 @@ Input texts (JSON):
                     "check output/content.json and SITE_DIR."
                 )
 
+            page_filter = {
+                p.strip()
+                for p in (env.get("A3_PAGE_IDS") or os.environ.get("A3_PAGE_IDS") or "").split(",")
+                if p.strip()
+            }
+            if page_filter:
+                pages_in = {pid: v for pid, v in pages_in.items() if pid in page_filter}
+                if not pages_in:
+                    raise SystemExit(
+                        f"A3_PAGE_IDS={sorted(page_filter)!r} matched no pages under {site_prefix!r}."
+                    )
+                print(f"Page filter active: {sorted(pages_in.keys())}")
+
             def _page_order(pid: str) -> Tuple[int, str]:
                 return (0, pid) if pid == "home" else (1, pid)
 
@@ -882,6 +895,8 @@ Input texts (JSON):
                 if not isinstance(pdata, dict):
                     continue
                 if not _page_belongs_to_site_dir(pdata):
+                    continue
+                if page_filter and page_id not in page_filter:
                     continue
                 th = str(pdata.get("target_html_path") or "").strip()
                 if not th:

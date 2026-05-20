@@ -87,10 +87,39 @@
 
   var menuBtn = document.getElementById("clMenuBtn");
   var side = document.getElementById("clSidebar");
+  var searchTop = document.getElementById("siteSearchTop");
+  var searchSide = document.getElementById("siteSearch");
+
+  function setMenuOpen(open) {
+    if (!side) return;
+    side.setAttribute("data-open", open ? "true" : "false");
+    if (menuBtn) menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+
   if (menuBtn && side) {
     menuBtn.addEventListener("click", function () {
-      var open = side.getAttribute("data-open") === "true";
-      side.setAttribute("data-open", open ? "false" : "true");
+      setMenuOpen(side.getAttribute("data-open") !== "true");
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") setMenuOpen(false);
+    });
+    document.addEventListener("click", function (e) {
+      if (
+        side.getAttribute("data-open") === "true" &&
+        !side.contains(e.target) &&
+        !menuBtn.contains(e.target)
+      ) {
+        setMenuOpen(false);
+      }
+    });
+  }
+
+  if (searchTop && searchSide) {
+    searchTop.addEventListener("input", function () {
+      searchSide.value = searchTop.value;
+    });
+    searchSide.addEventListener("input", function () {
+      searchTop.value = searchSide.value;
     });
   }
 

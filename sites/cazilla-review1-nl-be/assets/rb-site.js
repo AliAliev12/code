@@ -1,7 +1,7 @@
 (function () {
   "use strict";
-  var AGE = "cazilla_review1_nl_be_age_ok";
-  var COOKIE = "cazilla_review1_nl_be_cookie";
+  var AGE = "cazilla_review_lobby_age_ok";
+  var COOKIE = "cazilla_review_lobby_cookie";
   function getCookie(n) {
     var m = document.cookie.match(new RegExp("(?:^|; )" + n.replace(/([.$?*|{}()[\]\\/+^])/g, "\\$1") + "=([^;]*)"));
     return m ? decodeURIComponent(m[1]) : "";
@@ -41,14 +41,14 @@
       var open = mainNav.dataset.open === "true";
       mainNav.dataset.open = open ? "false" : "true";
       navToggle.setAttribute("aria-expanded", open ? "false" : "true");
-      navToggle.setAttribute("aria-label", open ? "Menu openen" : "Menu sluiten");
+      navToggle.setAttribute("aria-label", open ? "Open menu" : "Close menu");
     });
     document.addEventListener("click", function (ev) {
       if (mainNav.dataset.open !== "true") return;
       if (mainNav.contains(ev.target) || navToggle.contains(ev.target)) return;
       mainNav.dataset.open = "false";
       navToggle.setAttribute("aria-expanded", "false");
-      navToggle.setAttribute("aria-label", "Menu openen");
+      navToggle.setAttribute("aria-label", "Open menu");
     });
   }
 })();
