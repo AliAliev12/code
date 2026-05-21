@@ -5,96 +5,96 @@
     <loc>https://cazilla.skin/</loc>
     <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.skin/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.skin/"/>
-    <lastmod>2026-05-15</lastmod>
+    <lastmod>2026-05-20</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://cazilla.skin/about.html</loc>
-    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.skin/about.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.skin/about.html"/>
-    <lastmod>2026-05-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://cazilla.skin/bonus.html</loc>
-    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.skin/bonus.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.skin/bonus.html"/>
-    <lastmod>2026-05-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://cazilla.skin/casino-deposit.html</loc>
-    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.skin/casino-deposit.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.skin/casino-deposit.html"/>
-    <lastmod>2026-05-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.85</priority>
   </url>
   <url>
     <loc>https://cazilla.skin/casino-games.html</loc>
     <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.skin/casino-games.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.skin/casino-games.html"/>
-    <lastmod>2026-05-15</lastmod>
+    <lastmod>2026-05-20</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://cazilla.skin/aml-kyc/</loc>
-    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.skin/aml-kyc/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.skin/aml-kyc/"/>
-    <lastmod>2026-05-15</lastmod>
+    <loc>https://cazilla.skin/casino-deposit.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.skin/casino-deposit.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.skin/casino-deposit.html"/>
+    <lastmod>2026-05-20</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://cazilla.skin/cookie-policy/</loc>
-    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.skin/cookie-policy/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.skin/cookie-policy/"/>
-    <lastmod>2026-05-15</lastmod>
+    <loc>https://cazilla.skin/bonus.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.skin/bonus.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.skin/bonus.html"/>
+    <lastmod>2026-05-20</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://cazilla.skin/fair-play/</loc>
-    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.skin/fair-play/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.skin/fair-play/"/>
-    <lastmod>2026-05-15</lastmod>
+    <loc>https://cazilla.skin/about.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.skin/about.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.skin/about.html"/>
+    <lastmod>2026-05-20</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://cazilla.skin/payments-withdrawals/</loc>
-    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.skin/payments-withdrawals/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.skin/payments-withdrawals/"/>
-    <lastmod>2026-05-15</lastmod>
+    <loc>https://cazilla.skin/user-agreement/index.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.skin/user-agreement/index.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.skin/user-agreement/index.html"/>
+    <lastmod>2026-05-20</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://cazilla.skin/privacy-policy/</loc>
-    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.skin/privacy-policy/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.skin/privacy-policy/"/>
-    <lastmod>2026-05-15</lastmod>
+    <loc>https://cazilla.skin/cookie-policy/index.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.skin/cookie-policy/index.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.skin/cookie-policy/index.html"/>
+    <lastmod>2026-05-20</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://cazilla.skin/responsible-gambling/</loc>
-    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.skin/responsible-gambling/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.skin/responsible-gambling/"/>
-    <lastmod>2026-05-15</lastmod>
+    <loc>https://cazilla.skin/fair-play/index.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.skin/fair-play/index.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.skin/fair-play/index.html"/>
+    <lastmod>2026-05-20</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://cazilla.skin/user-agreement/</loc>
-    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.skin/user-agreement/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.skin/user-agreement/"/>
-    <lastmod>2026-05-15</lastmod>
+    <loc>https://cazilla.skin/payments-withdrawals/index.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.skin/payments-withdrawals/index.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.skin/payments-withdrawals/index.html"/>
+    <lastmod>2026-05-20</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://cazilla.skin/privacy-policy/index.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.skin/privacy-policy/index.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.skin/privacy-policy/index.html"/>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://cazilla.skin/responsible-gambling/index.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.skin/responsible-gambling/index.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.skin/responsible-gambling/index.html"/>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://cazilla.skin/aml-kyc/index.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://cazilla.skin/aml-kyc/index.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cazilla.skin/aml-kyc/index.html"/>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
   </url>
 </urlset>

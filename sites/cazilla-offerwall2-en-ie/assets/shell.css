@@ -522,3 +522,23 @@ body.lv-body .policyCard h3 {
   margin: 14px 0 8px;
   font-size: 15px;
 }
+
+/* offerwall2 en-IE — emerald / coral (distinct from offerwall1-en-ie default) */
+:root {
+  --bg: #061210;
+  --bg2: #0c1f1a;
+  --purple: #34d399;
+  --purple2: #059669;
+  --gold: #fb7185;
+  --gold2: #f43f5e;
+  --link: #6ee7b7;
+  --link-hover: #a7f3d0;
+}
+body.lv-body {
+  background-color: var(--bg);
+  background: radial-gradient(1100px 640px at 22% 8%, rgba(52, 211, 153, 0.2), transparent 58%),
+    radial-gradient(880px 480px at 90% 88%, rgba(251, 113, 133, 0.14), transparent 52%), var(--bg);
+}
+.ow-headerCta, .btn.primary { background: linear-gradient(135deg, var(--purple2), var(--gold2)); }
+.ow-topCard--featured { border-color: var(--purple); }
+.ow-hubSlotCard { border-color: rgba(52, 211, 153, 0.25); }

@@ -6,8 +6,8 @@
     {
       "id": "home",
       "path": "/index.html",
-      "menu_label": "Brand List",
-      "cluster": "cl_home",
+      "menu_label": "Main",
+      "cluster": "cl_main",
       "notes": "list of the brands",
       "keywords": [
         {
@@ -71,7 +71,7 @@
     {
       "id": "we-recommend",
       "path": "/we-recommend.html",
-      "menu_label": "We Recommend",
+      "menu_label": "Why wee recommend",
       "cluster": "cl_recommend",
       "notes": "recommendation with general descriptions",
       "keywords": [

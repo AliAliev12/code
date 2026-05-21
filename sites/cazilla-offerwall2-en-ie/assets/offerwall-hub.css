@@ -2,15 +2,15 @@
 .ow-topbar--hub {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 1rem;
+  padding-right: 1rem;
 }
 
 .ow-headerCta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 1;
-  min-width: 0;
   padding: 0.55rem 1rem;
   border-radius: 999px;
   font-size: 0.88rem;
@@ -20,17 +20,6 @@
   background: linear-gradient(135deg, #b14cff, #6e2bff);
   color: #fff;
   border: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-@media (max-width: 1376px) {
-  .ow-topbar--hub {
-    gap: 0.65rem;
-  }
-
-  .ow-topbar--hub .ow-headerCta {
-    font-size: 0.82rem;
-    padding: 0.5rem 0.85rem;
-  }
 }
 
 .ow-headerCta:hover {
@@ -180,14 +169,10 @@
 @media (max-width: 640px) {
   .ow-topbar--hub {
     flex-wrap: wrap;
+    padding-right: 0.75rem;
   }
 
-  .ow-topbar--hub .ow-topbarEnd {
-    width: 100%;
-    justify-content: flex-end;
-  }
-
-  .ow-topbar--hub .ow-headerCta {
+  .ow-headerCta {
     font-size: 0.8rem;
     padding: 0.5rem 0.85rem;
   }

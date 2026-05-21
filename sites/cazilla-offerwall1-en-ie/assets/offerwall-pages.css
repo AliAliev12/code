@@ -1,0 +1,115 @@
+/* Offerwall editorial subpages: recommend / how-to-choose / FAQ */
+
+.ow-page--recommend .ow-recommendIntro,
+.ow-page--choose .ow-chooseIntro {
+  margin: 0 0 1.5rem;
+  font-size: 1.02rem;
+  line-height: 1.65;
+}
+
+.ow-criteriaGrid {
+  margin: 0 0 1.5rem;
+}
+
+.ow-criteriaGrid > h2 {
+  margin: 0 0 1rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.ow-criteriaGridInner {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.ow-criterionCard {
+  border: 1px solid var(--stroke, rgba(255, 255, 255, 0.14));
+  border-radius: var(--r-md, 16px);
+  padding: 1rem 1.1rem;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.ow-criterionCard h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--link, #6ee7b7);
+}
+
+.ow-criterionCard p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--muted, rgba(255, 255, 255, 0.82));
+}
+
+.ow-recommendOutro {
+  margin: 1.25rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--stroke, rgba(255, 255, 255, 0.12));
+}
+
+.ow-guideSteps {
+  margin: 0 0 1.5rem;
+  padding-left: 1.35rem;
+  line-height: 1.6;
+}
+
+.ow-guideSteps li {
+  margin-bottom: 0.85rem;
+}
+
+.ow-chooseChecklist {
+  margin: 0 0 1rem;
+  padding: 1rem 1.1rem;
+  border-radius: var(--r-md, 16px);
+  border: 1px dashed rgba(52, 211, 153, 0.35);
+  background: rgba(52, 211, 153, 0.06);
+}
+
+.ow-chooseChecklist h2 {
+  margin: 0 0 0.65rem;
+  font-size: 1.1rem;
+}
+
+.ow-faqPage {
+  margin: 0;
+}
+
+.ow-faqStandalone {
+  margin: 0;
+}
+
+.ow-faqStandalone .ow-hubFaqTitle,
+.ow-faqStandalone > h2 {
+  margin: 0 0 1rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.ow-faqStandalone details {
+  border: 1px solid var(--stroke, rgba(255, 255, 255, 0.14));
+  border-radius: 12px;
+  margin-bottom: 0.65rem;
+  padding: 0.65rem 0.85rem;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.ow-faqStandalone summary {
+  cursor: pointer;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.ow-faqStandalone details p {
+  margin: 0.55rem 0 0;
+  font-size: 0.94rem;
+  line-height: 1.55;
+  color: var(--muted, rgba(255, 255, 255, 0.8));
+}
+
+.ow-faqIntro {
+  margin: 0 0 1.25rem;
+  line-height: 1.6;
+}

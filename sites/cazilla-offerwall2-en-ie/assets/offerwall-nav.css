@@ -309,35 +309,69 @@ a.ow-navAnchor.is-current {
   color: var(--muted, rgba(255, 255, 255, 0.78));
 }
 
+.ow-topList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 .ow-topGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
 }
 
 .ow-topCard {
   border: 1px solid var(--stroke, rgba(255, 255, 255, 0.14));
   border-radius: var(--r-md, 16px);
-  padding: 1rem 1rem 1.1rem;
+  padding: 1rem 1.15rem;
   background: rgba(255, 255, 255, 0.04);
 }
 
+.ow-topCard--row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.25rem;
+}
+
 .ow-topCard--featured {
-  outline: 1px solid rgba(177, 76, 255, 0.45);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  border-color: rgba(52, 211, 153, 0.55);
+  background: linear-gradient(135deg, rgba(52, 211, 153, 0.12), rgba(251, 113, 133, 0.08));
+  box-shadow: 0 14px 44px rgba(0, 0, 0, 0.38);
+}
+
+.ow-topCardBody {
+  display: flex;
+  flex: 1 1 240px;
+  align-items: flex-start;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.ow-topCardText {
+  flex: 1;
+  min-width: 0;
 }
 
 .ow-topCardRank {
+  flex-shrink: 0;
   font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted2, rgba(255, 255, 255, 0.68));
-  margin-bottom: 0.35rem;
+  margin: 0.15rem 0 0;
+  width: 2rem;
 }
 
 .ow-topCardMedia {
-  margin: 0.35rem 0 0.75rem;
+  flex-shrink: 0;
+  width: 112px;
+  margin: 0;
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid var(--stroke, rgba(255, 255, 255, 0.12));
@@ -363,8 +397,37 @@ a.ow-navAnchor.is-current {
   color: var(--muted, rgba(255, 255, 255, 0.72));
 }
 
+.ow-topCardPlay {
+  flex-shrink: 0;
+  margin-left: auto;
+  align-self: center;
+}
+
+.ow-topCardPlayBtn {
+  white-space: nowrap;
+  min-width: 5.5rem;
+  text-align: center;
+}
+
 .ow-topCardCta {
   margin: 0.65rem 0 0;
+}
+
+@media (max-width: 560px) {
+  .ow-topCard--row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ow-topCardPlay {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .ow-topCardPlayBtn {
+    display: block;
+    width: 100%;
+  }
 }
 
 .ow-galleryTitle {

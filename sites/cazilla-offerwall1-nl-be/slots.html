@@ -46,11 +46,13 @@
     <div id="siteContent" class="ow-app ow-app--slots">
       <header class="ow-topbar ow-topbar--hub">
         <a class="ow-brand" href="index.html" aria-label="Home Cazilla">
-          <img src="assets/pictures/og-logo.svg" alt="" width="34" height="34" decoding="async" />
+          <span class="ow-logoMark" aria-hidden="true">C</span><span class="ow-logoWord">CAZILLA</span>
         </a>
-        <a class="ow-headerCta" href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Speel bij Cazilla</a>
+        <div class="ow-topbarEnd">
+          <a class="ow-headerCta" href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Speel bij Cazilla</a>
+          <button type="button" class="ow-menuBtn" id="menuToggle" aria-expanded="false" aria-controls="sideDrawer">Menu</button>
+        </div>
       </header>
-      <button type="button" class="ow-menuBtn" id="menuToggle" aria-expanded="false" aria-controls="sideDrawer">Menu</button>
       <div class="ow-drawerOverlay" id="drawerOverlay" hidden></div>
       <aside class="ow-drawer" id="sideDrawer" aria-hidden="true" aria-label="Site menu">
         <div class="ow-drawerHeader">
@@ -109,7 +111,7 @@
         </fieldset>
           </aside>
           <div class="ow-slotsResults">
-            <p class="ow-slotsHint">Too much choice? Use the filters on the left, then open Cazilla to play demo or real-money slots.</p>
+            <p class="ow-slotsHint">Too much choice? Use the filters above, then open Cazilla to play demo or real-money slots.</p>
             <div class="ow-slotsGrid" id="ow-slots-grid">
           <article class="ow-slotsCard" data-provider="pragmatic play"><div class="ow-slotsCardThumb"><img src="assets/pictures/big-bass-bonanza-review.avif" alt="" width="320" height="200" loading="lazy" decoding="async" /></div><div class="ow-slotsCardBody"><h3 class="ow-slotsCardTitle">Big Bass Bonanza</h3><p class="ow-slotsCardProvider">Pragmatic Play</p><div class="ow-slotsCardActions"><a class="ow-slotsPlay" href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Speel</a><a href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Demo</a></div></div></article>
           <article class="ow-slotsCard" data-provider="netent"><div class="ow-slotsCardThumb"><img src="assets/pictures/fruit-classic-slot.png" alt="" width="320" height="200" loading="lazy" decoding="async" /></div><div class="ow-slotsCardBody"><h3 class="ow-slotsCardTitle">Fruit Classic</h3><p class="ow-slotsCardProvider">NetEnt</p><div class="ow-slotsCardActions"><a class="ow-slotsPlay" href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Speel</a><a href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Demo</a></div></div></article>
@@ -130,13 +132,67 @@
           <section id="ow-slots-toplist" class="ow-aggregatorTop5" aria-label="Top five picks">
 <p class="ow-aggDisclaimer">Editorial shortlist for België. <strong>#1 Cazilla</strong> is the featured outbound partner. Ranks #2–#5 are fictional placeholder brands used only to compare layout and copy patterns—they are not real licensed offers on this domain.</p>
 <div class="ow-topGrid">
-<article class="ow-topCard ow-topCard--featured"><div class="ow-topCardRank" aria-hidden="true">#1</div><div class="ow-topCardMedia"><img src="assets/pictures/casino-feature-visual.png" alt="" width="480" height="300" loading="eager" decoding="async" /></div><h3>Cazilla</h3><p class="ow-topCardTag">Featured partner · België-gerichte site</p><p>Primary pick on this page: transparent promos, live tables, and cashier flows we can screenshot for readers.</p><p class="ow-topCardCta"><a href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Open Cazilla</a></p></article>
-<article class="ow-topCard"><div class="ow-topCardRank" aria-hidden="true">#2</div><div class="ow-topCardMedia"><img src="assets/pictures/slots-showcase.png" alt="" width="480" height="300" loading="lazy" decoding="async" /></div><h3>Sample operator 1</h3><p class="ow-topCardTag">Editorial placeholder</p><p>Fictional row for layout comparison only; not a licensed brand offer.</p></article>
-<article class="ow-topCard"><div class="ow-topCardRank" aria-hidden="true">#3</div><div class="ow-topCardMedia"><img src="assets/pictures/live-tables.jpg" alt="" width="480" height="300" loading="lazy" decoding="async" /></div><h3>Sample operator 2</h3><p class="ow-topCardTag">Editorial placeholder</p><p>Fictional row for layout comparison only; not a licensed brand offer.</p></article>
-<article class="ow-topCard"><div class="ow-topCardRank" aria-hidden="true">#4</div><div class="ow-topCardMedia"><img src="assets/pictures/blackjack-green-table.jpg" alt="" width="480" height="300" loading="lazy" decoding="async" /></div><h3>Sample operator 3</h3><p class="ow-topCardTag">Editorial placeholder</p><p>Fictional row for layout comparison only; not a licensed brand offer.</p></article>
-<article class="ow-topCard"><div class="ow-topCardRank" aria-hidden="true">#5</div><div class="ow-topCardMedia"><img src="assets/pictures/baccarat-live-table.webp" alt="" width="480" height="300" loading="lazy" decoding="async" /></div><h3>Sample operator 4</h3><p class="ow-topCardTag">Editorial placeholder</p><p>Fictional row for layout comparison only; not a licensed brand offer.</p></article>
-</div>
-</section>
+<article class="ow-topCard ow-topCard--featured">
+  <div class="ow-topCardRank" aria-hidden="true">#1</div>
+  <div class="ow-topCardInner">
+    <div class="ow-topCardMedia"><img src="assets/pictures/casino-feature-visual.png" alt="" width="480" height="300" loading="eager" decoding="async" /></div>
+    <div class="ow-topCardCopy">
+      <h3>Cazilla</h3>
+      <p class="ow-topCardTag">Featured partner · België-gerichte site</p>
+      <p>Primary pick on this page: transparent promos, live tables, and cashier flows we can screenshot for readers.</p>
+    </div>
+    <div class="ow-topCardCta"><a href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Speel</a></div>
+  </div>
+</article>
+<article class="ow-topCard">
+  <div class="ow-topCardRank" aria-hidden="true">#2</div>
+  <div class="ow-topCardInner">
+    <div class="ow-topCardMedia"><img src="assets/pictures/slots-showcase.png" alt="" width="480" height="300" loading="lazy" decoding="async" /></div>
+    <div class="ow-topCardCopy">
+      <h3>Sample operator 1</h3>
+      <p class="ow-topCardTag">Editorial placeholder</p>
+      <p>Fictional row for layout comparison only; not a licensed brand offer.</p>
+    </div>
+    <div class="ow-topCardCta"><a href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Speel</a></div>
+  </div>
+</article>
+<article class="ow-topCard">
+  <div class="ow-topCardRank" aria-hidden="true">#3</div>
+  <div class="ow-topCardInner">
+    <div class="ow-topCardMedia"><img src="assets/pictures/live-tables.jpg" alt="" width="480" height="300" loading="lazy" decoding="async" /></div>
+    <div class="ow-topCardCopy">
+      <h3>Sample operator 2</h3>
+      <p class="ow-topCardTag">Editorial placeholder</p>
+      <p>Fictional row for layout comparison only; not a licensed brand offer.</p>
+    </div>
+    <div class="ow-topCardCta"><a href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Speel</a></div>
+  </div>
+</article>
+<article class="ow-topCard">
+  <div class="ow-topCardRank" aria-hidden="true">#4</div>
+  <div class="ow-topCardInner">
+    <div class="ow-topCardMedia"><img src="assets/pictures/blackjack-green-table.jpg" alt="" width="480" height="300" loading="lazy" decoding="async" /></div>
+    <div class="ow-topCardCopy">
+      <h3>Sample operator 3</h3>
+      <p class="ow-topCardTag">Editorial placeholder</p>
+      <p>Fictional row for layout comparison only; not a licensed brand offer.</p>
+    </div>
+    <div class="ow-topCardCta"><a href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Speel</a></div>
+  </div>
+</article>
+<article class="ow-topCard">
+  <div class="ow-topCardRank" aria-hidden="true">#5</div>
+  <div class="ow-topCardInner">
+    <div class="ow-topCardMedia"><img src="assets/pictures/baccarat-live-table.webp" alt="" width="480" height="300" loading="lazy" decoding="async" /></div>
+    <div class="ow-topCardCopy">
+      <h3>Sample operator 4</h3>
+      <p class="ow-topCardTag">Editorial placeholder</p>
+      <p>Fictional row for layout comparison only; not a licensed brand offer.</p>
+    </div>
+    <div class="ow-topCardCta"><a href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Speel</a></div>
+  </div>
+</article>
+</div></section>
         </section>
 
         <div class="policyCard">

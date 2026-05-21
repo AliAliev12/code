@@ -45,11 +45,13 @@
     <div id="siteContent" class="ow-app ow-app--hub">
       <header class="ow-topbar ow-topbar--hub">
         <a class="ow-brand" href="index.html" aria-label="Accueil Cazilla Belgique">
-          <img src="assets/pictures/og-logo.svg" alt="" width="34" height="34" decoding="async" />
+          <span class="ow-logoMark" aria-hidden="true">C</span><span class="ow-logoWord">CAZILLA</span>
         </a>
-        <a class="ow-headerCta" href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Jouer sur Cazilla</a>
+        <div class="ow-topbarEnd">
+          <a class="ow-headerCta" href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Jouer sur Cazilla</a>
+          <button type="button" class="ow-menuBtn" id="menuToggle" aria-expanded="false" aria-controls="sideDrawer">Menu</button>
+        </div>
       </header>
-      <button type="button" class="ow-menuBtn" id="menuToggle" aria-expanded="false" aria-controls="sideDrawer">Menu</button>
       <div class="ow-drawerOverlay" id="drawerOverlay" hidden></div>
       <aside class="ow-drawer" id="sideDrawer" aria-hidden="true" aria-label="Site menu">
         <div class="ow-drawerHeader">
@@ -79,11 +81,66 @@
         <section id="ow-aggregator-top5" class="ow-aggregatorTop5" aria-label="Top cinq sélections">
 <p class="ow-aggDisclaimer">Sélection éditoriale pour Belgique. <strong>#1 Cazilla</strong> est le partenaire sortant mis en avant. Les rangs #2–#5 sont des marques fictives servant uniquement à comparer mise en page et style de texte — ce ne sont pas de vraies offres licenciées sur ce domaine.</p>
 <div class="ow-topGrid">
-<article class="ow-topCard ow-topCard--featured"><div class="ow-topCardRank" aria-hidden="true">#1</div><div class="ow-topCardMedia"><img src="assets/pictures/casino-feature-visual.png" alt="" width="480" height="300" loading="eager" decoding="async" /></div><h3>Cazilla</h3><p class="ow-topCardTag">Partenaire mis en avant · site orienté Belgique</p><p>Notre choix principal sur cette page : promos lisibles, tables live et parcours de caisse que nous pouvons illustrer pour les lecteurs.</p><p class="ow-topCardCta"><a href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Jouer sur Cazilla</a></p></article>
-<article class="ow-topCard"><div class="ow-topCardRank" aria-hidden="true">#2</div><div class="ow-topCardMedia"><img src="assets/pictures/slots-showcase.png" alt="" width="480" height="300" loading="lazy" decoding="async" /></div><h3>VelvetSpin Club</h3><p class="ow-topCardTag">Un lobby varié et une navigation fluide pour les joueurs belges.</p><p>VelvetSpin Club est une plateforme fictive proposant un catalogue de jeux diversifié et plusieurs options de paiement, avec une interface disponible en français et en néerlandais.</p></article>
-<article class="ow-topCard"><div class="ow-topCardRank" aria-hidden="true">#3</div><div class="ow-topCardMedia"><img src="assets/pictures/live-tables.jpg" alt="" width="480" height="300" loading="lazy" decoding="async" /></div><h3>AuroraPlay Belge</h3><p class="ow-topCardTag">Découvrez des jeux en direct et des bonus de bienvenue attractifs.</p><p>AuroraPlay Belge est un opérateur imaginaire axé sur les jeux de table en direct et les machines à sous, avec une section bonus régulièrement renouvelée selon nos critères éditoriaux.</p></article>
-<article class="ow-topCard"><div class="ow-topCardRank" aria-hidden="true">#4</div><div class="ow-topCardMedia"><img src="assets/pictures/blackjack-green-table.jpg" alt="" width="480" height="300" loading="lazy" decoding="async" /></div><h3>NordBet Casino</h3><p class="ow-topCardTag">Retraits rapides et catalogue de slots en constante évolution.</p><p>NordBet Casino est une enseigne fictive qui se distingue dans notre comparatif par ses délais de retrait compétitifs et un catalogue de machines à sous alimenté par plusieurs fournisseurs.</p></article>
-<article class="ow-topCard"><div class="ow-topCardRank" aria-hidden="true">#5</div><div class="ow-topCardMedia"><img src="assets/pictures/baccarat-live-table.webp" alt="" width="480" height="300" loading="lazy" decoding="async" /></div><h3>CristalGames</h3><p class="ow-topCardTag">Interface épurée et programme de fidélité bien structuré.</p><p>CristalGames est une marque inventée retenue dans notre classement pour la clarté de son interface mobile et un programme de fidélité aux paliers lisibles, sans conditions excessivement complexes.</p></article>
+<article class="ow-topCard ow-topCard--featured">
+  <div class="ow-topCardRank" aria-hidden="true">#1</div>
+  <div class="ow-topCardInner">
+    <div class="ow-topCardMedia"><img src="assets/pictures/casino-feature-visual.png" alt="" width="480" height="300" loading="eager" decoding="async" /></div>
+    <div class="ow-topCardCopy">
+      <h3>Cazilla</h3>
+      <p class="ow-topCardTag">Partenaire mis en avant · site orienté Belgique</p>
+      <p>Notre choix principal sur cette page : promos lisibles, tables live et parcours de caisse que nous pouvons illustrer pour les lecteurs.</p>
+    </div>
+    <div class="ow-topCardCta"><a href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Jouez sur Cazilla</a></div>
+  </div>
+</article>
+<article class="ow-topCard">
+  <div class="ow-topCardRank" aria-hidden="true">#2</div>
+  <div class="ow-topCardInner">
+    <div class="ow-topCardMedia"><img src="assets/pictures/slots-showcase.png" alt="" width="480" height="300" loading="lazy" decoding="async" /></div>
+    <div class="ow-topCardCopy">
+      <h3>VelvetSpin Club</h3>
+      <p class="ow-topCardTag">Un lobby varié et une navigation fluide pour les joueurs belges.</p>
+      <p>VelvetSpin Club est une plateforme fictive proposant un catalogue de jeux diversifié et plusieurs options de paiement, avec une interface disponible en français et en néerlandais.</p>
+    </div>
+    <div class="ow-topCardCta"><a href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Profitez de VelvetSpin Club</a></div>
+  </div>
+</article>
+<article class="ow-topCard">
+  <div class="ow-topCardRank" aria-hidden="true">#3</div>
+  <div class="ow-topCardInner">
+    <div class="ow-topCardMedia"><img src="assets/pictures/live-tables.jpg" alt="" width="480" height="300" loading="lazy" decoding="async" /></div>
+    <div class="ow-topCardCopy">
+      <h3>AuroraPlay Belge</h3>
+      <p class="ow-topCardTag">Découvrez des jeux en direct et des bonus de bienvenue attractifs.</p>
+      <p>AuroraPlay Belge est un opérateur imaginaire axé sur les jeux de table en direct et les machines à sous, avec une section bonus régulièrement renouvelée selon nos critères éditoriaux.</p>
+    </div>
+    <div class="ow-topCardCta"><a href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Profitez de AuroraPlay Belge</a></div>
+  </div>
+</article>
+<article class="ow-topCard">
+  <div class="ow-topCardRank" aria-hidden="true">#4</div>
+  <div class="ow-topCardInner">
+    <div class="ow-topCardMedia"><img src="assets/pictures/blackjack-green-table.jpg" alt="" width="480" height="300" loading="lazy" decoding="async" /></div>
+    <div class="ow-topCardCopy">
+      <h3>NordBet Casino</h3>
+      <p class="ow-topCardTag">Retraits rapides et catalogue de slots en constante évolution.</p>
+      <p>NordBet Casino est une enseigne fictive qui se distingue dans notre comparatif par ses délais de retrait compétitifs et un catalogue de machines à sous alimenté par plusieurs fournisseurs.</p>
+    </div>
+    <div class="ow-topCardCta"><a href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Profitez de NordBet Casino</a></div>
+  </div>
+</article>
+<article class="ow-topCard">
+  <div class="ow-topCardRank" aria-hidden="true">#5</div>
+  <div class="ow-topCardInner">
+    <div class="ow-topCardMedia"><img src="assets/pictures/baccarat-live-table.webp" alt="" width="480" height="300" loading="lazy" decoding="async" /></div>
+    <div class="ow-topCardCopy">
+      <h3>CristalGames</h3>
+      <p class="ow-topCardTag">Interface épurée et programme de fidélité bien structuré.</p>
+      <p>CristalGames est une marque inventée retenue dans notre classement pour la clarté de son interface mobile et un programme de fidélité aux paliers lisibles, sans conditions excessivement complexes.</p>
+    </div>
+    <div class="ow-topCardCta"><a href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Profitez de CristalGames</a></div>
+  </div>
+</article>
 </div>
 </section>
 

@@ -95,7 +95,7 @@
 
 .ow-aboutPartner .ow-topGrid {
   grid-template-columns: 1fr;
-  max-width: 420px;
+  max-width: 100%;
 }
 
 .ow-aboutPartner .ow-aggDisclaimer {

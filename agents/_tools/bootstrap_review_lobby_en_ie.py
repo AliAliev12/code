@@ -61,6 +61,16 @@ LANDING_IMAGES: dict[str, tuple[str, str, str]] = {
         "og-logo.svg",
         "blackjack-green-table.jpg",
     ),
+    "casino-deposit": (
+        "bonus-promo-artwork.webp",
+        "fruit-classic-slot.png",
+        "crazy-time-bonus.jpg",
+    ),
+    "bonus": (
+        "baccarat-bonus-terms.webp",
+        "bonus-promo-artwork.webp",
+        "crazy-time-bonus.jpg",
+    ),
 }
 
 LANDING_IMG_ALT: dict[str, tuple[str, str, str]] = {
@@ -89,6 +99,16 @@ LANDING_IMG_ALT: dict[str, tuple[str, str, str]] = {
         "Cazilla logo",
         "Table games overview",
     ),
+    "casino-deposit": (
+        "No-deposit free spins offer",
+        "Classic slot eligible for free spins",
+        "Promo artwork",
+    ),
+    "bonus": (
+        "Casino bonus terms",
+        "Welcome bonus artwork",
+        "Live promo game",
+    ),
 }
 
 
@@ -104,9 +124,21 @@ def init_site() -> None:
     HTML_LANG = LC.locale.replace("_", "-") if "_" in LC.locale else LC.locale
     global MIN_AGE
     MIN_AGE = 21 if LC.geo.upper() == "BE" else 18
-    SITE_NAME = "Cazilla Ireland"
+    SITE_NAME = "Cazilla Insight" if "review2" in SITE_SLUG.lower() else "Cazilla Ireland"
     STUB = f"Placeholder editorial copy. A2 will replace this with optimized content for {LC.audience_phrase}."
     _load_keywords()
+
+
+def _is_review2() -> bool:
+    return "review2" in (SITE_SLUG or "").lower()
+
+
+def _theme_class() -> str:
+    return "rb-theme-ie2" if _is_review2() else "rb-theme-ie3"
+
+
+def _cookie_prefix() -> str:
+    return SITE_SLUG.replace("-", "_") if SITE_SLUG else "cazilla_review_en_ie"
 
 
 def _load_keywords() -> None:
@@ -290,8 +322,19 @@ def _landing_figure(page_id: str, index: int, asset_prefix: str = "") -> str:
     )
 
 
-def landing_stub(page_id: str) -> str:
+def landing_stub(page_id: str, *, include_faq: bool = True) -> str:
     """Stub inside article[data-a2-field=main_seo_html]; A2 replaces the whole article body."""
+    faq = ""
+    if include_faq:
+        faq = f"""
+<section class="rb-faq" aria-labelledby="rb-faq-title">
+  <h2 id="rb-faq-title">Frequently asked questions</h2>
+  <details open><summary>Placeholder question 1?</summary><p>{html.escape(STUB)}</p></details>
+  <details open><summary>Placeholder question 2?</summary><p>{html.escape(STUB)}</p></details>
+  <details open><summary>Placeholder question 3?</summary><p>{html.escape(STUB)}</p></details>
+  <details open><summary>Placeholder question 4?</summary><p>{html.escape(STUB)}</p></details>
+  <details open><summary>Placeholder question 5?</summary><p>{html.escape(STUB)}</p></details>
+</section>"""
     return f"""<p>{html.escape(STUB)}</p>
 {_landing_cta()}
 {_landing_figure(page_id, 0)}
@@ -324,20 +367,65 @@ def landing_stub(page_id: str) -> str:
 </table>
 {_landing_cta()}
 {_landing_figure(page_id, 2)}
-<section class="rb-faq" aria-labelledby="rb-faq-title">
-  <h2 id="rb-faq-title">Frequently asked questions</h2>
-  <details open><summary>Placeholder question 1?</summary><p>{html.escape(STUB)}</p></details>
-  <details open><summary>Placeholder question 2?</summary><p>{html.escape(STUB)}</p></details>
-  <details open><summary>Placeholder question 3?</summary><p>{html.escape(STUB)}</p></details>
-  <details open><summary>Placeholder question 4?</summary><p>{html.escape(STUB)}</p></details>
-  <details open><summary>Placeholder question 5?</summary><p>{html.escape(STUB)}</p></details>
-</section>"""
+{faq}"""
+
+
+def landing_stub_casino_deposit() -> str:
+    """No-deposit wireframe (review1-style) with 40FS registration offer."""
+    offer = (
+        "<p><strong>Registration offer at Cazilla:</strong> "
+        "<strong>40 free spins (40FS)</strong> — no deposit required. "
+        "<strong>Maximum cashout: 100 EUR</strong> from free-spin winnings. "
+        "Terms and wagering apply on the official site.</p>"
+    )
+    return f"""<p>{html.escape(STUB)}</p>
+{offer}
+{_landing_cta()}
+{_landing_figure("casino-deposit", 0)}
+<h2>What to check in a no-deposit offer</h2>
+<p>{html.escape(STUB)}</p>
+<ul>
+  <li><strong>40FS</strong> on registration — confirm eligible slots in the promo box</li>
+  <li><strong>Max cashout 100 EUR</strong> — cap on withdrawable winnings from the free spins</li>
+  <li>Wagering requirements before withdrawal</li>
+  <li>Time limit to use spins and clear playthrough</li>
+  <li>ID verification for Ireland players ({MIN_AGE}+)</li>
+</ul>
+{_landing_cta()}
+{_landing_figure("casino-deposit", 1)}
+<h2>How to claim 40 free spins at Cazilla</h2>
+<p>{html.escape(STUB)}</p>
+<ol>
+  <li>Open Cazilla and complete registration for Ireland ({MIN_AGE}+).</li>
+  <li>Confirm the <strong>40FS no-deposit</strong> welcome spins in promotions or account settings.</li>
+  <li>Launch an eligible slot — spins should credit without a deposit.</li>
+  <li>Track wagering rules and the <strong>100 EUR max cashout</strong> before requesting a withdrawal.</li>
+  <li>Complete KYC if prompted — standard for licensed operators.</li>
+</ol>
+{_landing_cta()}
+<h2>Offer comparison (editorial snapshot)</h2>
+<p>{html.escape(STUB)}</p>
+<table class="rb-dataTable">
+  <thead><tr><th>Offer</th><th>Value</th><th>Max cashout</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr><td>Cazilla registration</td><td><strong>40FS</strong> (no deposit)</td><td><strong>100 EUR</strong></td><td>Check live terms on official site</td></tr>
+    <tr><td>Typical low-deposit path</td><td>Match + spins</td><td>Varies</td><td>Separate from no-deposit bundle</td></tr>
+    <tr><td>Loyalty free spins</td><td>20–100 FS</td><td>Promo-specific</td><td>Ongoing campaigns</td></tr>
+  </tbody>
+</table>
+{_landing_cta()}
+{_landing_figure("casino-deposit", 2)}"""
 
 
 def landing_body(page_id: str) -> str:
+    if page_id == "casino-deposit":
+        inner = landing_stub_casino_deposit()
+    else:
+        inner = landing_stub(page_id, include_faq=not _is_review2())
+    clean = ' data-landing-mode="clean"' if _is_review2() else ""
     return f"""
-    <article class="rb-landing" data-a2-field="main_seo_html">
-{landing_stub(page_id)}
+    <article class="rb-landing" data-a2-field="main_seo_html"{clean}>
+{inner}
     </article>"""
 
 
@@ -351,7 +439,7 @@ def content_page(page_id: str, rel: str, menu_label: str) -> str:
   <head>
 {head_block(rel, title, desc)}
   </head>
-  <body class="rb-layout rb-theme-ie3">
+  <body class="rb-layout {_theme_class()}">
 {compliance_block(rel)}
 <div id="siteContent" class="rb-app">
 {site_header(rel)}
@@ -383,7 +471,7 @@ def technical_page(rel: str, title: str, desc: str, h1: str, hero_sub: str, slug
   <head>
 {head_block(rel, title, desc)}
   </head>
-  <body class="rb-layout rb-layout--legal rb-theme-ie3">
+  <body class="rb-layout rb-layout--legal {_theme_class()}">
 {compliance_block(rel)}
 <div id="siteContent" class="rb-app">
 {site_header(rel)}
@@ -402,6 +490,19 @@ def technical_page(rel: str, title: str, desc: str, h1: str, hero_sub: str, slug
 
 
 RB_SHELL_CSS = (CLONE_ASSETS / "cl-shell.css").read_text(encoding="utf-8") if (CLONE_ASSETS / "cl-shell.css").is_file() else ""
+
+RB_LOBBY_THEME_IE2 = """
+/* Review lobby en-IE — insight (rb-theme-ie2): violet + amber (distinct from ie3 teal/rose, enbe, r2) */
+body.rb-theme-ie2 {
+  --rb-accent: #a78bfa;
+  --rb-accent2: #fbbf24;
+  --rb-bg: #0c0a14;
+  --rb-panel: #16121f;
+  --rb-line: rgba(167, 139, 250, 0.26);
+  --rb-text: #f4f0ff;
+  --rb-muted: #a8a3b8;
+}
+"""
 
 RB_LOBBY_CSS = """
 /* Review lobby en-IE — teal + rose (rb-theme-ie3) (distinct from fr gold, nl amber/emerald) */
@@ -853,11 +954,13 @@ html.complianceNoScroll,
 html.complianceNoScroll body { overflow: hidden; height: 100%; }
 """
 
-RB_SITE_JS = """
+def _site_js() -> str:
+    pref = _cookie_prefix()
+    tpl = """
 (function () {
   "use strict";
-  var AGE = "cazilla_review3_en_ie_age_ok";
-  var COOKIE = "cazilla_review3_en_ie_cookie";
+  var AGE = "__PREF___age_ok";
+  var COOKIE = "__PREF___cookie";
   function getCookie(n) {
     var m = document.cookie.match(new RegExp("(?:^|; )" + n.replace(/([.$?*|{}()[\\]\\\\/+^])/g, "\\\\$1") + "=([^;]*)"));
     return m ? decodeURIComponent(m[1]) : "";
@@ -909,6 +1012,31 @@ RB_SITE_JS = """
   }
 })();
 """
+    return tpl.replace("__PREF__", pref)
+
+
+def _lobby_css_text() -> str:
+    idx = RB_LOBBY_CSS.find(".rb-layout")
+    layout = RB_LOBBY_CSS[idx:] if idx >= 0 else RB_LOBBY_CSS
+    if _is_review2():
+        return RB_LOBBY_THEME_IE2.strip() + "\n\n" + layout
+    return RB_LOBBY_CSS.strip() + "\n"
+
+
+def _compliance_css_text() -> str:
+    if not _is_review2():
+        return RB_COMPLIANCE_CSS.strip() + "\n"
+    return (
+        RB_COMPLIANCE_CSS.replace("#0f1c28", "#16121f")
+        .replace("rgba(7, 16, 24, 0.9)", "rgba(12, 10, 20, 0.92)")
+        .replace("rgba(45, 212, 191, 0.45)", "rgba(167, 139, 250, 0.45)")
+        .replace("#fb7185", "#fbbf24")
+        .replace("#ccfbf1", "#ede9fe")
+        .replace("#5eead4", "#c4b5fd")
+        .replace("#fb7185, #e11d48", "#fbbf24, #d97706")
+        .strip()
+        + "\n"
+    )
 
 
 def write_assets() -> None:
@@ -924,10 +1052,23 @@ def write_assets() -> None:
     if "body.cl-theme-v4" in shell:
         shell += "\n/* review lobby uses rb-layout vars in rb-lobby.css */\n"
     (assets / "rb-shell.css").write_text(shell, encoding="utf-8")
-    (assets / "rb-lobby.css").write_text(RB_LOBBY_CSS.strip() + "\n", encoding="utf-8")
-    (assets / "rb-compliance.css").write_text(RB_COMPLIANCE_CSS.strip() + "\n", encoding="utf-8")
-    (assets / "rb-site.js").write_text(RB_SITE_JS.strip() + "\n", encoding="utf-8")
-    for old in ("rv-shell.css", "rv-lobby.css", "rv-compliance.css", "rv-site.js", "r2-shell.css", "r2-page.css", "r2-compliance.css", "r2-site.js"):
+    (assets / "rb-lobby.css").write_text(_lobby_css_text(), encoding="utf-8")
+    (assets / "rb-compliance.css").write_text(_compliance_css_text(), encoding="utf-8")
+    (assets / "rb-site.js").write_text(_site_js().strip() + "\n", encoding="utf-8")
+    for old in (
+        "rv-shell.css",
+        "rv-lobby.css",
+        "rv-compliance.css",
+        "rv-site.js",
+        "r2-shell.css",
+        "r2-page.css",
+        "r2-compliance.css",
+        "r2-site.js",
+        "r3-shell.css",
+        "r3-page.css",
+        "r3-compliance.css",
+        "r3-site.js",
+    ):
         p = assets / old
         if p.is_file():
             p.unlink()

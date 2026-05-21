@@ -20,58 +20,17 @@
 @media (max-width: 900px) {
   .ow-slotsFinder {
     grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .ow-slotsFilters {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
-    gap: 0.75rem 1rem;
-    width: 100%;
-    margin-bottom: 0.25rem;
-  }
-
-  .ow-slotsFilters fieldset {
-    margin: 0;
-    min-width: 0;
-  }
-
-  .ow-slotsResults {
-    min-width: 0;
-  }
-}
-
-@media (max-width: 900px) and (min-width: 640px) {
-  .ow-slotsFilters {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 639px) and (min-width: 400px) {
-  .ow-slotsFilters {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 399px) {
-  .ow-slotsFilters {
-    grid-template-columns: 1fr;
   }
 }
 
 .ow-slotsFilters {
+  position: sticky;
+  top: calc(var(--ow-topbar-offset, 4.75rem) + 0.5rem);
   padding: 1rem;
   border-radius: 14px;
   border: 1px solid var(--stroke, rgba(255, 255, 255, 0.12));
   background: rgba(255, 255, 255, 0.03);
   font-size: 0.85rem;
-}
-
-@media (min-width: 901px) {
-  .ow-slotsFilters {
-    position: sticky;
-    top: calc(var(--ow-topbar-offset, 4.75rem) + 0.5rem);
-  }
 }
 
 .ow-slotsFilters fieldset {

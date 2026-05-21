@@ -46,11 +46,13 @@
     <div id="siteContent" class="ow-app ow-app--about">
       <header class="ow-topbar ow-topbar--hub">
         <a class="ow-brand" href="index.html" aria-label="Home Cazilla">
-          <img src="assets/pictures/og-logo.svg" alt="" width="34" height="34" decoding="async" />
+          <span class="ow-logoMark" aria-hidden="true">C</span><span class="ow-logoWord">CAZILLA</span>
         </a>
-        <a class="ow-headerCta" href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Speel bij Cazilla</a>
+        <div class="ow-topbarEnd">
+          <a class="ow-headerCta" href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Speel bij Cazilla</a>
+          <button type="button" class="ow-menuBtn" id="menuToggle" aria-expanded="false" aria-controls="sideDrawer">Menu</button>
+        </div>
       </header>
-      <button type="button" class="ow-menuBtn" id="menuToggle" aria-expanded="false" aria-controls="sideDrawer">Menu</button>
       <div class="ow-drawerOverlay" id="drawerOverlay" hidden></div>
       <aside class="ow-drawer" id="sideDrawer" aria-hidden="true" aria-label="Site menu">
         <div class="ow-drawerHeader">
@@ -99,9 +101,19 @@
           <section id="ow-about-partner" class="ow-aggregatorTop5" aria-label="Featured partner">
 <p class="ow-aggDisclaimer">Editorial hub for België. <strong>Cazilla</strong> is the featured outbound partner on this page — no fictional ranks #2–#5 here.</p>
 <div class="ow-topGrid">
-<article class="ow-topCard ow-topCard--featured"><div class="ow-topCardRank" aria-hidden="true">#1</div><div class="ow-topCardMedia"><img src="assets/pictures/casino-feature-visual.png" alt="" width="480" height="300" loading="eager" decoding="async" /></div><h3>Cazilla</h3><p class="ow-topCardTag">Featured partner · België-gerichte site</p><p>Primary pick on this page: transparent promos, live tables, and cashier flows we can screenshot for readers.</p><p class="ow-topCardCta"><a href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Open Cazilla</a></p></article>
-</div>
-</section>
+<article class="ow-topCard ow-topCard--featured">
+  <div class="ow-topCardRank" aria-hidden="true">#1</div>
+  <div class="ow-topCardInner">
+    <div class="ow-topCardMedia"><img src="assets/pictures/casino-feature-visual.png" alt="" width="480" height="300" loading="eager" decoding="async" /></div>
+    <div class="ow-topCardCopy">
+      <h3>Cazilla</h3>
+      <p class="ow-topCardTag">Featured partner · België-gerichte site</p>
+      <p>Primary pick on this page: transparent promos, live tables, and cashier flows we can screenshot for readers.</p>
+    </div>
+    <div class="ow-topCardCta"><a href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Speel</a></div>
+  </div>
+</article>
+</div></section>
         </section>
 
         <div class="policyCard">

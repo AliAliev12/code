@@ -45,11 +45,13 @@
     <div id="siteContent" class="ow-app ow-app--hub">
       <header class="ow-topbar ow-topbar--hub">
         <a class="ow-brand" href="index.html" aria-label="Home Cazilla">
-          <img src="assets/pictures/og-logo.svg" alt="" width="34" height="34" decoding="async" />
+          <span class="ow-logoMark" aria-hidden="true">C</span><span class="ow-logoWord">CAZILLA</span>
         </a>
-        <a class="ow-headerCta" href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Speel bij Cazilla</a>
+        <div class="ow-topbarEnd">
+          <a class="ow-headerCta" href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Speel bij Cazilla</a>
+          <button type="button" class="ow-menuBtn" id="menuToggle" aria-expanded="false" aria-controls="sideDrawer">Menu</button>
+        </div>
       </header>
-      <button type="button" class="ow-menuBtn" id="menuToggle" aria-expanded="false" aria-controls="sideDrawer">Menu</button>
       <div class="ow-drawerOverlay" id="drawerOverlay" hidden></div>
       <aside class="ow-drawer" id="sideDrawer" aria-hidden="true" aria-label="Site menu">
         <div class="ow-drawerHeader">
@@ -79,13 +81,67 @@
         <section id="ow-aggregator-top5" class="ow-aggregatorTop5" aria-label="Top five picks">
 <p class="ow-aggDisclaimer">Editorial shortlist for België. <strong>#1 Cazilla</strong> is the featured outbound partner. Ranks #2–#5 are fictional placeholder brands used only to compare layout and copy patterns—they are not real licensed offers on this domain.</p>
 <div class="ow-topGrid">
-<article class="ow-topCard ow-topCard--featured"><div class="ow-topCardRank" aria-hidden="true">#1</div><div class="ow-topCardMedia"><img src="assets/pictures/casino-feature-visual.png" alt="" width="480" height="300" loading="eager" decoding="async" /></div><h3>Cazilla</h3><p class="ow-topCardTag">Featured partner · België-gerichte site</p><p>Primary pick on this page: transparent promos, live tables, and cashier flows we can screenshot for readers.</p><p class="ow-topCardCta"><a href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Open Cazilla</a></p></article>
-<article class="ow-topCard"><div class="ow-topCardRank" aria-hidden="true">#2</div><div class="ow-topCardMedia"><img src="assets/pictures/slots-showcase.png" alt="" width="480" height="300" loading="lazy" decoding="async" /></div><h3>Veloria Play</h3><p class="ow-topCardTag">Een gevarieerd spelportfolio voor de moderne speler.</p><p>Veloria Play is een fictieve aanbieder in onze vergelijking met een breed aanbod aan slots en tafelspelen, beoordeeld op gebruiksgemak en transparantie van bonusvoorwaarden.</p></article>
-<article class="ow-topCard"><div class="ow-topCardRank" aria-hidden="true">#3</div><div class="ow-topCardMedia"><img src="assets/pictures/live-tables.jpg" alt="" width="480" height="300" loading="lazy" decoding="async" /></div><h3>Zyndra Casino</h3><p class="ow-topCardTag">Snel, overzichtelijk en geschikt voor beginners.</p><p>Zyndra Casino is een verzonnen platform dat in onze redactionele test opvalt door een eenvoudige interface en een helder bonussysteem zonder verborgen voorwaarden.</p></article>
-<article class="ow-topCard"><div class="ow-topCardRank" aria-hidden="true">#4</div><div class="ow-topCardMedia"><img src="assets/pictures/blackjack-green-table.jpg" alt="" width="480" height="300" loading="lazy" decoding="async" /></div><h3>Blaufort Games</h3><p class="ow-topCardTag">Ruime spelkeuze met focus op live casinoervaring.</p><p>Blaufort Games is een fictieve casitoaanbieder die in onze vergelijking wordt gewaardeerd om het uitgebreide live casinoaanbod en de vlotte navigatie op mobiele apparaten.</p></article>
-<article class="ow-topCard"><div class="ow-topCardRank" aria-hidden="true">#5</div><div class="ow-topCardMedia"><img src="assets/pictures/baccarat-live-table.webp" alt="" width="480" height="300" loading="lazy" decoding="async" /></div><h3>Nexplay Club</h3><p class="ow-topCardTag">Loyaliteitsprogramma en dagelijkse promoties centraal.</p><p>Nexplay Club is een verzonnen platform dat onze redactie beoordeelt als een interessante optie voor spelers die waarde hechten aan een actief loyaliteitsprogramma en regelmatige aanbiedingen.</p></article>
-</div>
-</section>
+<article class="ow-topCard ow-topCard--featured">
+  <div class="ow-topCardRank" aria-hidden="true">#1</div>
+  <div class="ow-topCardInner">
+    <div class="ow-topCardMedia"><img src="assets/pictures/casino-feature-visual.png" alt="" width="480" height="300" loading="eager" decoding="async" /></div>
+    <div class="ow-topCardCopy">
+      <h3>Cazilla</h3>
+      <p class="ow-topCardTag">Featured partner · België-gerichte site</p>
+      <p>Primary pick on this page: transparent promos, live tables, and cashier flows we can screenshot for readers.</p>
+    </div>
+    <div class="ow-topCardCta"><a href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Speel</a></div>
+  </div>
+</article>
+<article class="ow-topCard">
+  <div class="ow-topCardRank" aria-hidden="true">#2</div>
+  <div class="ow-topCardInner">
+    <div class="ow-topCardMedia"><img src="assets/pictures/slots-showcase.png" alt="" width="480" height="300" loading="lazy" decoding="async" /></div>
+    <div class="ow-topCardCopy">
+      <h3>Veloria Play</h3>
+      <p class="ow-topCardTag">Een gevarieerd spelportfolio voor de moderne speler.</p>
+      <p>Veloria Play is een fictieve aanbieder in onze vergelijking met een breed aanbod aan slots en tafelspelen, beoordeeld op gebruiksgemak en transparantie van bonusvoorwaarden.</p>
+    </div>
+    <div class="ow-topCardCta"><a href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Speel</a></div>
+  </div>
+</article>
+<article class="ow-topCard">
+  <div class="ow-topCardRank" aria-hidden="true">#3</div>
+  <div class="ow-topCardInner">
+    <div class="ow-topCardMedia"><img src="assets/pictures/live-tables.jpg" alt="" width="480" height="300" loading="lazy" decoding="async" /></div>
+    <div class="ow-topCardCopy">
+      <h3>Zyndra Casino</h3>
+      <p class="ow-topCardTag">Snel, overzichtelijk en geschikt voor beginners.</p>
+      <p>Zyndra Casino is een verzonnen platform dat in onze redactionele test opvalt door een eenvoudige interface en een helder bonussysteem zonder verborgen voorwaarden.</p>
+    </div>
+    <div class="ow-topCardCta"><a href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Speel</a></div>
+  </div>
+</article>
+<article class="ow-topCard">
+  <div class="ow-topCardRank" aria-hidden="true">#4</div>
+  <div class="ow-topCardInner">
+    <div class="ow-topCardMedia"><img src="assets/pictures/blackjack-green-table.jpg" alt="" width="480" height="300" loading="lazy" decoding="async" /></div>
+    <div class="ow-topCardCopy">
+      <h3>Blaufort Games</h3>
+      <p class="ow-topCardTag">Ruime spelkeuze met focus op live casinoervaring.</p>
+      <p>Blaufort Games is een fictieve casitoaanbieder die in onze vergelijking wordt gewaardeerd om het uitgebreide live casinoaanbod en de vlotte navigatie op mobiele apparaten.</p>
+    </div>
+    <div class="ow-topCardCta"><a href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Speel</a></div>
+  </div>
+</article>
+<article class="ow-topCard">
+  <div class="ow-topCardRank" aria-hidden="true">#5</div>
+  <div class="ow-topCardInner">
+    <div class="ow-topCardMedia"><img src="assets/pictures/baccarat-live-table.webp" alt="" width="480" height="300" loading="lazy" decoding="async" /></div>
+    <div class="ow-topCardCopy">
+      <h3>Nexplay Club</h3>
+      <p class="ow-topCardTag">Loyaliteitsprogramma en dagelijkse promoties centraal.</p>
+      <p>Nexplay Club is een verzonnen platform dat onze redactie beoordeelt als een interessante optie voor spelers die waarde hechten aan een actief loyaliteitsprogramma en regelmatige aanbiedingen.</p>
+    </div>
+    <div class="ow-topCardCta"><a href="https://cazilla.casino" rel="noopener noreferrer" target="_blank">Speel</a></div>
+  </div>
+</article>
+</div></section>
 
         <div class="policyCard">
         <article class="ow-prose ow-prose--hub" data-a2-field="main_seo_html">

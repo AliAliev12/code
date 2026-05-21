@@ -90,6 +90,10 @@ PAGE_KIND_OFFERWALL_BONUS = "offerwall_bonus"
 OFFERWALL_ABOUT_CONTENT_KEYS = list(CLONE_CONTENT_KEYS)
 PAGE_KIND_OFFERWALL_ABOUT = "offerwall_about"
 
+PAGE_KIND_OFFERWALL_RECOMMEND = "offerwall_recommend"
+PAGE_KIND_OFFERWALL_CHOOSE = "offerwall_choose"
+PAGE_KIND_OFFERWALL_FAQ_PAGE = "offerwall_faq_page"
+
 REVIEW_LOBBY_CONTENT_KEYS = list(CLONE_CONTENT_KEYS)
 PAGE_KIND_REVIEW_LOBBY = "review_lobby"
 
@@ -619,6 +623,7 @@ REVIEW_LOBBY_LANDING_IMAGES: Dict[str, Tuple[str, str, str]] = {
     "live-casino": ("live-tables.jpg", "baccarat-live-table.webp", "blackjack-green-table.jpg"),
     "live-roulette": ("live-tables.jpg", "baccarat-live-table.webp", "blackjack-green-table.jpg"),
     "no-deposit": ("bonus-promo-artwork.webp", "fruit-classic-slot.png", "rocket-crash-game.png"),
+    "casino-deposit": ("bonus-promo-artwork.webp", "fruit-classic-slot.png", "crazy-time-bonus.jpg"),
 }
 
 REVIEW_LOBBY_FAQ_DEFAULTS: Dict[str, Tuple[str, List[Tuple[str, str]]]] = {
@@ -690,7 +695,12 @@ def _review_lobby_faq_html(lc: LocaleContext) -> str:
 
 
 def ensure_review_lobby_landing_html(
-    html_body: str, *, page_id: str, lc: LocaleContext, main_casino_url: str
+    html_body: str,
+    *,
+    page_id: str,
+    lc: LocaleContext,
+    main_casino_url: str,
+    clean: bool = False,
 ) -> str:
     body = (html_body or "").strip()
     casino = (main_casino_url or "https://cazilla.casino").strip().rstrip("/")
@@ -724,7 +734,7 @@ def ensure_review_lobby_landing_html(
         body += cta
 
     details_n = len(re.findall(r"(?is)<details\b", body))
-    if faq_marker not in body.lower() or details_n < 5:
+    if not clean and (faq_marker not in body.lower() or details_n < 5):
         if body and not body.endswith(cta):
             body += _review_lobby_landing_figure(page_id, 2)
         body += _review_lobby_faq_html(lc)
@@ -807,6 +817,79 @@ Keyword list:
 """.strip()
 
 
+def build_review_lobby_clean_seo_prompt(
+    *,
+    page_id: str,
+    menu_label: str,
+    rows: List[Dict[str, Any]],
+    lc: LocaleContext,
+    main_casino_url: str,
+    include_site_factory_spec: bool = False,
+    site_voice: str = "",
+    deposit_offer: bool = False,
+) -> str:
+    main_kw, kw_lines, _ = _clone_kw_lines(rows)
+    focus = clone_page_focus(page_id, lc)
+    spec = site_factory_spec_block(enabled=include_site_factory_spec)
+    voice = site_voice or f"Cazilla Insight — editorial review for {lc.region_name}"
+    imgs = REVIEW_LOBBY_LANDING_IMAGES.get(page_id, REVIEW_LOBBY_LANDING_IMAGES["home"])
+    casino = (main_casino_url or "https://cazilla.casino").strip().rstrip("/")
+    fig = lambda i: (
+        f'<figure class="rb-landingMedia"><img src="assets/pictures/{imgs[i]}" alt="" '
+        f'width="720" loading="lazy" decoding="async" /></figure>'
+    )
+    age_note = "18+ responsible play"
+    cta_text = "Play at Cazilla"
+    faq_heading = "Frequently asked questions"
+    lang_note = f"English ({lc.locale}) for {lc.audience_phrase}"
+    cta = (
+        f'<p class="rb-ctaBar"><a class="btn primary" href="{casino}" '
+        f'rel="noopener noreferrer" target="_blank">{cta_text}</a></p>'
+    )
+    offer_block = ""
+    if deposit_offer:
+        offer_block = (
+            "\nMANDATORY offer facts (state clearly in intro and table; exact numbers):\n"
+            "- Registration: 40 free spins (40FS), no deposit required.\n"
+            "- Maximum cashout from free-spin winnings: 100 EUR.\n"
+            "- Mention both in a comparison table row for Cazilla.\n"
+        )
+    return f"""
+You are an SEO copywriter for locale {lc.locale} (language: {lc.lang}).
+Site voice: {voice}
+{spec}
+Page: {menu_label} ({page_id}). Focus: {focus}.
+{offer_block}
+Return ONLY valid JSON (no markdown fences):
+{{"main_seo_html": "..."}}
+
+main_seo_html MUST follow this EXACT block order (no <h1>; {lang_note}; NO FAQ section):
+1. Intro: 2-3 <p> paragraphs (optional one <h2>).
+2. {cta}
+3. {fig(0)}
+4. <h2> + <p> + <ul> with 4-6 <li>
+5. {cta}
+6. {fig(1)}
+7. <h2> + <p> + <ol> with 4-6 <li>
+8. {cta}
+9. <h2> + <p> + <table class="rb-dataTable"> with <thead> and 3-4 body rows
+10. {cta}
+11. {fig(2)}
+
+Rules:
+- 2000-3200 visible characters total. Do NOT add rb-faq or <details> blocks.
+- Include EVERY keyword below at least once (exact wording). First occurrence of each in <strong>...</strong>.
+- At least one full sentence between keyword mentions. {lc.player_context_phrase}. {age_note}. No false licence claims.
+- Keep class names rb-ctaBar, rb-landingMedia, rb-dataTable exactly as shown.
+- CTA link text must be exactly: {cta_text}
+
+Main keyword: "{main_kw}"
+
+Keyword list:
+{kw_lines}
+""".strip()
+
+
 def _validate_review_lobby_landing_structure(content: Dict[str, Any]) -> None:
     seo = str(content.get("main_seo_html", "")).strip()
     if "rb-faq" not in seo:
@@ -824,6 +907,18 @@ def _validate_review_lobby_landing_structure(content: Dict[str, Any]) -> None:
         raise RuntimeError("main_seo_html FAQ section must end with </section>")
 
 
+def _validate_review_lobby_clean_structure(content: Dict[str, Any]) -> None:
+    seo = str(content.get("main_seo_html", "")).strip()
+    if "rb-faq" in seo or "<details" in seo.lower():
+        raise RuntimeError("clean review lobby must not include rb-faq or details")
+    if "rb-dataTable" not in seo and "<table" not in seo.lower():
+        raise RuntimeError("main_seo_html missing rb-dataTable")
+    if seo.count("rb-landingMedia") < 3:
+        raise RuntimeError("main_seo_html must include 3 rb-landingMedia figures")
+    if seo.count("rb-ctaBar") < 4:
+        raise RuntimeError("main_seo_html must include 4 rb-ctaBar blocks")
+
+
 def normalize_review_lobby_landing_content(
     content: Dict[str, Any],
     rows: List[Dict[str, Any]],
@@ -831,6 +926,7 @@ def normalize_review_lobby_landing_content(
     *,
     page_id: str,
     main_casino_url: str,
+    clean: bool = False,
 ) -> None:
     content["meta_title"] = fit_technical_meta_title(str(content.get("meta_title", "")), rows, lc)
     content["meta_description"] = fit_technical_meta_description(
@@ -838,7 +934,7 @@ def normalize_review_lobby_landing_content(
     )
     seo = str(content.get("main_seo_html", "")).strip()
     seo = ensure_review_lobby_landing_html(
-        seo, page_id=page_id, lc=lc, main_casino_url=main_casino_url
+        seo, page_id=page_id, lc=lc, main_casino_url=main_casino_url, clean=clean
     )
     lobby_max = CLONE_SEO_MAX_CHARS + 1200
     if visible_text_len(seo) > lobby_max:
@@ -880,6 +976,7 @@ def generate_review_lobby_landing_content(
     include_site_factory_spec: bool,
     site_voice: str,
     env: Dict[str, str],
+    landing_clean: bool = False,
 ) -> Dict[str, Any]:
     meta = call_anthropic(
         api_key=api_key,
@@ -893,9 +990,8 @@ def generate_review_lobby_landing_content(
         max_tokens=2048,
         env=env,
     )
-    seo = call_anthropic(
-        api_key=api_key,
-        prompt=build_review_lobby_landing_seo_prompt(
+    if landing_clean:
+        seo_prompt = build_review_lobby_clean_seo_prompt(
             page_id=page_id,
             menu_label=menu_label,
             rows=rows,
@@ -903,7 +999,21 @@ def generate_review_lobby_landing_content(
             main_casino_url=str(env.get("MAIN_CASINO_URL", "")),
             include_site_factory_spec=include_site_factory_spec,
             site_voice=site_voice,
-        ),
+            deposit_offer=page_id == "casino-deposit",
+        )
+    else:
+        seo_prompt = build_review_lobby_landing_seo_prompt(
+            page_id=page_id,
+            menu_label=menu_label,
+            rows=rows,
+            lc=lc,
+            main_casino_url=str(env.get("MAIN_CASINO_URL", "")),
+            include_site_factory_spec=include_site_factory_spec,
+            site_voice=site_voice,
+        )
+    seo = call_anthropic(
+        api_key=api_key,
+        prompt=seo_prompt,
         max_tokens=16384,
         env=env,
     )
@@ -924,6 +1034,7 @@ def generate_review_lobby_landing_content_with_retry(
     include_site_factory_spec: bool,
     site_voice: str,
     env: Dict[str, str],
+    landing_clean: bool = False,
 ) -> Dict[str, Any]:
     last_err: Optional[Exception] = None
     for attempt in range(1, 4):
@@ -937,6 +1048,7 @@ def generate_review_lobby_landing_content_with_retry(
                 include_site_factory_spec=include_site_factory_spec,
                 site_voice=site_voice,
                 env=env,
+                landing_clean=landing_clean,
             )
             normalize_review_lobby_landing_content(
                 content,
@@ -944,8 +1056,15 @@ def generate_review_lobby_landing_content_with_retry(
                 lc,
                 page_id=page_id,
                 main_casino_url=str(env.get("MAIN_CASINO_URL", "")),
+                clean=landing_clean,
             )
-            validate_clone_content(content, rows, lc, review_lobby_landing=True)
+            validate_clone_content(
+                content,
+                rows,
+                lc,
+                review_lobby_landing=not landing_clean,
+                review_lobby_clean=landing_clean,
+            )
             return content
         except Exception as e:
             last_err = e
@@ -1816,7 +1935,24 @@ def replace_first_submatch(html: str, pattern: str, repl: str, flags: int = re.I
 
 
 def is_offerwall_hub_html(html: str) -> bool:
-    return "ow-main--hub" in html or 'id="ow-faq"' in html
+    return "ow-main--hub" in html or (
+        'id="ow-faq"' in html and "ow-faqStandalone" not in html
+    )
+
+
+def is_offerwall_recommend_html(html: str) -> bool:
+    h = html or ""
+    return 'data-page="we-recommend"' in h or "ow-page--recommend" in h
+
+
+def is_offerwall_choose_html(html: str) -> bool:
+    h = html or ""
+    return 'data-page="how-to-choose"' in h or "ow-page--choose" in h
+
+
+def is_offerwall_faq_page_html(html: str) -> bool:
+    h = html or ""
+    return 'data-page="player-faq"' in h or "ow-faqStandalone" in h
 
 
 def is_offerwall_slots_html(html: str) -> bool:
@@ -2082,8 +2218,11 @@ def validate_clone_content(
     lc: LocaleContext,
     *,
     review_lobby_landing: bool = False,
+    review_lobby_clean: bool = False,
 ) -> None:
-    if review_lobby_landing:
+    if review_lobby_clean:
+        _validate_review_lobby_clean_structure(content)
+    elif review_lobby_landing:
         _validate_review_lobby_landing_structure(content)
     else:
         normalize_clone_content(content, rows, lc)
@@ -2673,6 +2812,12 @@ def apply_content_to_page_html(html: str, content: Dict[str, Any], env: Dict[str
         return apply_content_to_review_lobby_html(html, content)
     if is_clone_html(html) or pk == "clone":
         return apply_content_to_clone_html(html, content)
+    if is_offerwall_faq_page_html(html):
+        return apply_content_to_offerwall_faq_page_html(html, content, env)
+    if is_offerwall_recommend_html(html):
+        return apply_content_to_offerwall_recommend_html(html, content, env)
+    if is_offerwall_choose_html(html):
+        return apply_content_to_offerwall_choose_html(html, content, env)
     if is_offerwall_html(html):
         return apply_content_to_offerwall_html(html, content, env)
     if is_response_html(html):
@@ -2721,7 +2866,6 @@ def build_offerwall_aggregator_sections_html(
     include_gallery: bool = False,
     featured_only: bool = False,
 ) -> str:
-    cta = _main_casino_cta_fragment(env) or ""
     fr = lc.lang == "fr"
     if fr:
         featured_tag = f"Partenaire mis en avant · {html.escape(lc.region_facing_label)}"
@@ -2763,20 +2907,46 @@ def build_offerwall_aggregator_sections_html(
                 "patterns—they are not real licensed offers on this domain.</p>\n"
             )
         gallery_title = "Lobby &amp; games reference art"
+    def _card_row(
+        *,
+        rank: int,
+        name: str,
+        tag_html: str,
+        body_html: str,
+        img_src: str,
+        featured: bool,
+        eager: bool,
+    ) -> str:
+        feat_cls = " ow-topCard--featured" if featured else ""
+        loading = "eager" if eager else "lazy"
+        play = _offerwall_play_btn(env, featured=featured)
+        return (
+            f'<article class="ow-topCard ow-topCard--row{feat_cls}">'
+            f'<div class="ow-topCardBody">'
+            f'<div class="ow-topCardRank" aria-hidden="true">#{rank}</div>'
+            f'<div class="ow-topCardMedia"><img src="{img_src}" alt="" width="480" height="300" '
+            f'loading="{loading}" decoding="async" /></div>'
+            f'<div class="ow-topCardText"><h3>{name}</h3>{tag_html}{body_html}</div>'
+            f"</div>"
+            f'<div class="ow-topCardPlay">{play}</div>'
+            f"</article>"
+        )
+
     cards_html: List[str] = []
     img0 = html.escape(asset_href_for_html_page(page_rel, OFFERWALL_TOP5_IMAGES[0]))
     cards_html.append(
-        '<article class="ow-topCard ow-topCard--featured">'
-        '<div class="ow-topCardRank" aria-hidden="true">#1</div>'
-        f'<div class="ow-topCardMedia"><img src="{img0}" alt="" width="480" height="300" loading="eager" decoding="async" /></div>'
-        "<h3>Cazilla</h3>"
-        f'<p class="ow-topCardTag">{featured_tag}</p>'
-        f"<p>{featured_body}</p>"
-        f'<p class="ow-topCardCta">{cta}</p>'
-        "</article>"
+        _card_row(
+            rank=1,
+            name="Cazilla",
+            tag_html=f'<p class="ow-topCardTag">{featured_tag}</p>',
+            body_html=f"<p>{featured_body}</p>",
+            img_src=img0,
+            featured=True,
+            eager=True,
+        )
     )
     if featured_only:
-        return disclaimer + '<div class="ow-topGrid">\n' + "\n".join(cards_html) + "\n</div>\n"
+        return disclaimer + '<div class="ow-topList">\n' + "\n".join(cards_html) + "\n</div>\n"
     for i in range(4):
         img = html.escape(asset_href_for_html_page(page_rel, OFFERWALL_TOP5_IMAGES[i + 1]))
         row = fictional[i]
@@ -2785,16 +2955,18 @@ def build_offerwall_aggregator_sections_html(
         summ = html.escape(row["summary_sentence"])
         tagline_html = f'<p class="ow-topCardTag">{tag}</p>' if tag else ""
         cards_html.append(
-            f'<article class="ow-topCard">'
-            f'<div class="ow-topCardRank" aria-hidden="true">#{i + 2}</div>'
-            f'<div class="ow-topCardMedia"><img src="{img}" alt="" width="480" height="300" loading="lazy" decoding="async" /></div>'
-            f"<h3>{name}</h3>"
-            f"{tagline_html}"
-            f"<p>{summ}</p>"
-            "</article>"
+            _card_row(
+                rank=i + 2,
+                name=name,
+                tag_html=tagline_html,
+                body_html=f"<p>{summ}</p>",
+                img_src=img,
+                featured=False,
+                eager=False,
+            )
         )
 
-    body = disclaimer + '<div class="ow-topGrid">\n' + "\n".join(cards_html) + "\n</div>\n"
+    body = disclaimer + '<div class="ow-topList">\n' + "\n".join(cards_html) + "\n</div>\n"
     if not include_gallery:
         return body
     gallery_items: List[str] = []
@@ -2863,14 +3035,272 @@ def _render_offerwall_faq_html(
     )
 
 
+def _offerwall_play_btn(env: Dict[str, str], *, featured: bool = False) -> str:
+    url = (env.get("MAIN_CASINO_URL") or os.getenv("MAIN_CASINO_URL") or "").strip().rstrip("/")
+    if not url:
+        return ""
+    lc = locale_context_from_env(env, strict_keywords_match=False)
+    if featured and lc.lang == "en":
+        label = "Play at Cazilla"
+    elif lc.lang == "fr":
+        label = "Jouer"
+    elif lc.lang == "nl":
+        label = "Speel"
+    else:
+        label = "Play now"
+    esc = html.escape(url, quote=True)
+    return (
+        f'<a class="btn primary ow-topCardPlayBtn" href="{esc}" '
+        f'rel="noopener noreferrer" target="_blank">{html.escape(label)}</a>'
+    )
+
+
 def _main_casino_cta_fragment(env: Dict[str, str]) -> str:
     url = (env.get("MAIN_CASINO_URL") or os.getenv("MAIN_CASINO_URL") or "").strip().rstrip("/")
     if not url:
         return ""
     lc = locale_context_from_env(env, strict_keywords_match=False)
-    label = "Jouer sur Cazilla" if lc.lang == "fr" else "Open Cazilla"
+    if lc.lang == "fr":
+        label = "Jouer sur Cazilla"
+    elif lc.lang == "nl":
+        label = "Speel bij Cazilla"
+    else:
+        label = "Play at Cazilla"
     esc = html.escape(url, quote=True)
     return f'<a href="{esc}" rel="noopener noreferrer" target="_blank">{html.escape(label)}</a>'
+
+
+def _apply_offerwall_hero_footer(
+    html_doc: str,
+    content: Dict[str, Any],
+    env: Dict[str, str],
+    lc: LocaleContext,
+) -> str:
+    hero_title = str(content.get("hero_title", "")).strip()
+    hero_sub = str(content.get("hero_subtitle", "")).strip()
+    footer = str(content.get("footer_seo_text", "")).strip()
+    if hero_title:
+        esc_t = html.escape(hero_title)
+        esc_tq = html.escape(hero_title, quote=True)
+        html_doc = replace_first_submatch(
+            html_doc, r"(?is)<title[^>]*>\s*.*?\s*</title>", f"<title>{esc_t}</title>"
+        )
+        html_doc = replace_first_submatch(
+            html_doc,
+            r'(?is)(<meta\s+property=["\']og:title["\']\s+content=["\'])(.*?)(["\'])',
+            rf"\g<1>{esc_tq}\g<3>",
+        )
+        html_doc = replace_first_submatch(
+            html_doc,
+            r'(?is)(<section\b[^>]*class="[^"]*\bow-hero\b[^"]*"[^>]*>\s*<h1[^>]*>)(.*?)(</h1>)',
+            r"\g<1>" + html.escape(hero_title) + r"\g<3>",
+        )
+    if hero_sub:
+        inner = hero_sub
+        cta = _main_casino_cta_fragment(env)
+        skip_cta = ("Play at Cazilla", "Open Cazilla", "Jouer sur Cazilla", "Speel bij Cazilla")
+        if cta and not any(s in hero_sub for s in skip_cta):
+            inner = inner + " " + cta
+        html_doc = replace_first_submatch(
+            html_doc,
+            r'(?is)(<section\b[^>]*class="[^"]*\bow-hero\b[^"]*"[^>]*>[\s\S]*?<p\s+class="[^"]*\bow-lead\b[^"]*"[^>]*>\s*)([\s\S]*?)(\s*</p>)',
+            r"\g<1>" + inner + r"\g<3>",
+        )
+    if footer:
+        html_doc = replace_first_submatch(
+            html_doc,
+            r'(?is)(<section\s+id="footer-legal"\s*>\s*<p[^>]*>\s*)([\s\S]*?)(\s*</p>\s*</section>)',
+            r"\g<1>" + footer + r"\g<3>",
+        )
+    return html_doc
+
+
+def _build_recommend_article(about: str, bonus: str, games: str, lc: LocaleContext, env: Dict[str, str]) -> str:
+    if lc.lang == "fr":
+        h_intro, h_criteria = "Pourquoi nous recommandons", "Nos critères de sélection"
+        cards = [
+            ("Licence, KYC et paiements", bonus),
+            ("Bonus et conditions", about),
+            ("Jeux, UX et support", games),
+        ]
+        h_outro = "Vérifier les offres en direct"
+    else:
+        h_intro, h_criteria = "Why we recommend casinos", "Our review criteria"
+        cards = [
+            ("Licensing, KYC & payouts", bonus),
+            ("Bonuses & fair terms", about),
+            ("Games, UX & support", games),
+        ]
+        h_outro = "Verify offers on the official site"
+    intro = _section_html_block(about)
+    grid = "".join(
+        f'<div class="ow-criterionCard"><h3>{html.escape(title)}</h3>{_section_html_block(body)}</div>'
+        for title, body in cards
+    )
+    cta = _main_casino_cta_fragment(env) or ""
+    return (
+        f'<div class="ow-recommendIntro">{intro}</div>\n'
+        f'<section class="ow-criteriaGrid" aria-labelledby="ow-criteria-title">\n'
+        f'  <h2 id="ow-criteria-title">{html.escape(h_criteria)}</h2>\n'
+        f'  <div class="ow-criteriaGridInner">{grid}</div>\n'
+        f"</section>\n"
+        f'<p class="ow-recommendOutro"><strong>{html.escape(h_outro)}:</strong> {cta}</p>\n'
+    )
+
+
+def _paragraphs_to_steps_html(text: str, *, max_items: int = 6) -> str:
+    plain = strip_tags(text)
+    chunks = [c.strip() for c in re.split(r"(?<=[.!?])\s+", plain) if c.strip()]
+    if len(chunks) < 3:
+        chunks = [c.strip() for c in plain.split("\n") if c.strip()]
+    if not chunks:
+        return f"<li>{html.escape(plain[:280])}</li>" if plain else ""
+    items = chunks[:max_items]
+    return "".join(f"<li>{html.escape(c)}</li>" for c in items)
+
+
+def _build_choose_article(about: str, bonus: str, games: str, lc: LocaleContext, env: Dict[str, str]) -> str:
+    if lc.lang == "fr":
+        h_steps, h_check = "Étapes pour choisir", "Checklist avant de déposer"
+    else:
+        h_steps, h_check = "Step-by-step: how to choose", "Checklist before you deposit"
+    steps = _paragraphs_to_steps_html(bonus or about)
+    intro_block = _section_html_block(about).strip()
+    if intro_block.startswith("<p>"):
+        intro_block = f'<div class="ow-chooseIntro">{intro_block}</div>'
+    else:
+        intro_block = f'<div class="ow-chooseIntro"><p>{html.escape(about)}</p></div>'
+    return (
+        f"{intro_block}\n"
+        f"<h2>{html.escape(h_steps)}</h2>\n"
+        f'<ol class="ow-guideSteps">{steps}</ol>\n'
+        f"<h2>{html.escape(h_check)}</h2>\n"
+        f"{_section_html_block(games)}\n"
+        f'<p class="ow-chooseOutro">{_main_casino_cta_fragment(env) or ""}</p>\n'
+    )
+
+
+def apply_content_to_offerwall_recommend_html(
+    html_doc: str, content: Dict[str, Any], env: Dict[str, str]
+) -> str:
+    lc = locale_context_from_env(env, strict_keywords_match=False)
+    html_doc = _apply_offerwall_hero_footer(html_doc, content, env, lc)
+    about = str(content.get("about_section", "")).strip()
+    bonus = str(content.get("bonus_section", "")).strip()
+    games = str(content.get("games_section", "")).strip()
+    article_body = _build_recommend_article(about, bonus, games, lc, env)
+    html_doc = replace_first_submatch(
+        html_doc,
+        r'(?is)(<article\s+class="[^"]*\bow-prose\b[^"]*"[^>]*>)([\s\S]*)(</article>)',
+        r"\g<1>\n" + article_body + r"\g<3>",
+    )
+    html_doc = _inject_offerwall_prose_keywords(html_doc, content, lc)
+    return html_doc
+
+
+def _inject_offerwall_prose_keywords(
+    html_doc: str, content: Dict[str, Any], lc: LocaleContext
+) -> str:
+    kw_rows = content.get("_keyword_rows")
+    if not isinstance(kw_rows, list) or not kw_rows:
+        return html_doc
+    m_art = re.search(
+        r'(?is)(<article\s+class="[^"]*\bow-prose\b[^"]*"[^>]*>)([\s\S]*)(</article>)',
+        html_doc,
+    )
+    if m_art:
+        injected = inject_missing_clone_keywords(m_art.group(2), kw_rows, lc)
+        html_doc = html_doc[: m_art.start(2)] + injected + html_doc[m_art.end(2) :]
+    return html_doc
+
+
+def apply_content_to_offerwall_choose_html(
+    html_doc: str, content: Dict[str, Any], env: Dict[str, str]
+) -> str:
+    lc = locale_context_from_env(env, strict_keywords_match=False)
+    html_doc = _apply_offerwall_hero_footer(html_doc, content, env, lc)
+    about = str(content.get("about_section", "")).strip()
+    bonus = str(content.get("bonus_section", "")).strip()
+    games = str(content.get("games_section", "")).strip()
+    article_body = _build_choose_article(about, bonus, games, lc, env)
+    html_doc = replace_first_submatch(
+        html_doc,
+        r'(?is)(<article\s+class="[^"]*\bow-prose\b[^"]*"[^>]*>)([\s\S]*)(</article>)',
+        r"\g<1>\n" + article_body + r"\g<3>",
+    )
+    html_doc = _inject_offerwall_prose_keywords(html_doc, content, lc)
+    return html_doc
+
+
+def apply_content_to_offerwall_faq_page_html(
+    html_doc: str, content: Dict[str, Any], env: Dict[str, str]
+) -> str:
+    lc = locale_context_from_env(env, strict_keywords_match=False)
+    html_doc = _apply_offerwall_hero_footer(html_doc, content, env, lc)
+    about = str(content.get("about_section", "")).strip()
+    faq = content.get("faq_section")
+    if not faq:
+        faq = [
+            {
+                "question": "How does Cazilla choose which casinos to list?",
+                "answer": strip_tags(about)[:220] if about else "We compare licensing, payments, bonuses and support for Irish readers.",
+            },
+            {
+                "question": "Is Cazilla a casino operator?",
+                "answer": "No — we are an independent review site. Outbound play goes to our featured partner Cazilla.",
+            },
+            {
+                "question": "Can I play in demo mode?",
+                "answer": "Many titles offer demos; check the lobby on the official site after you register.",
+            },
+            {
+                "question": "Which payment methods are common in Ireland?",
+                "answer": "Cards, e-wallets and bank transfer are typical. Read our Payments page and operator cashier before depositing.",
+            },
+            {
+                "question": "How do I compare bonuses fairly?",
+                "answer": "Check wagering, eligible games, max bet rules and expiry — not only the headline amount.",
+            },
+            {
+                "question": "Responsible play in Ireland",
+                "answer": "Set limits, take breaks and seek help if gambling stops being fun. See our Responsible gambling page.",
+            },
+        ]
+    faq_html = _render_offerwall_faq_html(
+        faq,
+        lc,
+        section_id="ow-faq-page",
+        section_class="ow-faqStandalone",
+        title_class="ow-faqStandaloneTitle",
+        title="Player FAQ",
+    )
+    intro_raw = _section_html_block(about).strip() if about else ""
+    if intro_raw.startswith("<p>"):
+        intro_html = f'<div class="ow-faqIntro">{intro_raw}</div>\n'
+    elif intro_raw:
+        intro_html = f'<div class="ow-faqIntro">{intro_raw}</div>\n'
+    else:
+        intro_html = ""
+    article_body = (
+        intro_html
+        + faq_html.strip()
+        + "\n"
+    )
+    html_doc = replace_first_submatch(
+        html_doc,
+        r'(?is)(<article\s+class="[^"]*\bow-faqPage\b[^"]*"[^>]*>)([\s\S]*)(</article>)',
+        r"\g<1>\n" + article_body + r"\g<3>",
+    )
+    kw_rows = content.get("_keyword_rows")
+    if isinstance(kw_rows, list) and kw_rows:
+        m_art = re.search(
+            r'(?is)(<article\s+class="[^"]*\bow-faqPage\b[^"]*"[^>]*>)([\s\S]*)(</article>)',
+            html_doc,
+        )
+        if m_art:
+            injected = inject_missing_clone_keywords(m_art.group(2), kw_rows, lc)
+            html_doc = html_doc[: m_art.start(2)] + injected + html_doc[m_art.end(2) :]
+    return html_doc
 
 
 def apply_content_to_offerwall_html(html_doc: str, content: Dict[str, Any], env: Dict[str, str]) -> str:
@@ -2933,7 +3363,7 @@ def apply_content_to_offerwall_html(html_doc: str, content: Dict[str, Any], env:
     if hero_sub:
         inner = hero_sub
         cta = _main_casino_cta_fragment(env)
-        skip_cta = ("Open Cazilla", "Jouer sur Cazilla")
+        skip_cta = ("Play at Cazilla", "Open Cazilla", "Jouer sur Cazilla", "Speel bij Cazilla")
         if cta and not any(s in hero_sub for s in skip_cta):
             inner = inner + " " + cta
         html_doc = replace_first_submatch(
@@ -2995,6 +3425,16 @@ def apply_content_to_offerwall_html(html_doc: str, content: Dict[str, Any], env:
             r'(?is)(<article\s+class="[^"]*\bow-prose\b[^"]*"[^>]*>)([\s\S]*?)(</article>)',
             r"\g<1>\n" + article_body + r"\g<3>",
         )
+
+    kw_rows = content.get("_keyword_rows")
+    if not hub and isinstance(kw_rows, list) and kw_rows:
+        m_art = re.search(
+            r'(?is)(<article\s+class="[^"]*\bow-prose\b[^"]*"[^>]*>)([\s\S]*?)(</article>)',
+            html_doc,
+        )
+        if m_art:
+            injected = inject_missing_clone_keywords(m_art.group(2), kw_rows, lc)
+            html_doc = html_doc[: m_art.start(2)] + injected + html_doc[m_art.end(2) :]
 
     faq_html = _render_offerwall_faq_html(content.get("faq_section"), lc)
     if faq_html:
@@ -3386,6 +3826,7 @@ def run_generate(
                     continue
                 if review_lobby_page:
                     hp_text = hp.read_text(encoding="utf-8", errors="replace")
+                    landing_clean = 'data-landing-mode="clean"' in hp_text
                     if "rb-landing" in hp_text:
                         content = generate_review_lobby_landing_content_with_retry(
                             api_key=api_key,
@@ -3396,6 +3837,7 @@ def run_generate(
                             include_site_factory_spec=include_site_factory_spec,
                             site_voice=technical_site_voice(site_dir, lc),
                             env=env,
+                            landing_clean=landing_clean,
                         )
                     else:
                         content = generate_clone_page_content(
@@ -3409,7 +3851,11 @@ def run_generate(
                             env=env,
                         )
                     validate_clone_content(
-                        content, rows, lc, review_lobby_landing="rb-landing" in hp_text
+                        content,
+                        rows,
+                        lc,
+                        review_lobby_landing="rb-landing" in hp_text and not landing_clean,
+                        review_lobby_clean=landing_clean,
                     )
                     print(f"  meta_title len: {len(content['meta_title'])}")
                     print(f"  main_seo_html len: {visible_text_len(str(content['main_seo_html']))}")
@@ -3478,7 +3924,14 @@ def run_generate(
                     raise RuntimeError(f"page {t.page_id}: missing fields: " + ", ".join(missing))
                 page_obj = {k: content[k] for k in page_keys}
                 page_obj["target_html_path"] = str(hp.relative_to(ROOT))
-                page_obj["page_kind"] = "response" if resp_home else "landing"
+                if t.page_id == "we-recommend" and agg_home:
+                    page_obj["page_kind"] = PAGE_KIND_OFFERWALL_RECOMMEND
+                elif t.page_id == "how-to-choose" and agg_home:
+                    page_obj["page_kind"] = PAGE_KIND_OFFERWALL_CHOOSE
+                elif t.page_id == "player-faq" and agg_home:
+                    page_obj["page_kind"] = PAGE_KIND_OFFERWALL_FAQ_PAGE
+                else:
+                    page_obj["page_kind"] = "response" if resp_home else "landing"
                 page_obj["site_rel_path"] = str(t.rel_path or "").strip().lstrip("/")
                 if agg_home:
                     page_obj[FICTIONAL_OPERATORS_KEY] = normalize_fictional_operators(
@@ -3486,6 +3939,13 @@ def run_generate(
                     )
                 if hub_home and content.get("faq_section"):
                     page_obj["faq_section"] = content["faq_section"]
+                if t.page_id == "player-faq" and agg_home:
+                    home_faq = pages_out.get("home", {}).get("faq_section") if isinstance(pages_out.get("home"), dict) else None
+                    if content.get("faq_section"):
+                        page_obj["faq_section"] = content["faq_section"]
+                    elif home_faq:
+                        page_obj["faq_section"] = home_faq
+                page_obj["_keyword_rows"] = rows
                 pages_out[t.page_id] = page_obj
 
             out_payload = {

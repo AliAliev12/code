@@ -142,7 +142,7 @@ class OwUi:
             lang=_html_lang(lc),
             min_age=ma,
             site_name=site_name,
-            cta_label="Open Cazilla",
+            cta_label="Play at Cazilla",
             title_suffix=" — Cazilla review",
             menu_label="Menu",
             drawer_title="Pages",
@@ -152,7 +152,7 @@ class OwUi:
         )
 
 
-def _compliance_block(ui: OwUi, *, cookie_href: str) -> str:
+def _compliance_block(ui: OwUi, *, cookie_href: str, audience_phrase: str = "") -> str:
     ch = html_lib.escape(cookie_href)
     if ui.lang.startswith("nl"):
         age_body = (
@@ -212,11 +212,12 @@ def _compliance_block(ui: OwUi, *, cookie_href: str) -> str:
   </div>
 </div>
 """
-    age_title = f"Confirm you are {ui.min_age} or over"
+    age_title = f"Confirm you are {ui.min_age} or older"
+    aud = audience_phrase.strip() or "readers"
     return f"""    <div class="complianceOverlay" id="ageGate" role="dialog" aria-modal="true" aria-labelledby="ageTitle">
       <div class="complianceDialog">
         <h2 id="ageTitle">{html_lib.escape(age_title)}</h2>
-        <p>You must be at least {ui.min_age} to continue. This site discusses regulated gambling topics.</p>
+        <p>This site covers regulated gambling for {html_lib.escape(aud)}. You must be at least {ui.min_age} to continue.</p>
         <div class="complianceActions">
           <button type="button" class="btn" id="ageUnder">I am under {ui.min_age}</button>
           <button type="button" class="btn primary" id="ageOk">I am {ui.min_age} or over</button>
@@ -343,6 +344,18 @@ def _is_bonus_catalog(site_slug: str, rel: str) -> bool:
 
 def _is_about_trust(site_slug: str, rel: str) -> bool:
     return Path(rel).name == "about.html" and "offerwall" in site_slug.lower()
+
+
+def _is_faq_page(rel: str) -> bool:
+    return Path(rel).name == "faq.html"
+
+
+def _is_we_recommend_page(rel: str) -> bool:
+    return Path(rel).name == "we-recommend.html"
+
+
+def _is_how_to_choose_page(rel: str) -> bool:
+    return Path(rel).name == "how-to-choose.html"
 
 
 def _slots_demo_cards() -> list[tuple[str, str, str]]:
@@ -1120,8 +1133,7 @@ def _hub_chips_html(*, ap: str, lc: LocaleContext, pages: list[tuple[str, str]])
     )
 
 
-def _hub_slots_preview(*, ap: str, lc: LocaleContext) -> str:
-    slots_href = html_lib.escape(f"{ap}slots.html")
+def _hub_slots_preview(*, ap: str, lc: LocaleContext, link_internal_slots: bool = True) -> str:
     if lc.lang == "fr":
         title = "Aperçu des machines à sous"
         cards = [
@@ -1129,7 +1141,6 @@ def _hub_slots_preview(*, ap: str, lc: LocaleContext) -> str:
             ("assets/pictures/money-train-4-thumbnail.png", "Money Train 4"),
             ("assets/pictures/big-bass-bonanza-review.avif", "Big Bass Bonanza"),
         ]
-        cta = "Voir toutes les slots"
     else:
         title = "Slots preview"
         cards = [
@@ -1137,20 +1148,26 @@ def _hub_slots_preview(*, ap: str, lc: LocaleContext) -> str:
             ("assets/pictures/money-train-4-thumbnail.png", "Money Train 4"),
             ("assets/pictures/big-bass-bonanza-review.avif", "Big Bass Bonanza"),
         ]
-        cta = "Browse all slots"
     cells: list[str] = []
     for src, cap in cards:
-        cells.append(
-            f'          <a class="ow-hubSlotCard" href="{slots_href}">'
-            f'<img src="{html_lib.escape(ap + src)}" alt="" width="320" height="240" loading="lazy" decoding="async" />'
-            f"<span>{html_lib.escape(cap)}</span></a>"
+        img = (
+            f'<img src="{html_lib.escape(ap + src)}" alt="" width="320" height="240" '
+            f'loading="lazy" decoding="async" />'
         )
+        label = f"<span>{html_lib.escape(cap)}</span>"
+        if link_internal_slots:
+            href = html_lib.escape(f"{ap}slots.html")
+            cells.append(
+                f'          <a class="ow-hubSlotCard" href="{href}">{img}{label}</a>'
+            )
+        else:
+            cells.append(f'          <div class="ow-hubSlotCard">{img}{label}</div>')
     return (
         f'        <section class="ow-hubSlots" id="ow-hub-slots-preview" aria-labelledby="ow-hub-slots-title">\n'
         f'          <h2 class="ow-hubSlotsTitle" id="ow-hub-slots-title">{html_lib.escape(title)}</h2>\n'
         f'          <div class="ow-hubSlotsGrid">\n'
         + "\n".join(cells)
-        + f'\n          </div>\n          <p class="ow-hubSlotsMore"><a href="{slots_href}">{html_lib.escape(cta)}</a></p>\n'
+        + "\n          </div>\n"
         "        </section>\n"
     )
 
@@ -1230,7 +1247,7 @@ def _hub_faq_stub(lc: LocaleContext) -> str:
                 "Check amount, wagering, eligible games and expiry. A large headline bonus is not always the best deal.",
             ),
             (
-                "Responsible play",
+                "Responsible play in Ireland",
                 "Set limits, take breaks and seek help if gambling stops being fun. See our Responsible gambling page.",
             ),
         ]
@@ -1244,6 +1261,53 @@ def _hub_faq_stub(lc: LocaleContext) -> str:
         f'          <h2 class="ow-hubFaqTitle">{html_lib.escape(title)}</h2>\n'
         + "\n".join(details)
         + "\n        </section>\n"
+    )
+
+
+def _faq_page_section(lc: LocaleContext, *, all_open: bool = True) -> str:
+    """Standalone FAQ page: same Q&A as hub; all accordions open when all_open=True."""
+    inner = _hub_faq_stub(lc)
+    if all_open:
+        inner = inner.replace("<details>", "<details open>")
+    inner = inner.replace('class="ow-hubFaq"', 'class="ow-faqStandalone"', 1)
+    inner = inner.replace('id="ow-faq"', 'id="ow-faq-page"', 1)
+    inner = inner.replace("ow-hubFaqTitle", "ow-faqStandaloneTitle", 1)
+    return (
+        '        <article class="ow-faqPage" data-a2-field="main_seo_html">\n'
+        '          <p class="ow-faqIntro">Placeholder intro — A2 will replace.</p>\n'
+        + inner
+        + "\n        </article>\n"
+    )
+
+
+def _recommend_page_stub(lc: LocaleContext) -> str:
+    if lc.lang == "fr":
+        intro = "<p>Pourquoi nous recommandons certains casinos — critères éditoriaux.</p>"
+        criteria = "Nos critères"
+    else:
+        intro = "<p>Why we recommend certain casinos — editorial criteria for Ireland.</p>"
+        criteria = "Our review criteria"
+    return (
+        '        <article class="ow-prose ow-page--recommend" data-a2-field="main_seo_html">\n'
+        f'          <div class="ow-recommendIntro">{intro}</div>\n'
+        f'          <section class="ow-criteriaGrid"><h2>{html_lib.escape(criteria)}</h2>'
+        '<div class="ow-criteriaGridInner"><div class="ow-criterionCard">'
+        "<h3>—</h3><p>Placeholder.</p></div></div></section>\n"
+        "        </article>\n"
+    )
+
+
+def _choose_page_stub(lc: LocaleContext) -> str:
+    if lc.lang == "fr":
+        steps = "Étapes pour choisir"
+    else:
+        steps = "Step-by-step guide"
+    return (
+        '        <article class="ow-prose ow-page--choose" data-a2-field="main_seo_html">\n'
+        '          <p class="ow-chooseIntro">Placeholder — A2 will replace.</p>\n'
+        f"          <h2>{html_lib.escape(steps)}</h2>\n"
+        '          <ol class="ow-guideSteps"><li>Placeholder step.</li></ol>\n'
+        "        </article>\n"
     )
 
 
@@ -1269,6 +1333,7 @@ def _shell_home_hub(
     hub_faq: str,
     header_cta_href: str,
     ui: OwUi,
+    body_extra_class: str = "",
 ) -> str:
     ap = _ap(rel)
     can = _canonical(site_origin, rel)
@@ -1307,7 +1372,7 @@ def _shell_home_hub(
     <link rel="stylesheet" href="{ap}assets/offerwall-nav.css" />
     <link rel="stylesheet" href="{ap}assets/offerwall-hub.css" />
   </head>
-  <body class="lv-body" data-site-kind="offerwall">
+  <body class="lv-body{body_extra_class}" data-site-kind="offerwall">
 {compliance_html}
     <div id="siteContent" class="ow-app ow-app--hub">
       <header class="ow-topbar ow-topbar--hub">
@@ -1385,6 +1450,12 @@ def _shell(
     compliance_html: str,
     footer_legal_nav: str,
     ui: OwUi,
+    drawer_nav: str = "",
+    header_cta_href: str = "",
+    hub_header_cta: bool = False,
+    body_data_page: str = "",
+    body_extra_class: str = "",
+    raw_main_html: bool = False,
 ) -> str:
     ap = _ap(rel)
     can = _canonical(site_origin, rel)
@@ -1401,6 +1472,35 @@ def _shell(
         agg_block = (
             f'<section id="ow-aggregator-top5" class="ow-aggregatorTop5" aria-label="{html_lib.escape(ui.agg_aria)}"></section>\n'
         )
+    cta_href = html_lib.escape(header_cta_href, quote=True) if header_cta_href else ""
+    cta_lbl = html_lib.escape(ui.cta_label)
+    header_cta_html = ""
+    if hub_header_cta and cta_href:
+        header_cta_html = (
+            f'\n        <a class="ow-headerCta" href="{cta_href}" rel="noopener noreferrer" target="_blank">{cta_lbl}</a>'
+        )
+    if raw_main_html:
+        main_block = prose_inner
+    else:
+        main_block = (
+            '        <article class="ow-prose" data-a2-field="main_seo_html">\n'
+            f"{prose_inner}"
+            "        </article>\n"
+        )
+    drawer_block = ""
+    if drawer_nav.strip():
+        drawer_block = f"""      <button type="button" class="ow-menuBtn" id="menuToggle" aria-expanded="false" aria-controls="sideDrawer">{html_lib.escape(ui.menu_label)}</button>
+      <div class="ow-drawerOverlay" id="drawerOverlay" hidden></div>
+      <aside class="ow-drawer" id="sideDrawer" aria-hidden="true" aria-label="Site menu">
+        <div class="ow-drawerHeader">
+          <span class="ow-drawerTitle">{html_lib.escape(ui.drawer_title)}</span>
+          <button type="button" class="ow-drawerClose" id="drawerClose" aria-label="Close menu">×</button>
+        </div>
+        <nav class="ow-drawerNav" aria-label="Site pages">
+{drawer_nav}
+        </nav>
+      </aside>
+"""
     return f"""<!doctype html>
 <html lang="{html_lib.escape(html_lang)}" data-min-gambling-age="{min_age}">
   <head>
@@ -1421,26 +1521,17 @@ def _shell(
     <link rel="stylesheet" href="{ap}assets/shell.css" />
     <link rel="stylesheet" href="{ap}assets/compliance.css" />
     <link rel="stylesheet" href="{ap}assets/offerwall-nav.css" />
+    <link rel="stylesheet" href="{ap}assets/offerwall-pages.css" />
   </head>
-  <body class="lv-body" data-site-kind="offerwall">
+  <body class="lv-body{body_extra_class}" data-site-kind="offerwall"{body_data_page}>
 {compliance_html}
     <div id="siteContent" class="ow-app">
       <header class="ow-topbar">
         <a class="ow-brand" href="{ap}index.html" aria-label="{html_lib.escape(ui.brand_aria)}">
           <img src="{ap}assets/pictures/og-logo.svg" alt="" width="34" height="34" decoding="async" />
-        </a>
+        </a>{header_cta_html}
       </header>
-      <button type="button" class="ow-menuBtn" id="menuToggle" aria-expanded="false" aria-controls="sideDrawer">{html_lib.escape(ui.menu_label)}</button>
-      <div class="ow-drawerOverlay" id="drawerOverlay" hidden></div>
-      <aside class="ow-drawer" id="sideDrawer" aria-hidden="true" aria-label="Site menu">
-        <div class="ow-drawerHeader">
-          <span class="ow-drawerTitle">{html_lib.escape(ui.drawer_title)}</span>
-          <button type="button" class="ow-drawerClose" id="drawerClose" aria-label="Close menu">×</button>
-        </div>
-        <nav class="ow-drawerNav" aria-label="Site pages">
-          <a class="ow-navAnchor" href="{ap}index.html">Home</a>
-        </nav>
-      </aside>
+{drawer_block}
 
       <main class="ow-main" id="top">
         <section class="ow-hero hero" aria-label="Hero">
@@ -1450,9 +1541,7 @@ def _shell(
           </p>
         </section>
 {agg_block}        <div class="policyCard">
-        <article class="ow-prose" data-a2-field="main_seo_html">
-{prose_inner}
-        </article>
+{main_block}
         </div>
 
         <footer class="ow-footer" id="footer">
@@ -1480,7 +1569,7 @@ def _kw_pages(data: dict) -> list[tuple[str, dict]]:
     return out
 
 
-def _technical_pages(data: dict) -> list[tuple[str, str, str]]:
+def _technical_pages(data: dict, lc: LocaleContext) -> list[tuple[str, str, str]]:
     """rel, h1, default paragraph."""
     out: list[tuple[str, str, str]] = []
     for page in data.get("technical_pages") or []:
@@ -1503,6 +1592,11 @@ def _technical_pages(data: dict) -> list[tuple[str, str, str]]:
                 "Ce site utilise des cookies pour mémoriser la vérification d'âge et vos préférences. "
                 "Les détails figurent sur cette page."
             )
+        elif lc.lang == "en":
+            para = (
+                "Legal and editorial information on this page for readers in Ireland. "
+                "A2 will replace this placeholder."
+            )
         else:
             para = (
                 "Informations juridiques et éditoriales sur cette page. "
@@ -1524,6 +1618,129 @@ def _collect_legal_footer(data: dict) -> list[tuple[str, str]]:
         items.append((rel, label))
     return items
 
+
+OFFERWALL_THEME_IE1_CSS = """
+/* offerwall1 en-IE — midnight crimson / sky copper (cazilla.world) */
+body.ow-theme-ie1 {
+  --bg: #100818;
+  --bg2: #1a0a22;
+  --panel: rgba(255, 255, 255, 0.05);
+  --stroke: rgba(251, 146, 60, 0.22);
+  --purple: #f472b6;
+  --purple2: #db2777;
+  --gold: #38bdf8;
+  --gold2: #0284c7;
+  --link: #7dd3fc;
+  --link-hover: #bae6fd;
+  --r-md: 14px;
+  --r-lg: 20px;
+}
+body.ow-theme-ie1.lv-body {
+  background-color: var(--bg);
+  background:
+    linear-gradient(165deg, rgba(219, 39, 119, 0.12) 0%, transparent 42%),
+    linear-gradient(320deg, rgba(56, 189, 248, 0.1) 0%, transparent 38%),
+    radial-gradient(ellipse 900px 500px at 12% 0%, rgba(244, 114, 182, 0.18), transparent 55%),
+    var(--bg);
+}
+body.ow-theme-ie1 .ow-topbar,
+body.ow-theme-ie1 .ow-topbar--hub {
+  background: rgba(16, 8, 24, 0.92);
+  border-bottom: 2px solid rgba(56, 189, 248, 0.45);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+body.ow-theme-ie1 .ow-headerCta,
+body.ow-theme-ie1 .btn.primary,
+body.ow-theme-ie1 .ow-topCardPlayBtn {
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--purple2), var(--gold2));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 6px 22px rgba(219, 39, 119, 0.35);
+}
+body.ow-theme-ie1 .ow-topCard {
+  border-radius: var(--r-md);
+  border: 1px solid var(--stroke);
+  border-left: 5px solid var(--purple);
+  background: linear-gradient(90deg, rgba(219, 39, 119, 0.08), rgba(255, 255, 255, 0.03));
+}
+body.ow-theme-ie1 .ow-topCard--featured {
+  border-color: rgba(56, 189, 248, 0.35);
+  border-left-color: var(--gold);
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0.14), rgba(219, 39, 119, 0.1));
+  box-shadow: 0 14px 40px rgba(219, 39, 119, 0.22);
+}
+body.ow-theme-ie1 .ow-topCardRank {
+  color: var(--gold);
+}
+body.ow-theme-ie1 .ow-hubChips a {
+  border-radius: 999px;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  background: transparent;
+  color: var(--link);
+}
+body.ow-theme-ie1 .ow-hubChips a:hover {
+  background: rgba(56, 189, 248, 0.12);
+  color: var(--link-hover);
+}
+body.ow-theme-ie1 .ow-hubSlotCard {
+  border-radius: 12px;
+  border: 1px dashed rgba(244, 114, 182, 0.35);
+  background: rgba(16, 8, 24, 0.6);
+}
+body.ow-theme-ie1 .ow-hubFaqTitle,
+body.ow-theme-ie1 .ow-faqStandaloneTitle,
+body.ow-theme-ie1 .ow-hubSlotsTitle {
+  color: var(--gold);
+}
+body.ow-theme-ie1 .ow-hubFaq details,
+body.ow-theme-ie1 .ow-faqStandalone details {
+  border-left: 3px solid var(--purple);
+  border-radius: 10px;
+}
+body.ow-theme-ie1 .ow-criterionCard {
+  border-left: 4px solid var(--gold);
+  border-radius: var(--r-md);
+  background: rgba(56, 189, 248, 0.06);
+}
+body.ow-theme-ie1 .ow-criterionCard h3 {
+  color: var(--gold);
+}
+body.ow-theme-ie1 .ow-guideSteps li::marker {
+  color: var(--purple);
+}
+body.ow-theme-ie1 .ow-chooseChecklist {
+  border-color: rgba(244, 114, 182, 0.4);
+  background: rgba(219, 39, 119, 0.08);
+}
+body.ow-theme-ie1 .policyCard {
+  border-top: 3px solid rgba(56, 189, 248, 0.35);
+}
+body.ow-theme-ie1 .ow-hero.hero {
+  border-bottom: 1px solid rgba(244, 114, 182, 0.2);
+}
+"""
+
+OFFERWALL_THEME_IE2_CSS = """
+/* offerwall2 en-IE — emerald / coral (distinct from offerwall1-en-ie default) */
+:root {
+  --bg: #061210;
+  --bg2: #0c1f1a;
+  --purple: #34d399;
+  --purple2: #059669;
+  --gold: #fb7185;
+  --gold2: #f43f5e;
+  --link: #6ee7b7;
+  --link-hover: #a7f3d0;
+}
+body.lv-body {
+  background-color: var(--bg);
+  background: radial-gradient(1100px 640px at 22% 8%, rgba(52, 211, 153, 0.2), transparent 58%),
+    radial-gradient(880px 480px at 90% 88%, rgba(251, 113, 133, 0.14), transparent 52%), var(--bg);
+}
+.ow-headerCta, .btn.primary { background: linear-gradient(135deg, var(--purple2), var(--gold2)); }
+.ow-topCard--featured { border-color: var(--purple); }
+.ow-hubSlotCard { border-color: rgba(52, 211, 153, 0.25); }
+"""
 
 OFFERWALL_THEME_NL_CSS = """
 /* nl-BE offerwall theme — cyan / rose (distinct from fr-BE purple/gold) */
@@ -1549,23 +1766,44 @@ body.lv-body {
 
 def copy_assets(site_dir: Path, site_slug: str) -> None:
     dest = site_dir / "assets"
-    if dest.exists():
-        shutil.rmtree(dest)
-    shutil.copytree(ASSET_SRC, dest)
-    tpl = ASSET_SRC / "site.js"
+    src = ASSET_SRC.resolve()
+    if src != dest.resolve():
+        if dest.exists():
+            shutil.rmtree(dest)
+        shutil.copytree(ASSET_SRC, dest)
+    tpl = dest / "site.js"
+    if not tpl.is_file() and (ASSET_SRC / "site.js").is_file():
+        shutil.copy2(ASSET_SRC / "site.js", tpl)
     if tpl.is_file():
         js = tpl.read_text(encoding="utf-8")
         prefix = _cookie_js_prefix(site_slug)
         js = js.replace("cazilla_ow2_ie_age_ok", f"{prefix}_age_ok")
         js = js.replace("cazilla_ow2_ie_cookie", f"{prefix}_cookie")
         (dest / "site.js").write_text(js, encoding="utf-8")
-    if "nl-be" in site_slug.lower():
-        shell = dest / "shell.css"
-        if shell.is_file():
-            shell.write_text(shell.read_text(encoding="utf-8") + "\n" + OFFERWALL_THEME_NL_CSS.strip() + "\n", encoding="utf-8")
+    shell = dest / "shell.css"
+    if shell.is_file():
+        extra = ""
+        if "offerwall2-en-ie" in site_slug.lower():
+            extra = OFFERWALL_THEME_IE2_CSS.strip()
+        elif "offerwall1-en-ie" in site_slug.lower():
+            extra = OFFERWALL_THEME_IE1_CSS.strip()
+        elif "nl-be" in site_slug.lower():
+            extra = OFFERWALL_THEME_NL_CSS.strip()
+        if extra:
+            base = shell.read_text(encoding="utf-8")
+            if "offerwall1 en-IE" in base or "offerwall2 en-IE" in base:
+                base = re.sub(
+                    r"\n?/\* offerwall[12] en-IE.*",
+                    "",
+                    base,
+                    flags=re.DOTALL,
+                ).rstrip() + "\n"
+            shell.write_text(base + "\n" + extra + "\n", encoding="utf-8")
 
 
-def write_robots_sitemap(site_dir: Path, site_origin: str, data: dict, hreflang: str) -> None:
+def write_robots_sitemap(
+    site_dir: Path, site_origin: str, data: dict, hreflang: str, lc: LocaleContext
+) -> None:
     origin = site_origin.rstrip("/")
     (site_dir / "robots.txt").write_text(
         f"User-agent: *\nAllow: /\n\nSitemap: {origin}/sitemap.xml\n",
@@ -1574,7 +1812,7 @@ def write_robots_sitemap(site_dir: Path, site_origin: str, data: dict, hreflang:
     urls: list[str] = []
     for rel, _ in _kw_pages(data):
         urls.append(_canonical(origin, rel))
-    for rel, _, _ in _technical_pages(data):
+    for rel, _, _ in _technical_pages(data, lc):
         urls.append(_canonical(origin, rel))
     entries = []
     for loc in urls:
@@ -1622,6 +1860,7 @@ def main() -> int:
     only_pages = {str(p).strip().lstrip("/") for p in args.only if str(p).strip()}
     site_dir = (ROOT / args.site_dir).resolve() if not args.site_dir.is_absolute() else args.site_dir
     site_slug = site_dir.name
+    body_theme = " ow-theme-ie1" if "offerwall1-en-ie" in site_slug.lower() else ""
 
     env_path = ROOT / ".env"
     env = _load_env(env_path)
@@ -1670,7 +1909,7 @@ def main() -> int:
         desc = _desc_from_kw(kw, lc, ui)
         label = str(page.get("menu_label") or page.get("id") or "Page").strip()
         cookie_href = _rel_href(rel, cookie_rel)
-        compliance = _compliance_block(ui, cookie_href=cookie_href)
+        compliance = _compliance_block(ui, cookie_href=cookie_href, audience_phrase=lc.audience_phrase)
         footer_nav = _footer_legal_nav(_ap(rel), legal_footer)
         footer_note = html_lib.escape(_short_footer(lc, ui))
         drawer_nav = _drawer_nav_html(from_rel=rel, items=menu_items, current_rel=rel)
@@ -1746,6 +1985,7 @@ def main() -> int:
                 lc=lc,
             )
         elif _is_hub_index(site_slug, rel):
+            has_slots_page = any(Path(r).name == "slots.html" for r, _ in menu_items)
             doc = _shell_home_hub(
                 rel=rel,
                 site_origin=site_origin,
@@ -1763,10 +2003,81 @@ def main() -> int:
                 footer_legal_nav=footer_nav,
                 drawer_nav=drawer_nav,
                 hub_chips=_hub_chips_html(ap=_ap(rel), lc=lc, pages=menu_items),
-                hub_slots=_hub_slots_preview(ap=_ap(rel), lc=lc),
+                hub_slots=_hub_slots_preview(ap=_ap(rel), lc=lc, link_internal_slots=has_slots_page),
                 hub_faq=_hub_faq_stub(lc),
                 header_cta_href=main_url,
                 ui=ui,
+                body_extra_class=body_theme,
+            )
+        elif _is_faq_page(rel):
+            doc = _shell(
+                rel=rel,
+                site_origin=site_origin,
+                html_lang=html_lang,
+                hreflang=hreflang,
+                min_age=min_age,
+                site_name=site_name,
+                title=title,
+                description=desc,
+                include_agg=False,
+                hero_h1=label,
+                hero_lead=_placeholder_lead(lc, ui, cta),
+                prose_inner=_faq_page_section(lc, all_open=True) + "\n",
+                footer_legal_inner=footer_note,
+                compliance_html=compliance,
+                footer_legal_nav=footer_nav,
+                ui=ui,
+                drawer_nav=drawer_nav,
+                header_cta_href=main_url,
+                body_data_page=' data-page="player-faq"',
+                body_extra_class=body_theme,
+                raw_main_html=True,
+            )
+        elif _is_we_recommend_page(rel):
+            doc = _shell(
+                rel=rel,
+                site_origin=site_origin,
+                html_lang=html_lang,
+                hreflang=hreflang,
+                min_age=min_age,
+                site_name=site_name,
+                title=title,
+                description=desc,
+                include_agg=False,
+                hero_h1=label,
+                hero_lead=_placeholder_lead(lc, ui, cta),
+                prose_inner=_recommend_page_stub(lc),
+                footer_legal_inner=footer_note,
+                compliance_html=compliance,
+                footer_legal_nav=footer_nav,
+                ui=ui,
+                drawer_nav=drawer_nav,
+                header_cta_href=main_url,
+                body_data_page=' data-page="we-recommend"',
+                body_extra_class=body_theme,
+            )
+        elif _is_how_to_choose_page(rel):
+            doc = _shell(
+                rel=rel,
+                site_origin=site_origin,
+                html_lang=html_lang,
+                hreflang=hreflang,
+                min_age=min_age,
+                site_name=site_name,
+                title=title,
+                description=desc,
+                include_agg=False,
+                hero_h1=label,
+                hero_lead=_placeholder_lead(lc, ui, cta),
+                prose_inner=_choose_page_stub(lc),
+                footer_legal_inner=footer_note,
+                compliance_html=compliance,
+                footer_legal_nav=footer_nav,
+                ui=ui,
+                drawer_nav=drawer_nav,
+                header_cta_href=main_url,
+                body_data_page=' data-page="how-to-choose"',
+                body_extra_class=body_theme,
             )
         else:
             doc = _shell(
@@ -1781,22 +2092,25 @@ def main() -> int:
                 include_agg=False,
                 hero_h1=label,
                 hero_lead=_placeholder_lead(lc, ui, cta),
-                prose_inner="          <p>Placeholder body.</p>\n",
+                prose_inner="          <p>Placeholder body. A2 will replace with full editorial copy.</p>\n",
                 footer_legal_inner=footer_note,
                 compliance_html=compliance,
                 footer_legal_nav=footer_nav,
                 ui=ui,
+                drawer_nav=drawer_nav,
+                header_cta_href=main_url,
+                body_extra_class=body_theme,
             )
         out = site_dir / rel
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(doc, encoding="utf-8")
         print("Wrote", out.relative_to(ROOT))
 
-    for rel, h1, para in _technical_pages(data):
+    for rel, h1, para in _technical_pages(data, lc):
         if only_pages and rel not in only_pages:
             continue
         cookie_href = _rel_href(rel, cookie_rel)
-        compliance = _compliance_block(ui, cookie_href=cookie_href)
+        compliance = _compliance_block(ui, cookie_href=cookie_href, audience_phrase=lc.audience_phrase)
         footer_nav = _footer_legal_nav(_ap(rel), legal_footer)
         title = f"{h1}{ui.title_suffix}"[:58]
         if lc.lang == "fr":
@@ -1825,13 +2139,16 @@ def main() -> int:
             compliance_html=compliance,
             footer_legal_nav=footer_nav,
             ui=ui,
+            drawer_nav=_drawer_nav_html(from_rel=rel, items=menu_items, current_rel=rel),
+            header_cta_href=main_url,
+            body_extra_class=body_theme,
         )
         out = site_dir / rel
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(doc, encoding="utf-8")
         print("Wrote technical", out.relative_to(ROOT))
 
-    write_robots_sitemap(site_dir, site_origin, data, hreflang)
+    write_robots_sitemap(site_dir, site_origin, data, hreflang, lc)
     fix_keywords_meta(kw_path, site_slug, lc.locale)
     print("Wrote robots.txt, sitemap.xml, .htaccess")
     return 0

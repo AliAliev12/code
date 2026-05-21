@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
-Sitemap: https://cazilareview.xyz/sitemap.xml
+
+Sitemap: https://cazillareview.life/sitemap.xml

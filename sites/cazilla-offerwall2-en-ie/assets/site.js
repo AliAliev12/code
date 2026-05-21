@@ -1,8 +1,8 @@
 (function () {
   "use strict";
 
-  var AGE_COOKIE = "cazilla_ow2_ie_age_ok";
-  var COOKIE_CHOICE = "cazilla_ow2_ie_cookie";
+  var AGE_COOKIE = "cazilla_offerwall2_en_ie_age_ok";
+  var COOKIE_CHOICE = "cazilla_offerwall2_en_ie_cookie";
   var AGE_MAX_AGE = 3 * 24 * 60 * 60;
 
   var menuToggle = document.getElementById("menuToggle");
